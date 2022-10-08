@@ -21,8 +21,7 @@ public class UDPnet : MonoBehaviour
         
         ipep = new IPEndPoint(IPAddress.Any, 9999);
         threadConnect = new Thread(ThreadNetConnect);
-        
-        sender = new IPEndPoint
+
     }
 
     // Update is called once per frame
