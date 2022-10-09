@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Text;
-using System;
 
 
 public class UDPClient : MonoBehaviour
@@ -14,6 +13,7 @@ public class UDPClient : MonoBehaviour
     string input, stringData;
     string tmpMessage;
     int recv;
+    bool exit;
 
     IPEndPoint ipep,sender;
     EndPoint remote;
@@ -44,7 +44,12 @@ public class UDPClient : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown("c"))
+        {
+            Debug.Log("Press c");
 
+            exit = true;
+        }
     }
     void ThreadNetConnect()
     {
@@ -69,11 +74,11 @@ public class UDPClient : MonoBehaviour
 
         while (true)
         {
-            Debug.Log("Online");
+            //Debug.Log("Client Online");
 
             // Wait for input client
-            input = Console.ReadLine();
-            if (Input.GetKeyDown(KeyCode.Space))
+            input = "test input";
+            if (exit)
                 break;
 
             //Send input client to server
@@ -85,9 +90,9 @@ public class UDPClient : MonoBehaviour
             stringData = Encoding.ASCII.GetString(data, 0, recv);
 
             // Print Message of server
-            Console.WriteLine(stringData);
+            Debug.Log("message server to client "+stringData);
         }
-        Console.WriteLine("Stopping client");
+        Debug.Log("Stopping client");
         servSock.Close();
     }
 
