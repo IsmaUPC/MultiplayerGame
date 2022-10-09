@@ -1,68 +1,96 @@
-
-using System;
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Text;
+using System;
 
-public class SimpleUdpClient
+
+public class UDPClient : MonoBehaviour
 {
-    public static void Main()
-    {
-        byte[] data = new byte[1024];
-        string input, stringData;
+    byte[] data = new byte[1024];
+    string input, stringData;
+    string tmpMessage;
+    int recv;
 
-        // Set IP adress of server
-        IPEndPoint ipep = new IPEndPoint(
-                        IPAddress.Parse("127.0.0.1"), 9050);
+    IPEndPoint ipep,sender;
+    EndPoint remote;
+    Socket servSock;
+    Thread threadConnect;
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        Debug.Log("I'am a client");
+
+        // Set IP adress o
+        // f server
+        ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
 
         // Create Socket whit IPv4 
-        Socket server = new Socket(AddressFamily.InterNetwork,
+        servSock = new Socket(AddressFamily.InterNetwork,
                        SocketType.Dgram, ProtocolType.Udp);
+        // The client sends a message to ask that the server iss listening
+        tmpMessage = "Hello, are you there?";
+        data = Encoding.ASCII.GetBytes(tmpMessage);
+        threadConnect = new Thread(ThreadNetConnect);
+        threadConnect.Start();
 
-        // The client sends a message to ask that the server is listening
-        string welcome = "Hello, are you there?";
-        data = Encoding.ASCII.GetBytes(welcome);
-        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+    void ThreadNetConnect()
+    {
+        Debug.Log("Thread start");
+
         // Client send data to server with data length and flags to ip end point of server
-        server.SendTo(data, data.Length, SocketFlags.None, ipep);
+        servSock.SendTo(data, data.Length, SocketFlags.None, ipep);
 
-        // instantiates an IP endpoint variable with an ip 0.0.0.0 which will later
+        // IP endpoint variable with an ip 0.0.0.0 which will later
         // be filled in by the ReciveFrom function.
-        IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
-        EndPoint Remote = (EndPoint)sender;
+        sender = new IPEndPoint(IPAddress.Any, 0);
+        remote = (EndPoint)sender;
 
         // Clear data
         data = new byte[1024];
         // Obtain server information and fill the variable named Remote
-        int recv = server.ReceiveFrom(data, ref Remote);
+        recv = servSock.ReceiveFrom(data, ref remote);
 
         // Print message from server
-        Console.WriteLine("Message received from {0}:", Remote.ToString());
-        Console.WriteLine(Encoding.ASCII.GetString(data, 0, recv));
+        Debug.Log("Message received from {0}:"+ remote.ToString());
+        Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
 
         while (true)
         {
+            Debug.Log("Online");
+
             // Wait for input client
             input = Console.ReadLine();
-            if (input == "exit")
+            if (Input.GetKeyDown(KeyCode.Space))
                 break;
 
             //Send input client to server
-            server.SendTo(Encoding.ASCII.GetBytes(input), Remote);
+            servSock.SendTo(Encoding.ASCII.GetBytes(input), remote);
             data = new byte[1024];
 
             // Fill Remote reference variable and data
-            recv = server.ReceiveFrom(data, ref Remote);
+            recv = servSock.ReceiveFrom(data, ref remote);
             stringData = Encoding.ASCII.GetString(data, 0, recv);
 
             // Print Message of server
             Console.WriteLine(stringData);
         }
         Console.WriteLine("Stopping client");
-        server.Close();
+        servSock.Close();
     }
+
 }
-
-
 
 
