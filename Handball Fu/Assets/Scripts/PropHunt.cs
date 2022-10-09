@@ -7,16 +7,15 @@ public class PropHunt : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] private Mesh[] newModels;
+    [SerializeField] private SkinnedMeshRenderer meshFilter;
     public float timeToConvert = 2;
-    private MeshFilter meshFilter;
     private Mesh originalMesh;
 
     public bool iAmTransformed = false;
     //[SerializeField] private PlayerController controller;
     void Start()
     {
-        meshFilter = GetComponent<MeshFilter>();
-        originalMesh = meshFilter.mesh;
+        originalMesh = meshFilter.sharedMesh;
     }
 
     // Update is called once per frame
@@ -28,13 +27,13 @@ public class PropHunt : MonoBehaviour
     public void ChangeMesh()
     {
         if(!iAmTransformed)
-            meshFilter.mesh = newModels[Random.Range(0, newModels.Length)];
+            meshFilter.sharedMesh = newModels[Random.Range(0, newModels.Length)];
         iAmTransformed = true;
     }
     public void ResetMesh()
     {
         if (iAmTransformed)
-            meshFilter.mesh = originalMesh;
+            meshFilter.sharedMesh = originalMesh;
         iAmTransformed = false;
     }
 }
