@@ -1071,9 +1071,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterController: {fileID: 7449803257823283257}
   animator: {fileID: 6082997106758731485}
-  propHunt: {fileID: 9199772107878511850}
   velocity: 5
   rotVelocity: 720
+  propHunt: {fileID: 9199772107878511850}
+  dashTime: 0.2
+  dashSpeed: 20
 --- !u!114 &5153129509673550620
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -9,13 +9,20 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     [SerializeField] private CharacterController characterController;
     [SerializeField] private Animator animator;
-    [SerializeField] private PropHunt propHunt;
 
     private Vector2 movement = Vector2.zero;
     private Quaternion targetDirection;
     public float velocity = 5;
     public float rotVelocity = 5;
+
+    // Prop Hunt
+    [SerializeField] private PropHunt propHunt;
     private float stillTime = 0;
+
+    // Dash
+    public float dashTime = 0.2f;
+    public float dashSpeed = 20;
+    private bool isDashing = false;
 
     void Start()
     {
@@ -25,14 +32,19 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(movement.magnitude != 0)
+        if(!isDashing)
         {
-            characterController.Move(new Vector3(movement.x * Time.deltaTime, 0, movement.y * Time.deltaTime));
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetDirection, rotVelocity * Time.deltaTime);
+            if (movement.magnitude != 0)
+            {
+                characterController.Move(new Vector3(movement.x * Time.deltaTime, 0, movement.y * Time.deltaTime));
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetDirection, rotVelocity * Time.deltaTime);
+            }
+            else if (stillTime < propHunt.timeToConvert)
+                stillTime += Time.deltaTime;
+            else propHunt.ChangeMesh();
         }
-        else if(stillTime < propHunt.timeToConvert)
-            stillTime += Time.deltaTime;
-        else propHunt.ChangeMesh();
+        else
+            characterController.Move(transform.forward * dashSpeed * Time.deltaTime);
     }
 
     void OnMove(InputValue value)
@@ -52,6 +64,16 @@ public class PlayerController : MonoBehaviour
 
         stillTime = 0;
         propHunt.ResetMesh();
+
+        StartCoroutine(Dash());
+    }
+
+    private IEnumerator Dash()
+    {
+        isDashing = true;
+        yield return new WaitForSeconds(dashTime);
+        isDashing = false;
+        animator.SetBool("Dash", false);
     }
 
     void OnCut()
@@ -74,8 +96,5 @@ public class PlayerController : MonoBehaviour
     {
         animator.SetBool("Attack", false);
     }
-    void FinishDash()
-    {
-        animator.SetBool("Dash", false);
-    }
+
 }
