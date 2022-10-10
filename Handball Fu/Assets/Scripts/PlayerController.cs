@@ -48,22 +48,34 @@ public class PlayerController : MonoBehaviour
 
     void OnDash()
     {
-        Debug.Log("Dash");
+        animator.SetBool("Dash", true);
+
         stillTime = 0;
         propHunt.ResetMesh();
     }
 
     void OnCut()
     {
-        Debug.Log("Cut");
+        animator.SetBool("Attack", true);
+
         stillTime = 0;
         propHunt.ResetMesh();
     }
 
     void OnShoot()
     {
-        Debug.Log("Shoot");
+        animator.SetBool("Attack", true);
+
         stillTime = 0;
         propHunt.ResetMesh();
+    }
+
+    void FinishAttack()
+    {
+        animator.SetBool("Attack", false);
+    }
+    void FinishDash()
+    {
+        animator.SetBool("Dash", false);
     }
 }
