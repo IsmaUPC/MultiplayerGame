@@ -22,8 +22,10 @@ public class PlayerController : MonoBehaviour
     // Dash
     public float dashTime = 0.2f;
     public float dashSpeed = 20;
-    private bool isDashing = false;
     private TrailRenderer trail;
+    private State state = State.MOVE;
+
+    enum State { MOVE, DASH, LOCK };
 
     void Start()
     {
@@ -33,19 +35,22 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!isDashing)
+        if(state != State.LOCK)
         {
-            if (movement.magnitude != 0)
+            if (state != State.DASH)
             {
-                characterController.Move(new Vector3(movement.x * Time.deltaTime, 0, movement.y * Time.deltaTime));
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetDirection, rotVelocity * Time.deltaTime);
+                if (movement.magnitude != 0)
+                {
+                    characterController.Move(new Vector3(movement.x * Time.deltaTime, 0, movement.y * Time.deltaTime));
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, targetDirection, rotVelocity * Time.deltaTime);
+                }
+                else if (stillTime < propHunt.timeToConvert)
+                    stillTime += Time.deltaTime;
+                else propHunt.ChangeMesh();
             }
-            else if (stillTime < propHunt.timeToConvert)
-                stillTime += Time.deltaTime;
-            else propHunt.ChangeMesh();
-        }
-        else
-            characterController.Move(transform.forward * dashSpeed * Time.deltaTime);
+            else
+                characterController.Move(transform.forward * dashSpeed * Time.deltaTime);
+        }        
     }
 
     void OnMove(InputValue value)
@@ -57,40 +62,56 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("Velocity", dir.magnitude);
         stillTime = 0;
         propHunt.ResetMesh();
+
+        if (state == State.LOCK) return;
+        state = State.MOVE;
     }
 
     void OnDash()
     {
+        if (state == State.LOCK) return;
+
         animator.SetBool("Dash", true);
 
         stillTime = 0;
         propHunt.ResetMesh();
 
-        if(!isDashing)
+        if(state != State.DASH)
             StartCoroutine(Dash());
     }
 
     private IEnumerator Dash()
     {
-        isDashing = true;
+        state = State.DASH;
         trail.emitting = true;
         yield return new WaitForSeconds(dashTime);
-        isDashing = false;
+        state = State.MOVE;
         trail.emitting = false;
         animator.SetBool("Dash", false);
     }
 
     void OnCut()
     {
+        if (state == State.LOCK) return;
+
         animator.SetBool("Attack", true);
+        state = State.LOCK;
 
         stillTime = 0;
         propHunt.ResetMesh();
     }
 
-    void OnShoot()
+    void OnShoot(InputValue value)
     {
-        animator.SetBool("Attack", true);
+        if (state == State.LOCK && value.Get<float>() == 1) return;
+
+        if (value.Get<float>() == 1)
+        {
+            animator.SetBool("Shoot", true);
+            state = State.LOCK;
+        }
+        else
+            animator.SetBool("Shoot", false);       
 
         stillTime = 0;
         propHunt.ResetMesh();
@@ -99,6 +120,19 @@ public class PlayerController : MonoBehaviour
     void FinishAttack()
     {
         animator.SetBool("Attack", false);
+        state = State.MOVE;
+    }
+
+    void Die()
+    {
+        animator.SetBool("Die", true);
+        state = State.LOCK;
+    }
+
+    void Victory()
+    {
+        animator.SetBool("Victory", true);
+        state = State.LOCK;
     }
 
 }

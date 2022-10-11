@@ -43,21 +43,12 @@
                 },
                 {
                     "name": "Shoot",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "0a82121e-3260-4758-840c-224a3479f43d",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "PropHunt",
-                    "type": "Button",
-                    "id": "bae64ca1-312e-4d00-9301-b30340f69808",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -256,28 +247,6 @@
                     "processors": "",
                     "groups": "Keyboard",
                     "action": "Shoot",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "446c23f3-4fcb-4e17-a7da-a49cd4666d6b",
-                    "path": "<Gamepad>/buttonEast",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "PropHunt",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "02ce0bc6-a9d9-4c29-8c55-67d0198d2048",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "PropHunt",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
