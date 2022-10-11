@@ -23,10 +23,11 @@ public class PlayerController : MonoBehaviour
     public float dashTime = 0.2f;
     public float dashSpeed = 20;
     private bool isDashing = false;
+    private TrailRenderer trail;
 
     void Start()
     {
-        
+        trail = GetComponent<TrailRenderer>();
     }
 
     // Update is called once per frame
@@ -65,14 +66,17 @@ public class PlayerController : MonoBehaviour
         stillTime = 0;
         propHunt.ResetMesh();
 
-        StartCoroutine(Dash());
+        if(!isDashing)
+            StartCoroutine(Dash());
     }
 
     private IEnumerator Dash()
     {
         isDashing = true;
+        trail.emitting = true;
         yield return new WaitForSeconds(dashTime);
         isDashing = false;
+        trail.emitting = false;
         animator.SetBool("Dash", false);
     }
 
