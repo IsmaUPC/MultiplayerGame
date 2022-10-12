@@ -6,10 +6,11 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    // Start is called before the first frame update
+    // General
     [SerializeField] private CharacterController characterController;
     [SerializeField] private Animator animator;
 
+    // Movement
     private Vector2 movement = Vector2.zero;
     private Quaternion targetDirection;
     public float velocity = 5;
@@ -23,53 +24,57 @@ public class PlayerController : MonoBehaviour
     public float dashTime = 0.2f;
     public float dashSpeed = 20;
     private TrailRenderer trail;
-    private State state = State.MOVE;
 
-    enum State { MOVE, DASH, LOCK };
+    enum State { AWAKE, MOVE, DASH, ATTACK, LOAD_ARM, DIE };
+    private State state = State.AWAKE;
 
+    // Start is called before the first frame update
     void Start()
     {
         trail = GetComponent<TrailRenderer>();
+        state = State.MOVE;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(state != State.LOCK)
+        if (state == State.MOVE)
         {
-            if (state != State.DASH)
+            if (movement.magnitude != 0)
             {
-                if (movement.magnitude != 0)
-                {
-                    characterController.Move(new Vector3(movement.x * Time.deltaTime, 0, movement.y * Time.deltaTime));
-                    transform.rotation = Quaternion.RotateTowards(transform.rotation, targetDirection, rotVelocity * Time.deltaTime);
-                }
-                else if (stillTime < propHunt.timeToConvert)
-                    stillTime += Time.deltaTime;
-                else propHunt.ChangeMesh();
+                characterController.Move(new Vector3(movement.x * Time.deltaTime, 0, movement.y * Time.deltaTime));
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetDirection, rotVelocity * Time.deltaTime);
             }
-            else
-                characterController.Move(transform.forward * dashSpeed * Time.deltaTime);
-        }        
+            else if (stillTime < propHunt.timeToConvert)
+                stillTime += Time.deltaTime;
+            else propHunt.ChangeMesh();
+        }
+        else if (state == State.LOAD_ARM)
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetDirection, rotVelocity * Time.deltaTime);
+        else if (state == State.DASH)
+            characterController.Move(transform.forward * dashSpeed * Time.deltaTime);
+
     }
+
 
     void OnMove(InputValue value)
     {
         Vector2 dir = value.Get<Vector2>();
-        targetDirection = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.y), Vector3.up);
         movement = dir * velocity;
+        if(dir.magnitude != 0)
+            targetDirection = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.y), Vector3.up);
 
         animator.SetFloat("Velocity", dir.magnitude);
         stillTime = 0;
         propHunt.ResetMesh();
 
-        if (state == State.LOCK) return;
+        if (state != State.MOVE) return;
         state = State.MOVE;
     }
 
     void OnDash()
     {
-        if (state == State.LOCK) return;
+        if (state != State.MOVE) return;
 
         animator.SetBool("Dash", true);
 
@@ -92,10 +97,10 @@ public class PlayerController : MonoBehaviour
 
     void OnCut()
     {
-        if (state == State.LOCK) return;
+        if (state != State.MOVE) return;
 
         animator.SetBool("Attack", true);
-        state = State.LOCK;
+        state = State.ATTACK;
 
         stillTime = 0;
         propHunt.ResetMesh();
@@ -103,12 +108,12 @@ public class PlayerController : MonoBehaviour
 
     void OnShoot(InputValue value)
     {
-        if (state == State.LOCK && value.Get<float>() == 1) return;
+        if (state != State.MOVE && value.Get<float>() == 1) return;
 
         if (value.Get<float>() == 1)
         {
             animator.SetBool("Shoot", true);
-            state = State.LOCK;
+            state = State.LOAD_ARM;
         }
         else
             animator.SetBool("Shoot", false);       
@@ -126,13 +131,13 @@ public class PlayerController : MonoBehaviour
     void Die()
     {
         animator.SetBool("Die", true);
-        state = State.LOCK;
+        state = State.DIE;
     }
 
     void Victory()
     {
         animator.SetBool("Victory", true);
-        state = State.LOCK;
+        state = State.DIE;
     }
 
 }
