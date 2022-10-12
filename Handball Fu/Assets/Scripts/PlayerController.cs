@@ -115,8 +115,11 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Shoot", true);
             state = State.LOAD_ARM;
         }
-        else
-            animator.SetBool("Shoot", false);       
+        else if (state == State.LOAD_ARM)
+        {
+            animator.SetBool("Shoot", false);
+            state = State.ATTACK;
+        }
 
         stillTime = 0;
         propHunt.ResetMesh();
