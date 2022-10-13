@@ -10,6 +10,12 @@ using System.Threading;
 
 public class UDPServer : MonoBehaviour
 {
+    // Accepting 5 clients a part of this
+    Socket serverSocket;
+    IPEndPoint serverEndPoint;
+    IPEndPoint[] clientEndPointList= new IPEndPoint[5];
+
+    // Variables to delete
     int recv;
     byte[] data;
     bool exit;
