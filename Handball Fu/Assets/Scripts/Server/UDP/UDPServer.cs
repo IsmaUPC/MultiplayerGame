@@ -16,9 +16,7 @@ using JetBrains.Annotations;
 public class UDPServer : MonoBehaviour
 {
     // Accepting 5 clients a part of this
-    Socket serverSocket;
-    ArrayList remoteSockets = new ArrayList();
-    IPEndPoint serverEndPoint;
+    ArrayList clientSockets = new ArrayList();
     IPEndPoint[] clientEndPointList = new IPEndPoint[5];
     EndPoint[] remotes = new EndPoint[5];
 
@@ -28,10 +26,12 @@ public class UDPServer : MonoBehaviour
         // Fill sockets list to get data
         for (int i = 0; i < 5; ++i)
         {
-            remoteSockets.Add(new Socket(AddressFamily.InterNetwork,
+            // Create different sockets
+            clientSockets.Add(new Socket(AddressFamily.InterNetwork,
                         SocketType.Dgram, ProtocolType.Udp));
-            ((Socket)remoteSockets[i]).Bind(new IPEndPoint(IPAddress.Any, 9050+i));
-            Debug.Log("Socket added!");
+
+            // Bind each socket with a different port
+            ((Socket)clientSockets[i]).Bind(new IPEndPoint(IPAddress.Any, 9050+i));
         }
     }
 
@@ -42,8 +42,15 @@ public class UDPServer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ArrayList rr = new ArrayList(remoteSockets);
-        Socket.Select(rr, null, null, 1000);
+        // Copy array to evaluate data input
+        ArrayList rr = new ArrayList(clientSockets);
+        ArrayList rw = new ArrayList(clientSockets);
+        ArrayList re = new ArrayList(clientSockets);
+
+        // Delete array sockets that hasn't send any data
+        Socket.Select(rr, rw, re, 0);
+
+        // If we have data to check do:
         for (int i = 0; i < rr.Count; ++i)
         {
             int recv;
@@ -56,13 +63,19 @@ public class UDPServer : MonoBehaviour
             recv = ((Socket)rr[i]).ReceiveFrom(data, ref remote);
             tmpMessage = Encoding.ASCII.GetString(data, 0, recv);
 
+            ((Socket)rr[i]).SendTo(Encoding.ASCII.GetBytes("Hi"), remote);
+
             Debug.Log(tmpMessage);
         }
     }
 
     void OnServerClose()
     {
-        serverSocket.Close();
+        // Close all sockets
+        for (int i = clientSockets.Count-1; i >= 0; --i)
+        {
+            ((Socket)clientSockets[i]).Close();
+        }
     }
 
     //void ThreatSrvConnect()
