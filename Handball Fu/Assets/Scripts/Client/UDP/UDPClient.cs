@@ -33,6 +33,7 @@ public class UDPClient : MonoBehaviour
         // Create Socket whit IPv4 
         servSock = new Socket(AddressFamily.InterNetwork,
                        SocketType.Dgram, ProtocolType.Udp);
+
         // The client sends a message to ask that the server iss listening
         tmpMessage = "Hello, are you there?";
         data = Encoding.ASCII.GetBytes(tmpMessage);
@@ -83,14 +84,6 @@ public class UDPClient : MonoBehaviour
 
             //Send input client to server
             servSock.SendTo(Encoding.ASCII.GetBytes(input), remote);
-            data = new byte[1024];
-
-            // Fill Remote reference variable and data
-            recv = servSock.ReceiveFrom(data, ref remote);
-            stringData = Encoding.ASCII.GetString(data, 0, recv);
-
-            // Print Message of server
-            Debug.Log("message server to client "+stringData);
         }
         Debug.Log("Stopping client");
         servSock.Close();

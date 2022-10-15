@@ -668,6 +668,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Server",
+            "id": "c628f2c1-2794-4500-85d6-50b56a3d6250",
+            "actions": [
+                {
+                    "name": "ServerClose",
+                    "type": "Button",
+                    "id": "b323b10f-15db-4c20-9a0b-1572f7ce1391",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "8ea9e4cb-3634-43bc-b9ad-e10436ad466d",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "ServerClose",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

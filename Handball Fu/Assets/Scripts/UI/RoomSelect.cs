@@ -5,11 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class RoomSelect : MonoBehaviour
 {
-
     // UI Element to join room
     public GameObject joinRoomPanel, dropdown;
     public GameObject[] mainButtons = new GameObject[2];
     private int serverType = 0;
+
+    public GameObject udpServer, tcpServer, udpClient, tcpClient;
 
     // When clicking to create a room
     public void OnCreateClick()
@@ -19,17 +20,16 @@ public class RoomSelect : MonoBehaviour
         switch (serverType)
         {
             case 0:
-                serverGO = new GameObject("UDPServer");
-                serverGO.isStatic = true;
-                UDPServer s = serverGO.AddComponent<UDPServer>();
-                s.enabled = false;
+                Debug.Log("Creating server game object");
+                serverGO = Instantiate(udpServer);
+                DontDestroyOnLoad(serverGO);
                 break;
             case 1:
-                serverGO = new GameObject("TCPServer");
-                serverGO.isStatic = true;
-                serverGO.AddComponent<TCPServer>();
+                serverGO = Instantiate(tcpServer);
+                DontDestroyOnLoad(serverGO);
                 break;
         }
+        Debug.Log("Loading Lobby");
         SceneManager.LoadScene("Lobby");
     }
 
