@@ -6,37 +6,69 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using JetBrains.Annotations;
 
 /*
  * This script component has and controls the server behaviour
  * It is not deleted between scenes, so it keeps its data
+ * 
+ * Different thread might be used to:
+ * - Receiving events
+ * - Process events
+ * - Send events and final decisions
  */
 
 public class UDPServer : MonoBehaviour
 {
+    // Event types
+    enum EVENT_TYPE
+    {
+        EVENT_CONNECTION,       // A client wants to connect
+        EVENT_DISCONNETION,     // A client wants to disconnect
+        EVENT_MESSAGE,          // A client sent a message
+        EVENT_UPDATE,           // A client sent an updated "transform"
+    };
+
+    // Events struct
+    struct Event
+    {
+        public EVENT_TYPE type; // What kind of event is
+        public string data;     // Event data itself
+        public IPEndPoint ep;   // Who sent it
+    }
+
+    // Event list to process
+    Queue<Event> eventQueue;
+
     // Accepting 5 clients a part of this
-    ArrayList clientSockets = new ArrayList();
-    IPEndPoint[] clientEndPointList = new IPEndPoint[5];
-    EndPoint[] remotes = new EndPoint[5];
+    private ArrayList clientSockets = new ArrayList();
+    private IPEndPoint[] clientEndPointList = new IPEndPoint[5];
+    private EndPoint[] remotes = new EndPoint[5];
+
+    // Total sockets *One socket is for initial connection*
+    // After initial connection, the server send an unused port to the client
+    private uint openPorts;
+    private int initialPort;
 
     // Start is called before the first frame update
     void Start()
     {
+        // Ports available from 9050 to 9055
+        initialPort = 9050;
+        openPorts = 6;
+
         // Fill sockets list to get data
-        for (int i = 0; i < 5; ++i)
+        for (int i = 0; i < openPorts; ++i)
         {
             // Create different sockets
             clientSockets.Add(new Socket(AddressFamily.InterNetwork,
                         SocketType.Dgram, ProtocolType.Udp));
 
             // Bind each socket with a different port
-            ((Socket)clientSockets[i]).Bind(new IPEndPoint(IPAddress.Any, 9050+i));
+            ((Socket)clientSockets[i]).Bind(new IPEndPoint(IPAddress.Any, initialPort+i));
         }
-    }
 
-    private void FixedUpdate()
-    {
+        // Initialize event queue
+        eventQueue = new Queue<Event>();
     }
 
     // Update is called once per frame
