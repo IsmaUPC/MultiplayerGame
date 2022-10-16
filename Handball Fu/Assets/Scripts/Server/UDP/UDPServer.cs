@@ -69,7 +69,7 @@ public class UDPServer : MonoBehaviour
         }
     }
 
-    void OnServerClose()
+    public void OnServerClose()
     {
         // Close all sockets
         for (int i = clientSockets.Count-1; i >= 0; --i)

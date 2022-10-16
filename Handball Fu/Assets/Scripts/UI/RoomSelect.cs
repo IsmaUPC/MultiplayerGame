@@ -16,11 +16,18 @@ public class RoomSelect : MonoBehaviour
     public void OnCreateClick()
     {
         // Create a game object and give it the corresponding component depending on the server type we want
+        Debug.Log("Creating server game object");
+        GameObject[] lastServers = GameObject.FindGameObjectsWithTag("NetWork");
+        if (lastServers.Length > 0)
+        {
+            lastServers[0].GetComponent<UDPServer>().OnServerClose();
+            Destroy(lastServers[0]);
+        }
+
         GameObject serverGO;
         switch (serverType)
         {
             case 0:
-                Debug.Log("Creating server game object");
                 serverGO = Instantiate(udpServer);
                 DontDestroyOnLoad(serverGO);
                 break;
@@ -30,7 +37,7 @@ public class RoomSelect : MonoBehaviour
                 break;
         }
         Debug.Log("Loading Lobby");
-        SceneManager.LoadScene("Lobby");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     public void OnEditIPEnter(string ip)
