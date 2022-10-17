@@ -71,36 +71,6 @@ public class UDPServer : MonoBehaviour
         eventQueue = new Queue<Event>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        // Copy array to evaluate data input
-        ArrayList rr = new ArrayList(clientSockets);
-        ArrayList rw = new ArrayList(clientSockets);
-        ArrayList re = new ArrayList(clientSockets);
-
-        // Delete array sockets that hasn't send any data
-        Socket.Select(rr, rw, re, 0);
-
-        // If we have data to check do:
-        for (int i = 0; i < rr.Count; ++i)
-        {
-            int recv;
-            byte[] data = new byte[1024];
-            string tmpMessage;
-
-            IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
-            EndPoint remote = (EndPoint)sender;
-
-            recv = ((Socket)rr[i]).ReceiveFrom(data, ref remote);
-            tmpMessage = Encoding.ASCII.GetString(data, 0, recv);
-
-            ((Socket)rr[i]).SendTo(Encoding.ASCII.GetBytes("Hi"), remote);
-
-            Debug.Log(tmpMessage);
-        }
-    }
-
     public void OnServerClose()
     {
         // Close all sockets
@@ -108,6 +78,52 @@ public class UDPServer : MonoBehaviour
         {
             ((Socket)clientSockets[i]).Close();
         }
+    }
+
+    // This thread is responsible to save all recieved data
+    private void ThreadServerInBound()
+    {
+
+        while (true)
+        {
+            // Copy array to evaluate data input
+            ArrayList rr = new ArrayList(clientSockets);
+            ArrayList rw = new ArrayList(clientSockets);
+            ArrayList re = new ArrayList(clientSockets);
+
+            // Delete array sockets that hasn't send any data
+            Socket.Select(rr, rw, re, 0);
+
+            // If we have data to check do:
+            for (int i = 0; i < rr.Count; ++i)
+            {
+                int recv;
+                byte[] data = new byte[1024];
+                string tmpMessage;
+
+                IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
+                EndPoint remote = (EndPoint)sender;
+
+                recv = ((Socket)rr[i]).ReceiveFrom(data, ref remote);
+                tmpMessage = Encoding.ASCII.GetString(data, 0, recv);
+
+                //((IPEndPoint)((Socket)rr[i]).LocalEndPoint).Port; Depending on port do something...
+
+                //eventQueue.Enqueue(new Event { }); Enqueue event to process it
+            }
+        }
+    }
+
+    // This thread is responsible to process all data
+    private void ThreadServerProcess()
+    {
+
+    }
+
+    // This thread is responsible to rebound and broadcast data
+    private void ThreadServerOutBound()
+    {
+
     }
 
     //void ThreatSrvConnect()
