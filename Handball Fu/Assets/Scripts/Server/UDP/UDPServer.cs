@@ -41,8 +41,18 @@ public class UDPServer : MonoBehaviour
 
     // Accepting 5 clients a part of this
     private ArrayList clientSockets = new ArrayList();
-    private IPEndPoint[] clientEndPointList = new IPEndPoint[5];
     private EndPoint[] remotes = new EndPoint[5];
+
+    // This will save basic data of clients, as self-given username, an ip end point and id
+    // id is the last 3 ip digits
+    struct ClientData
+    {
+        public string name;
+        public IPEndPoint ipep;
+        public int id;
+    }
+
+    private ClientData[] clientsData = new ClientData[5];
 
     // Total sockets *One socket is for initial connection*
     // After initial connection, the server send an unused port to the client
