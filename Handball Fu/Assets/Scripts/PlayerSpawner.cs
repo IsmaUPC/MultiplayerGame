@@ -17,7 +17,7 @@ public class PlayerSpawner : MonoBehaviour
             playerInput.gameObject.GetComponent<PlayerData>().playerID = playerInput.playerIndex;
 
             // Set the start spawn position of the player using the location at the associated element into the array.
-            playerInput.gameObject.GetComponent<PlayerData>().startPos = spawnLocations[playerInput.playerIndex].position;
+            playerInput.gameObject.GetComponent<PlayerData>().SetStartTransform(spawnLocations[playerInput.playerIndex]);
         }        
     }
 }
