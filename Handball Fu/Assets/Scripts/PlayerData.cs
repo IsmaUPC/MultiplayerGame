@@ -7,6 +7,7 @@ public class PlayerData : MonoBehaviour
     [SerializeField] public int playerID;
     [SerializeField] public Vector3 startPos;
     [SerializeField] public GameObject[] bodyParts;
+
     // Start is called before the first frame update
     void Start()
     {

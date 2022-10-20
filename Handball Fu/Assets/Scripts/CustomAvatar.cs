@@ -22,6 +22,7 @@ public class CustomAvatar : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Add all GameObject to list 
         cosmetics.Add(bodies);
         cosmetics.Add(headParts);
         cosmetics.Add(eyes);
@@ -30,6 +31,7 @@ public class CustomAvatar : MonoBehaviour
         cosmetics.Add(gloves);
         cosmetics.Add(tails);
 
+        // Fill index[] to 0
         indexs = new int[cosmetics.Count];
         for (int i = 0; i < indexs.Length; i++)
         {
@@ -40,20 +42,24 @@ public class CustomAvatar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Rotate character
         if (dir != 0)
             transform.Rotate(Vector3.up, dir * rotateSpeed * Time.deltaTime);
     }
 
     void OnSelector(InputValue value)
     {
+        // UI control
         Vector2 key = value.Get<Vector2>();
         if(key.magnitude != 0)
         {
+            // Next cosmetic
             if (key.x == 1)
                 ChangeMesh(true);
             else if (key.x == -1)
                 ChangeMesh(false);
 
+            // Next body part
             if (key.y == 1)
             {
                 bodyPart--;
