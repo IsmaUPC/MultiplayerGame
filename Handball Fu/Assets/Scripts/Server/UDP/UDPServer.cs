@@ -37,7 +37,7 @@ public class UDPServer : MonoBehaviour
     }
 
     // Event list to process
-    Queue<Event> eventQueue;
+    private Queue<Event> eventQueue;
 
     // Accepting 5 clients a part of this
     private ArrayList clientSockets = new ArrayList();
@@ -58,6 +58,11 @@ public class UDPServer : MonoBehaviour
     // After initial connection, the server send an unused port to the client
     private uint openPorts;
     private int initialPort;
+
+    // Server threads
+    private Thread threadServerInBound;
+    private Thread threadServerProcess;
+    private Thread threadServerOutBound;
 
     // Start is called before the first frame update
     void Start()
@@ -83,6 +88,11 @@ public class UDPServer : MonoBehaviour
 
     public void OnServerClose()
     {
+        // Abort all threads so none of them is active in the background
+        if (threadServerInBound.IsAlive) threadServerInBound.Abort();
+        if (threadServerProcess.IsAlive) threadServerProcess.Abort();
+        if (threadServerOutBound.IsAlive) threadServerOutBound.Abort();
+
         // Close all sockets
         for (int i = clientSockets.Count-1; i >= 0; --i)
         {
@@ -116,10 +126,32 @@ public class UDPServer : MonoBehaviour
 
                 recv = ((Socket)rr[i]).ReceiveFrom(data, ref remote);
                 tmpMessage = Encoding.ASCII.GetString(data, 0, recv);
-
-                //((IPEndPoint)((Socket)rr[i]).LocalEndPoint).Port; Depending on port do something...
-
-                //eventQueue.Enqueue(new Event { }); Enqueue event to process it
+                Event e = new Event();
+                switch(tmpMessage[3])
+                {
+                    case 'C':
+                        e.type = EVENT_TYPE.EVENT_CONNECTION;
+                        e.data = tmpMessage;
+                        e.ep = (IPEndPoint)remote;
+                        break;
+                    case 'D':
+                        e.type = EVENT_TYPE.EVENT_DISCONNETION;
+                        e.data = tmpMessage;
+                        e.ep = (IPEndPoint)remote;
+                        break;
+                    case 'M':
+                        e.type = EVENT_TYPE.EVENT_MESSAGE;
+                        e.data = tmpMessage;
+                        e.ep = (IPEndPoint)remote;
+                        break;
+                    case 'U':
+                        e.type = EVENT_TYPE.EVENT_UPDATE;
+                        e.data = tmpMessage;
+                        e.ep = (IPEndPoint)remote;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
