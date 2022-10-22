@@ -908,6 +908,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SendMessage",
+                    "type": "Button",
+                    "id": "4ac5d79a-c082-45e5-ac81-b7555095cf6e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -919,6 +928,17 @@
                     "processors": "",
                     "groups": "Keyboard",
                     "action": "ServerClose",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2a358afe-f700-45a2-920c-19591d4aeda1",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SendMessage",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
