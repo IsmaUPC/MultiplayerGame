@@ -42,7 +42,25 @@ public class RoomSelect : MonoBehaviour
 
     public void OnEditIPEnter(string ip)
     {
-        Debug.Log(ip);
+        GameObject[] lastServers = GameObject.FindGameObjectsWithTag("NetWork");
+        if (lastServers.Length > 0)
+        {
+            lastServers[0].GetComponent<UDPServer>().OnServerClose();
+            Destroy(lastServers[0]);
+        }
+        GameObject client;
+        switch(serverType)
+        {
+            case 0:
+                client = Instantiate(udpClient);
+                DontDestroyOnLoad(client);
+                break;
+            case 1:
+                client = Instantiate(tcpClient);
+                DontDestroyOnLoad(client);
+                break;
+        }
+
     }
 
     public void OnJoinClick()

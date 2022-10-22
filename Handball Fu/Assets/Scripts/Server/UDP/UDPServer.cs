@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using UnityEditor.PackageManager;
 
 /*
  * This script component has and controls the server behaviour
@@ -86,6 +87,7 @@ public class UDPServer : MonoBehaviour
     private Thread threadServerOutBound;
 
     private object clientsLock = new object();
+    private object socketsLock = new object();
     private object portsLock = new object();
     private object eventQueueLock = new object();
     private object sendQueueLock = new object();
@@ -144,10 +146,17 @@ public class UDPServer : MonoBehaviour
 
         while (true)
         {
-            // Copy array to evaluate data input
-            ArrayList rr = new ArrayList(clientSockets);
-            ArrayList rw = new ArrayList(clientSockets);
-            ArrayList re = new ArrayList(clientSockets);
+            ArrayList rr;
+            ArrayList rw;
+            ArrayList re;
+
+            lock (socketsLock)
+            {
+                // Copy array to evaluate data input
+                rr = new ArrayList(clientSockets);
+                rw = new ArrayList(clientSockets);
+                re = new ArrayList(clientSockets);
+            }
 
             // Delete array sockets that hasn't send any data
             Socket.Select(rr, rw, re, 0);
@@ -239,6 +248,7 @@ public class UDPServer : MonoBehaviour
             lock (eventQueueLock)
             {
                 events = eventQueue;
+                eventQueue.Clear();
             }
             while (events.Count > 0)
             {
@@ -279,6 +289,7 @@ public class UDPServer : MonoBehaviour
                                 {
                                     clientsData[i] = new ClientData();
                                 }
+                                break;
                             }
                         }
 
@@ -312,7 +323,7 @@ public class UDPServer : MonoBehaviour
                                 }
                                 lock (sendQueueLock)
                                 {
-                                    sendQueue.Enqueue(e); // TODO sent reserved port
+                                    sendQueue.Enqueue(e);
                                 }
                                 break;
                             }
@@ -328,13 +339,32 @@ public class UDPServer : MonoBehaviour
                                     clientsData[i].id = int.Parse(e.data.Substring(0, 3));
                                     clientsData[i].name = e.data.Substring(4);
                                 }
+                                break;
                             }
                         }
 
                         break;
                     case EVENT_TYPE.EVENT_MESSAGE:
+
+                        for(int i = 0; i < clients.Length; ++i)
+                        {
+                            if (clients[i].ipep == e.ipep)
+                            {
+                                clients[i].lastContact = 0.0F;
+                                break;
+                            }
+                        }
+
+                        lock(sendQueueLock)
+                        {
+                            // Resend to other users
+                            sendQueue.Enqueue(e);
+                        }
+
                         break;
                     case EVENT_TYPE.EVENT_UPDATE:
+                        break;
+                    default:
                         break;
                 }
             }
@@ -346,7 +376,93 @@ public class UDPServer : MonoBehaviour
     {
         while (true)
         {
+            Queue<Event> sendEvents;
+            lock (sendQueueLock)
+            {
+                sendEvents = sendQueue;
+                sendQueue.Clear();
+            }
+            ClientData[] clients;
+            lock (clientsLock)
+            {
+                clients = clientsData;
+            }
+            while (sendEvents.Count > 0)
+            {
+                Event e = sendEvents.Dequeue();
+                switch (e.type)
+                {
+                    case EVENT_TYPE.EVENT_CONNECTION:
 
+                        Ports[] prts;
+                        lock(portsLock)
+                        {
+                            prts = ports;
+                        }
+
+                        for(int i = 0; i < clients.Length; ++i)
+                        {
+                            if (clients[i].ipep == e.ipep)
+                            {
+                                int p = 9050;
+                                for(int j = 0; j < prts.Length; ++j)
+                                {
+                                    if(e.ipep.Address == prts[j].remoteIP)
+                                    {
+                                        p = prts[j].port;
+                                        break;
+                                    }
+                                }
+                                byte[] data = new byte[8];
+                                string tmp = "000C" + p.ToString();
+                                data = Encoding.ASCII.GetBytes(tmp);
+
+                                lock(socketsLock)
+                                {
+                                    ((Socket)clientSockets[0]).SendTo(data, clients[i].ipep);
+                                }
+
+                                break;
+                            }
+                        }
+
+                        break;
+
+                    case EVENT_TYPE.EVENT_MESSAGE:
+
+                        for(int i = 0; i < clients.Length; ++i)
+                        {
+                            if (clients[i].ipep != e.ipep && clients[i].id != 0)
+                            {
+                                int ind = clients[i].ipep.Port - initialPort;
+                                byte[] data = new byte[1024];
+                                data = Encoding.ASCII.GetBytes(e.data);
+                                lock (socketsLock)
+                                {
+                                    ((Socket)clientSockets[ind]).SendTo(data, clients[i].ipep);
+                                }
+                            }
+                        }
+
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            for (int i = 0; i < clients.Length; ++i)
+            {
+                if (clients[i].lastContact > 1.5F)
+                {
+                    int ind = clients[i].ipep.Port - initialPort;
+                    byte[] data = new byte[4];
+                    data = Encoding.ASCII.GetBytes("000K");
+                    lock (socketsLock)
+                    {
+                        ((Socket)clientSockets[ind]).SendTo(data, clients[i].ipep);
+                    }
+                }
+            }
         }
     }
 

@@ -5,90 +5,50 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Text;
-
+using System;
 
 public class UDPClient : MonoBehaviour
 {
-    byte[] data = new byte[1024];
-    string input, stringData;
-    string tmpMessage;
-    int recv;
-    bool exit;
-
-    IPEndPoint ipep,sender;
+    IPEndPoint sep;
     EndPoint remote;
     Socket servSock;
     Thread threadConnect;
 
+    int myID = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("I'am a client");
+        myID = GetHostID();
 
-        // Set IP adress o
-        // f server
-        ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
-
-        // Create Socket whit IPv4 
-        servSock = new Socket(AddressFamily.InterNetwork,
-                       SocketType.Dgram, ProtocolType.Udp);
-
-        // The client sends a message to ask that the server iss listening
-        tmpMessage = "Hello, are you there?";
-        data = Encoding.ASCII.GetBytes(tmpMessage);
-        threadConnect = new Thread(ThreadNetConnect);
-        threadConnect.Start();
-
+        servSock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
     }
 
-    // Update is called once per frame
-    void Update()
+    private bool ConnectToIp(string ip)
     {
-        if (Input.GetKeyDown("c"))
-        {
-            Debug.Log("Press c");
+        bool ret = false;
 
-            exit = true;
-        }
+        sep = new IPEndPoint(IPAddress.Parse(ip), 9050);
+
+        return ret;
+
     }
-    void ThreadNetConnect()
+
+    private int GetHostID()
     {
-        Debug.Log("Thread start");
-
-        // Client send data to server with data length and flags to ip end point of server
-        servSock.SendTo(data, data.Length, SocketFlags.None, ipep);
-
-        // IP endpoint variable with an ip 0.0.0.0 which will later
-        // be filled in by the ReciveFrom function.
-        sender = new IPEndPoint(IPAddress.Any, 0);
-        remote = (EndPoint)sender;
-
-        // Clear data
-        data = new byte[1024];
-        // Obtain server information and fill the variable named Remote
-        recv = servSock.ReceiveFrom(data, ref remote);
-
-        // Print message from server
-        Debug.Log("Message received from {0}:"+ remote.ToString());
-        Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
-
-        while (true)
+        IPAddress host;
+        IPHostEntry entry = Dns.GetHostEntry(Dns.GetHostName());
+        for (int i = 0; i < entry.AddressList.Length; ++i)
         {
-            //Debug.Log("Client Online");
-
-            // Wait for input client
-            input = "test input";
-            if (exit)
-                break;
-
-            //Send input client to server
-            servSock.SendTo(Encoding.ASCII.GetBytes(input), remote);
+            if (entry.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
+            {
+                host = entry.AddressList[i];
+                int j = host.ToString().LastIndexOf(".");
+                return int.Parse(host.ToString().Substring(j + 1));
+            }
         }
-        Debug.Log("Stopping client");
-        servSock.Close();
+        return 0;
     }
-
 }
 
 
