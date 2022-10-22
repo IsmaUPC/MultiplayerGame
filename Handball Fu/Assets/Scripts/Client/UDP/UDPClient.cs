@@ -6,9 +6,20 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Text;
 using System;
+using System.Security.Cryptography;
 
 public class UDPClient : MonoBehaviour
 {
+
+    enum CONNECTION_STATE
+    {
+        CONNECTED,
+        DISCONNECTED,
+        CONNECTING,
+        FAILED
+    }
+
+    IPAddress host;
     IPEndPoint sep;
     EndPoint remote;
     Socket servSock;
@@ -16,27 +27,53 @@ public class UDPClient : MonoBehaviour
 
     int myID = 0;
 
+    private CONNECTION_STATE state;
+
     // Start is called before the first frame update
     void Start()
     {
         myID = GetHostID();
 
         servSock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+        state = CONNECTION_STATE.DISCONNECTED;
     }
 
-    private bool ConnectToIp(string ip)
+    public bool ConnectToIp(string ip)
     {
         bool ret = false;
 
-        sep = new IPEndPoint(IPAddress.Parse(ip), 9050);
+        IPAddress currentIP;
+        try
+        {
+            currentIP = IPAddress.Parse(ip);
+        }
+        catch
+        {
+            Debug.Log("IP to connect has not a correct format!");
+            return ret;
+        }
 
-        return ret;
+        state = CONNECTION_STATE.CONNECTING;
 
+        sep = new IPEndPoint(currentIP, 9050);
+
+        string tmp = myID.ToString()+"C";
+        byte[] data = new byte[4];
+        data = Encoding.ASCII.GetBytes(tmp);
+        servSock.SendTo(data, data.Length, SocketFlags.None, sep);
+
+        return true;
+
+    }
+
+    public int GetCurrentState()
+    {
+        return ((int)state);
     }
 
     private int GetHostID()
     {
-        IPAddress host;
         IPHostEntry entry = Dns.GetHostEntry(Dns.GetHostName());
         for (int i = 0; i < entry.AddressList.Length; ++i)
         {

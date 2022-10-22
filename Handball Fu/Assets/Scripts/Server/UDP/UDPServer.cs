@@ -126,6 +126,17 @@ public class UDPServer : MonoBehaviour
         sendQueue = new Queue<Event>();
     }
 
+    private void Update()
+    {
+        lock(clientsLock)
+        {
+            for(int i = 0; i < clientsData.Length; ++i)
+            {
+                clientsData[i].lastContact += Time.deltaTime;
+            }
+        }
+    }
+
     public void OnServerClose()
     {
         // Abort all threads so none of them is active in the background
@@ -419,7 +430,7 @@ public class UDPServer : MonoBehaviour
 
                                 lock(socketsLock)
                                 {
-                                    ((Socket)clientSockets[0]).SendTo(data, clients[i].ipep);
+                                    ((Socket)clientSockets[0]).SendTo(data, clients[i].ipep); // TODO: send all IDs and usernames to new clients
                                 }
 
                                 break;

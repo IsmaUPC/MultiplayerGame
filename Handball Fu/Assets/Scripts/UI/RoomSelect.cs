@@ -11,6 +11,7 @@ public class RoomSelect : MonoBehaviour
     private int serverType = 0;
 
     public GameObject udpServer, tcpServer, udpClient, tcpClient;
+    private UDPClient udp;
 
     // When clicking to create a room
     public void OnCreateClick()
@@ -40,6 +41,18 @@ public class RoomSelect : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
+    private void Update()
+    {
+        if(udp != null && udp.GetCurrentState() == 0)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+        else if (udp != null && udp.GetCurrentState() == 3)
+        {
+            // TODO failed to connect message on screen
+        }
+    }
+
     public void OnEditIPEnter(string ip)
     {
         GameObject[] lastServers = GameObject.FindGameObjectsWithTag("NetWork");
@@ -54,13 +67,18 @@ public class RoomSelect : MonoBehaviour
             case 0:
                 client = Instantiate(udpClient);
                 DontDestroyOnLoad(client);
+                bool result = client.GetComponent<UDPClient>().ConnectToIp(ip);
+                if (!result)Destroy(client);// TODO error message on screen (invalid format)
+                else
+                {
+                    udp = client.GetComponent<UDPClient>();
+                }
                 break;
             case 1:
                 client = Instantiate(tcpClient);
                 DontDestroyOnLoad(client);
                 break;
         }
-
     }
 
     public void OnJoinClick()
