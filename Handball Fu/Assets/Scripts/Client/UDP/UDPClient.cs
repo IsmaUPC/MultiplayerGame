@@ -119,13 +119,12 @@ public class UDPClient : MonoBehaviour
         state = CONNECTION_STATE.CONNECTING;
 
         sep = new IPEndPoint(currentIP, 9050);
-        EndPoint ep = (EndPoint)sep;
 
         string tmp = myID+"C";
         byte[] data = new byte[1024];
         data = Encoding.ASCII.GetBytes(tmp);
         Debug.Log(tmp + " " + data.Length.ToString() + " " + sep.Address.ToString()) ;
-        serverSocket.SendTo(data, data.Length, SocketFlags.None, ep);
+        serverSocket.SendTo(data, data.Length, SocketFlags.None, sep);
 
         return true;
 
@@ -314,6 +313,17 @@ public class UDPClient : MonoBehaviour
                         break;
                 }
             }
+        }
+    }
+
+    public void DisconnectFromServer()
+    {
+        string tmp = myID + "D";
+        byte[] data = new byte[4];
+        data = Encoding.ASCII.GetBytes(tmp);
+        lock (socketLock)
+        {
+            serverSocket.SendTo(data, SocketFlags.None, sep);
         }
     }
 

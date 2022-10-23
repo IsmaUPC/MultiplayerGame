@@ -65,6 +65,7 @@ public class UDPServer : MonoBehaviour
         public IPEndPoint ipep;
         public string id;
         public float lastContact;
+        public int port;
     }
 
     private ClientData[] clientsData;
@@ -283,10 +284,17 @@ public class UDPServer : MonoBehaviour
             Queue<Event> events;
             lock (eventQueueLock)
             {
-                events = eventQueue;
-                eventQueue.Clear();
+                if (eventQueue != null && eventQueue.Count > 0)
+                {
+                    events = new Queue<Event>(eventQueue);
+                    eventQueue.Clear();
+                }
+                else
+                {
+                    events = null;
+                }
             }
-            while (events.Count > 0)
+            while (events != null && events.Count > 0)
             {
                 ClientData[] clients;
                 Ports[] prts;
@@ -306,7 +314,7 @@ public class UDPServer : MonoBehaviour
                         bool disconnected = false;
                         for (int i = 0; i < prts.Length; ++i)
                         {
-                            if (prts[i].remoteIP == e.ipep.Address)
+                            if (prts[i].remoteIP.Equals(e.ipep.Address))
                             {
                                 lock (portsLock)
                                 {
@@ -319,7 +327,7 @@ public class UDPServer : MonoBehaviour
                         }
                         for (int i = 0; disconnected && i < clients.Length; ++i)
                         {
-                            if (e.ipep == clients[i].ipep)
+                            if (clients[i].ipep.Equals(e.ipep))
                             {
                                 lock (clientsLock)
                                 {
@@ -334,8 +342,9 @@ public class UDPServer : MonoBehaviour
 
                         for (int i = 0; i < clients.Length; ++i)
                         {
-                            if (clients[i].ipep == e.ipep)
+                            if (clients[i].ipep.Equals(e.ipep))
                             {
+                                Debug.Log(clients[i].id + " is still connected");
                                 lock (clientsLock)
                                 {
                                     clientsData[i].lastContact = 0.0F;
@@ -347,10 +356,12 @@ public class UDPServer : MonoBehaviour
                         break;
                     case EVENT_TYPE.EVENT_CONNECTION:
                         bool canJoin = false;
+                        int p = 0;
                         for (int i = 0; i < prts.Length; ++i)
                         {
                             if (!prts[i].isUsed)
                             {
+                                p = prts[i].port;
                                 canJoin = true;
                                 Debug.Log("New client connected");
                                 lock (portsLock)
@@ -376,6 +387,7 @@ public class UDPServer : MonoBehaviour
                                     clientsData[i].ipep = e.ipep;
                                     clientsData[i].id = e.data.Substring(0, 3);
                                     clientsData[i].name = e.data.Substring(4);
+                                    clientsData[i].port = p;
                                 }
                                 break;
                             }
@@ -397,7 +409,7 @@ public class UDPServer : MonoBehaviour
 
                         for(int i = 0; i < clients.Length; ++i)
                         {
-                            if (clients[i].ipep == e.ipep)
+                            if (clients[i].ipep.Equals(e.ipep))
                             {
                                 clients[i].lastContact = 0.0F;
                                 break;
@@ -445,24 +457,35 @@ public class UDPServer : MonoBehaviour
         while (true)
         {
             Queue<Event> sendEvents;
+            Ports[] prts= new Ports[6];
             lock (sendQueueLock)
             {
-                sendEvents = sendQueue;
-                sendQueue.Clear();
+                if (sendQueue != null && sendQueue.Count > 0)
+                {
+                    sendEvents = new Queue<Event>(sendQueue);
+                    sendQueue.Clear();
+                }
+                else
+                {
+                    sendEvents = null;
+                }
+            }
+            lock(portsLock)
+            {
+                prts = ports;
             }
             ClientData[] clients;
             lock (clientsLock)
             {
                 clients = clientsData;
             }
-            while (sendEvents.Count > 0)
+            while (sendEvents != null && sendEvents.Count > 0)
             {
                 Event e = sendEvents.Dequeue();
                 switch (e.type)
                 {
                     case EVENT_TYPE.EVENT_CONNECTION:
 
-                        Ports[] prts;
                         lock(portsLock)
                         {
                             prts = ports;
@@ -470,12 +493,12 @@ public class UDPServer : MonoBehaviour
 
                         for(int i = 0; i < clients.Length; ++i)
                         {
-                            if (clients[i].ipep == e.ipep)
+                            if (clients[i].ipep.Equals(e.ipep))
                             {
                                 int p = 9050;
                                 for(int j = 0; j < prts.Length; ++j)
                                 {
-                                    if(e.ipep.Address == prts[j].remoteIP)
+                                    if(e.ipep.Address.Equals(prts[j].remoteIP))
                                     {
                                         p = prts[j].port;
                                         break;
@@ -534,7 +557,7 @@ public class UDPServer : MonoBehaviour
             {
                 if (clients[i].id != null && clients[i].lastContact > 1.5F)
                 {
-                    int ind = clients[i].ipep.Port - initialPort;
+                    int ind = clients[i].port - initialPort;
                     byte[] data = new byte[4];
                     data = Encoding.ASCII.GetBytes("000K");
                     lock (socketsLock)

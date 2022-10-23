@@ -13,8 +13,10 @@ public class Home : MonoBehaviour
     {
         // Provisional
         GameObject[] go = GameObject.FindGameObjectsWithTag("NetWork");
+        UDPClient udp = go[0].GetComponent<UDPClient>();
         if (go[0] != null)
         {
+            if(udp != null) udp.DisconnectFromServer();
             Destroy(go[0]);
         }
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
