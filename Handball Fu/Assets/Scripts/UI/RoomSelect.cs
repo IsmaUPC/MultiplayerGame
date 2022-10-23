@@ -81,9 +81,9 @@ public class RoomSelect : MonoBehaviour
         }
     }
 
-    public void OnEditUsername(string _username)
+    public void EditUsername(string u)
     {
-        username = _username;
+        username = u;
     }
 
     public void OnEditIPEnter(string ip)
