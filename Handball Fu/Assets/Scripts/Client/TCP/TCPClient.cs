@@ -10,7 +10,6 @@ public class TCPClient : MonoBehaviour
 {
     int recv;
     byte[] data;
-    bool exit;
     string tmpMessage;
 
     IPEndPoint ipep;
@@ -21,10 +20,9 @@ public class TCPClient : MonoBehaviour
     void Start()
     {
         data = new byte[1024];
-        exit = false;
 
         // Server end point
-        ipep = new IPEndPoint(IPAddress.Parse("192.168.1.135"), 9050);
+        ipep = new IPEndPoint(IPAddress.Parse("192.168.1.88"), 9050);
 
         // TCP server socket
         server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -33,16 +31,6 @@ public class TCPClient : MonoBehaviour
         threadClientConnect.Start();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-        if (Input.GetKey(KeyCode.C) && !exit)
-        {
-            exit = true;
-
-        }
-    }
 
     void ThreadClientConnect()
     {
@@ -65,7 +53,6 @@ public class TCPClient : MonoBehaviour
             server.Send(Encoding.ASCII.GetBytes("Hii"));
 
             data = new byte[1024];
-            if (recv == 0 || exit) break;
 
             recv = server.Receive(data);
 
@@ -73,8 +60,19 @@ public class TCPClient : MonoBehaviour
             Debug.Log(tmpMessage);
         }
 
+    }
+    public void OnServerClose()
+    {
+        if (threadClientConnect.IsAlive) threadClientConnect.Abort();
         Debug.Log("Disconnecting from server...");
         server.Shutdown(SocketShutdown.Both);
         server.Close();
+
     }
+    private void OnDestroy()
+    {
+        OnServerClose();
+    }
+
+
 }

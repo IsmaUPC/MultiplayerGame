@@ -11,6 +11,14 @@ public class Home : MonoBehaviour
     }
     public void OnBackClick()
     {
+        // Provisional
+        GameObject[] go = GameObject.FindGameObjectsWithTag("NetWork");
+        UDPClient udp = go[0].GetComponent<UDPClient>();
+        if (go[0] != null)
+        {
+            if(udp != null) udp.DisconnectFromServer();
+            Destroy(go[0]);
+        }
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
     public void OnExitClick()

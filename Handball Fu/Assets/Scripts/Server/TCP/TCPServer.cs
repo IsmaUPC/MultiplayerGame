@@ -10,17 +10,13 @@ public class TCPServer : MonoBehaviour
 {
     int recv;
     byte[] data;
-    bool exit;
     string tmpMessage;
 
     IPEndPoint ipep, clientep;
     Socket serverSocket;
     private ArrayList clientSockets = new ArrayList();
 
-
     Thread threadSrvConnect, threadListeng;
-
-
 
     // Total sockets *One socket is for initial connection*
     // After initial connection, the server send an unused port to the client
@@ -32,55 +28,45 @@ public class TCPServer : MonoBehaviour
     void Start()
     {
         data = new byte[1024];
-        exit = false;
-
         initialPort = 9050;
         openPorts = 6;
 
 
         // Server end point
-        ipep = new IPEndPoint(IPAddress.Any, 9050);
+        ipep = new IPEndPoint(IPAddress.Parse("192.168.1.88"), initialPort);
+        serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        // Bind server end point and listen
+        serverSocket.Bind(ipep);
 
-        //// TCP sockets
-        //for (int i = 0; i < openPorts; ++i)
-        //{
-        //    // Create different sockets
-        //    clientSockets.Add(new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp));
-
-        //    // Bind each socket with a different port
-        //    ((Socket)clientSockets[i]).Bind(new IPEndPoint(IPAddress.Any, initialPort + i));
-        //}
+        try
+        {
+            serverSocket.Listen(openPorts);
+        }
+        catch (SocketException e)
+        {
+            Debug.LogException(e);
+            OnServerClose();
+        }
 
         threadSrvConnect = new Thread(ThreadSrvConnect);
         threadSrvConnect.Start();
+
+        threadListeng = new Thread(ThreadListeng);
         threadListeng.Start();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-
-        if (Input.GetKey(KeyCode.V) && !exit)
+        if (clientSockets.Count < openPorts && !threadSrvConnect.IsAlive)
         {
-            exit = true;
+            threadSrvConnect = new Thread(ThreadSrvConnect);
+            threadSrvConnect.Start();
         }
     }
 
     void ThreadSrvConnect()
     {
         Socket clientSocket;
-        // Bind server end point and listen
-        serverSocket.Bind(ipep);
-
-        try
-        {
-            serverSocket.Listen(1);
-        }
-        catch (SocketException e)
-        {
-            Debug.LogException(e);
-            exit = true;
-        }
 
         Debug.Log("Waiting for client...");
 
@@ -88,9 +74,8 @@ public class TCPServer : MonoBehaviour
         if (clientSockets.Count < openPorts)
         {
             clientSocket = serverSocket.Accept();
-            //clientep = (IPEndPoint)clientSocket.RemoteEndPoint;
-            clientSockets[clientSockets.Count] = clientSocket;
-            Debug.Log("Connected with " + clientep.Address.ToString() + " at port " + clientep.Port.ToString());
+            clientSockets.Add(clientSocket);
+            //Debug.Log("Connected with " + ((IPEndPoint)clientSocket).Address.ToString() + " at port " + clientep.Port.ToString());
 
             // Send message to client
             tmpMessage = "Welcome to TCP server";
@@ -108,11 +93,13 @@ public class TCPServer : MonoBehaviour
             ArrayList rw = new ArrayList(clientSockets);
             ArrayList re = new ArrayList(clientSockets);
             // Delete array sockets that hasn't send any data
-            Socket.Select(rr, rw, re, 0);
+            if (rr.Count != 0 || rw.Count != 0 || re.Count != 0)
+                Socket.Select(rr, rw, re, 0);
+
             for (int i = 0; i < rr.Count; ++i)
             {
                 int recv;
-                byte[] data = new byte[1024];
+                data = new byte[1024];
                 string tmpMessage;
 
                 IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
@@ -120,26 +107,14 @@ public class TCPServer : MonoBehaviour
 
                 recv = ((Socket)rr[i]).ReceiveFrom(data, ref remote);
                 tmpMessage = Encoding.ASCII.GetString(data, 0, recv);
+                Debug.Log("From client" + i + ": " + tmpMessage);
 
-                //((IPEndPoint)((Socket)rr[i]).LocalEndPoint).Port; Depending on port do something...
-
-                //eventQueue.Enqueue(new Event { }); Enqueue event to process it
+                data = new byte[1024];
+                tmpMessage = "I can see you WOO";
+                data = Encoding.ASCII.GetBytes(tmpMessage);
+                ((Socket)rr[i]).Send(data, data.Length, SocketFlags.None);
             }
-
-            data = new byte[1024];
-
-            // Recieve client message
-            //recv = clientSockets.Receive(data);
-            //if (recv == 0 || exit)
-            //    break;
-
-            //Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
-
-            //clientSocket.Send(data, recv, SocketFlags.None);
         }
-        Debug.Log("Disconnected from " + clientep.Address + "\nClosing server...");
-
-
     }
 
     public void OnServerClose()
@@ -150,12 +125,16 @@ public class TCPServer : MonoBehaviour
         // Close all sockets
         for (int i = clientSockets.Count - 1; i >= 0; --i)
         {
+            // Debug.Log("Disconnected from " + ((IPEndPoint)clientSockets[i]).Address.ToString() + "\nClosing server...");
             ((Socket)clientSockets[i]).Close();
+
         }
 
         Debug.Log("Server closed, thread ended");
         serverSocket.Close();
-
-
+    }
+    private void OnDestroy()
+    {
+        OnServerClose();
     }
 }
