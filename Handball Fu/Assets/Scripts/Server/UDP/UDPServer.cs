@@ -329,6 +329,14 @@ public class UDPServer : MonoBehaviour
                         {
                             if (clients[i].ipep.Equals(e.ipep))
                             {
+                                Event ev;
+                                ev.type = EVENT_TYPE.EVENT_MESSAGE;
+                                ev.data = "000M" + clients[i].name + " has disconnected!";
+                                ev.ipep = null;
+                                lock (sendQueueLock)
+                                {
+                                    sendQueue.Enqueue(ev);
+                                }
                                 lock (clientsLock)
                                 {
                                     clientsData[i] = new ClientData();
@@ -336,6 +344,7 @@ public class UDPServer : MonoBehaviour
                                 break;
                             }
                         }
+                        
 
                         break;
                     case EVENT_TYPE.EVENT_KEEPCONNECT:
