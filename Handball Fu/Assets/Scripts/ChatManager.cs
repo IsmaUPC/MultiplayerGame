@@ -12,14 +12,18 @@ public class ChatManager : MonoBehaviour
     public GameObject chatPanel, textObject;
     public TMP_InputField chatBox;
     public Color infoColor;
+
     public List<Color> userColors = new List<Color>();
+    private string[] stylesKeywords = {"***","**","*","!!","!"};
+    private string[] stylesHTML = { "<b><i>","<i>","<b>", "<uppercase><color=red>","<uppercase>" };
 
     [SerializeField]
     List<Message> messageList = new List<Message>();
     // Start is called before the first frame update
     void Start()
     {
-
+        if (stylesKeywords.Length != stylesHTML.Length)
+            Debug.LogWarning("Lenght of StylesKeyWords is diferent that StylesHTML!");
     }
 
     // Update is called once per frame
@@ -29,6 +33,7 @@ public class ChatManager : MonoBehaviour
     }
     public void SendMessageToChat(string text, Message.MessageType type = Message.MessageType.PLAYER)
     {
+        // If list is fill, applay FIFO
         if (messageList.Count >= maxMessages)
         {
             Destroy(messageList[0].textObject.gameObject);
@@ -38,11 +43,14 @@ public class ChatManager : MonoBehaviour
         Message message = new Message();
         message.text = text;
         GameObject newTextObject = Instantiate(textObject, chatPanel.transform);
-
         message.textObject = newTextObject.GetComponent<TextMeshProUGUI>();
+
+        //Add styles to text
+        message.text = AddStyles(text);
+        // Set color in function message type
         if (type == Message.MessageType.PLAYER)
         {
-            message.textObject.text = "<color=#" + ColorUtility.ToHtmlStringRGB(userColors[3]) + ">" + username + ": " + "</color>" + text;
+            message.textObject.text = "<color=#" + ColorUtility.ToHtmlStringRGB(userColors[3]) + ">" + username + ": " + "</color>" + message.text;
         }
         else
         {
@@ -50,50 +58,34 @@ public class ChatManager : MonoBehaviour
             message.textObject.color = infoColor;
         }
 
-        //Add styles to text
-        message.textObject.text = AddStyles(message.textObject.text);
-
         messageList.Add(message);
-
         Debug.Log(text);
     }
 
     public string AddStyles(string text)
     {
-        if (text.Contains("***"))
+        for (int i = 0; i < stylesKeywords.Length; i++)
         {
-            int index = text.IndexOf("***");
-            int index2 = text.IndexOf("***", index + 3);
-            if (index2 != -1)
+            if(text.Contains(stylesKeywords[i]))
             {
-                text = text.Remove(index, 3).Insert(index, "<b><i>");
-                index2 += 3;
-                text = text.Remove(index2, 3);
-                text = text.Insert(index2, "</b></i>");
+                // Contain the keyword style?
+                int index = text.IndexOf(stylesKeywords[i]);
+                Debug.Log(index);
+                // And user close it?
+                int index2 = text.IndexOf(stylesKeywords[i], index + 1);
+                Debug.Log(index2);
+                // Yes
+                if (index2 != -1)
+                {
+                    text = text.Remove(index, stylesKeywords[i].Length).Insert(index, stylesHTML[i]);
+                    Debug.Log(text);
+                    index2 += Mathf.Abs(stylesKeywords[i].Length - stylesHTML[i].Length);
+                    text = text.Remove(index2, stylesKeywords[i].Length).Insert(index2, stylesHTML[i].Replace("<", "</"));
+                    Debug.Log(text);
+                }
             }
         }
-        else if (text.Contains("**"))
-        {
-            int index = text.IndexOf("**");
-            int index2 = text.IndexOf("**", index + 2);
-            if (index2 != -1)
-            {
-                text = text.Remove(index, 2).Insert(index, "<i>");
-                index2 += 1;
-                text = text.Remove(index2, 2).Insert(index2, "</i>");
-            }
-        }
-        else if (text.Contains("*"))
-        {
-            int index = text.IndexOf("*");
-            int index2 = text.IndexOf("*", index + 1);
-            if (index2 != -1)
-            {
-                text = text.Remove(index, 1).Insert(index, "<b>");
-                index2 += 2;
-                text = text.Remove(index2, 1).Insert(index2, "</b>");
-            }
-        }
+
         return text;
     }
 
@@ -104,10 +96,6 @@ public class ChatManager : MonoBehaviour
             SendMessageToChat(chatBox.text);
             chatBox.text = "";
         }
-    }
-    public void OnFocusChatbox()
-    {
-        if (!chatBox.isFocused) chatBox.ActivateInputField();
     }
 }
 
