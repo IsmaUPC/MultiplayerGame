@@ -546,7 +546,7 @@ public class UDPServer : MonoBehaviour
                         {
                             if (clients[i].ipep.Equals(e.ipep))
                             {
-                                n = clients[i].name;
+                                n = clients[i].id;
                                 colorIdx = clients[i].port - initialPort;
                                 break;
                             }
@@ -558,7 +558,7 @@ public class UDPServer : MonoBehaviour
                                 int ind = clients[i].port - initialPort;
                                 byte[] data = new byte[1024];
                                 string tmp = "000M" + colorIdx.ToString() + n + ";" + e.data.Substring(4);
-                                data = Encoding.ASCII.GetBytes(e.data);
+                                data = Encoding.ASCII.GetBytes(tmp);
                                 lock (socketsLock)
                                 {
                                     ((Socket)clientSockets[ind]).SendTo(data, clients[i].ipep);
