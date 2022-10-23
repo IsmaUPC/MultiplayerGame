@@ -514,7 +514,7 @@ public class UDPServer : MonoBehaviour
 
                                 Event ev;
                                 ev.type = EVENT_TYPE.EVENT_MESSAGE;
-                                ev.data = "000M" + clients[i].id + " has connected!";
+                                ev.data = "000M" + clients[i].name + " has connected!";
                                 ev.ipep = null;
                                 lock (sendQueueLock)
                                 {
@@ -546,7 +546,7 @@ public class UDPServer : MonoBehaviour
                         {
                             if (clients[i].ipep.Equals(e.ipep))
                             {
-                                n = clients[i].id;
+                                n = clients[i].name;
                                 colorIdx = clients[i].port - initialPort;
                                 break;
                             }
