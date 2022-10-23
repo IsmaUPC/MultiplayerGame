@@ -515,7 +515,7 @@ public class UDPServer : MonoBehaviour
                                 Event ev;
                                 ev.type = EVENT_TYPE.EVENT_MESSAGE;
                                 ev.data = "000M" + clients[i].id + " has connected!";
-                                ev.ipep = new IPEndPoint(IPAddress.Any, initialPort);
+                                ev.ipep = null;
                                 lock (sendQueueLock)
                                 {
                                     sendQueue.Enqueue(ev);
@@ -542,12 +542,12 @@ public class UDPServer : MonoBehaviour
                     case EVENT_TYPE.EVENT_MESSAGE:
                         string n = "SERVER";
                         int colorIdx = 0;
-                        for(int i = 0; i < clients.Length; ++i)
+                        for(int i = 0;e.ipep != null && i < clients.Length; ++i)
                         {
                             if (clients[i].ipep.Equals(e.ipep))
                             {
                                 n = clients[i].name;
-                                colorIdx = clients[i].ipep.Port - initialPort;
+                                colorIdx = clients[i].port - initialPort;
                                 break;
                             }
                         }
@@ -555,9 +555,9 @@ public class UDPServer : MonoBehaviour
                         {
                             if (clients[i].id != null)
                             {
-                                int ind = clients[i].ipep.Port - initialPort;
+                                int ind = clients[i].port - initialPort;
                                 byte[] data = new byte[1024];
-                                string tmp = "000M" + colorIdx.ToString() + n + ";" + e.data.Substring(3);
+                                string tmp = "000M" + colorIdx.ToString() + n + ";" + e.data.Substring(4);
                                 data = Encoding.ASCII.GetBytes(e.data);
                                 lock (socketsLock)
                                 {

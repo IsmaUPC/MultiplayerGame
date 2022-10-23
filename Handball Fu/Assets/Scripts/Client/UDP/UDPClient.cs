@@ -312,7 +312,7 @@ public class UDPClient : MonoBehaviour
                     case EVENT_TYPE.EVENT_MESSAGE:
                         lock (messagesLock)
                         {
-                            chatMessages.Enqueue(e.data.Substring(3));
+                            chatMessages.Enqueue(e.data.Substring(4));
 
                         }
                         break;

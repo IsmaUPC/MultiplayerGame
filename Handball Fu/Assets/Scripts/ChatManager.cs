@@ -37,12 +37,15 @@ public class ChatManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        string tmp = client.GetLastMessage();
-        if(tmp != "")
+        if (client != null)
         {
-            int ind = int.Parse(tmp.Substring(0,1));
-            string[] d = tmp.Substring(1).Split(';');
-            SendMessageToChat(ind, d[0], d[1]);
+            string tmp = client.GetLastMessage();
+            if (tmp != "")
+            {
+                int ind = int.Parse(tmp.Substring(0, 1));
+                string[] d = tmp.Substring(1).Split(';');
+                SendMessageToChat(ind, d[0], d[1]);
+            }
         }
     }
     public void SendMessageToChat(int colorIdx, string username, string text, Message.MessageType type = Message.MessageType.PLAYER)
