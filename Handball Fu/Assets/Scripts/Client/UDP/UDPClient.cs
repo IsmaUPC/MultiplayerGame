@@ -244,7 +244,7 @@ public class UDPClient : MonoBehaviour
             Queue<Event> events;
             lock (eventQueueLock)
             {
-                events = eventQueue;
+                events = new Queue<Event>(eventQueue);
                 eventQueue.Clear();
             }
             while (events.Count > 0)
