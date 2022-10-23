@@ -67,7 +67,7 @@ public class UDPServer : MonoBehaviour
         public float lastContact;
     }
 
-    private ClientData[] clientsData = new ClientData[6];
+    private ClientData[] clientsData;
 
     // Total sockets *One socket is for initial connection*
     // After initial connection, the server send an unused port to the client
@@ -123,6 +123,15 @@ public class UDPServer : MonoBehaviour
             }
         }
 
+        clientsData = new ClientData[6];
+
+        threadServerInBound = new Thread(ThreadServerInBound);
+        threadServerProcess = new Thread(ThreadServerProcess);
+        threadServerOutBound = new Thread(ThreadServerOutBound);
+        threadServerProcess.Start();
+        threadServerInBound.Start();
+        threadServerOutBound.Start();
+
         // Initialize event queue
         eventQueue = new Queue<Event>();
         sendQueue = new Queue<Event>();
@@ -134,7 +143,10 @@ public class UDPServer : MonoBehaviour
         {
             for(int i = 0; i < clientsData.Length; ++i)
             {
-                clientsData[i].lastContact += Time.deltaTime;
+                if (clientsData[i].id != null)
+                {
+                    clientsData[i].lastContact += Time.deltaTime;
+                }
             }
         }
     }
@@ -151,6 +163,7 @@ public class UDPServer : MonoBehaviour
         {
             ((Socket)clientSockets[i]).Close();
         }
+        Debug.Log("Server closed");
     }
 
     // This thread is responsible to save all recieved data
@@ -355,7 +368,7 @@ public class UDPServer : MonoBehaviour
                         }
                         for (int i = 0;canJoin && i < clients.Length; ++i)
                         {
-                            if (clients[i].id.Length == 0)
+                            if (clients[i].id == null)
                             {
                                 lock (clientsLock)
                                 {
@@ -499,7 +512,7 @@ public class UDPServer : MonoBehaviour
 
                         for(int i = 0; i < clients.Length; ++i)
                         {
-                            if (clients[i].ipep != e.ipep && clients[i].id.Length != 0)
+                            if (clients[i].ipep != e.ipep && clients[i].id != null)
                             {
                                 int ind = clients[i].ipep.Port - initialPort;
                                 byte[] data = new byte[1024];
@@ -519,7 +532,7 @@ public class UDPServer : MonoBehaviour
 
             for (int i = 0; i < clients.Length; ++i)
             {
-                if (clients[i].lastContact > 1.5F)
+                if (clients[i].id != null && clients[i].lastContact > 1.5F)
                 {
                     int ind = clients[i].ipep.Port - initialPort;
                     byte[] data = new byte[4];
