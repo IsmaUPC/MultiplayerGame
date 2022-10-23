@@ -77,7 +77,8 @@ public class UDPClient : MonoBehaviour
 
         threadProcess = new Thread(ThreadProcessData);
         threadRecieve = new Thread(ThreadRecieveData);
-
+        threadProcess.Start();
+        threadRecieve.Start();
     }
 
     void Update()
