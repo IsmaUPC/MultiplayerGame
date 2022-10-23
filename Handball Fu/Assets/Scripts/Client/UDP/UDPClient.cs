@@ -54,11 +54,14 @@ public class UDPClient : MonoBehaviour
     private object eventQueueLock = new object();
     private object stateLock = new object();
     private object clientsLock = new object();
+    private object messagesLock = new object();
 
     string myID;
 
     private CONNECTION_STATE state;
     private Queue<Event> eventQueue;
+
+    private Queue<string> chatMessages;
 
     private float timeOut;
 
@@ -72,6 +75,7 @@ public class UDPClient : MonoBehaviour
         state = CONNECTION_STATE.DISCONNECTED;
 
         eventQueue = new Queue<Event>();
+        chatMessages = new Queue<string>();
 
         timeOut = 5.0F;
 
@@ -306,13 +310,36 @@ public class UDPClient : MonoBehaviour
                         break;
 
                     case EVENT_TYPE.EVENT_MESSAGE:
-                        // TODO print message
+                        lock (messagesLock)
+                        {
+                            chatMessages.Enqueue(e.data.Substring(3));
 
+                        }
                         break;
                     default:
                         break;
                 }
             }
+        }
+    }
+
+    public string GetLastMessage()
+    {
+        if (chatMessages.Count > 0)
+        {
+            return chatMessages.Dequeue();
+        }
+        return "";
+    }
+
+    public void SendMessageToServer(string message)
+    {
+        byte[] data = new byte[1024];
+        string tmp = myID + "M" + message;
+        data = Encoding.ASCII.GetBytes(tmp);
+        lock(socketLock)
+        { 
+        serverSocket.SendTo(data, SocketFlags.None, sep);
         }
     }
 

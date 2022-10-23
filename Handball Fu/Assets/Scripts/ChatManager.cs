@@ -15,6 +15,11 @@ public class ChatManager : MonoBehaviour
     public Scrollbar scrollBar;
     public Color infoColor;
 
+    public UDPClient client;
+    public UDPServer server;
+
+    private int myColorIdx;
+
     public List<Color> userColors = new List<Color>();
     [SerializeField] private string[] stylesKeywords = {"***","**","*","!!","!"};
     [SerializeField] private string[] stylesHTML = { "<b><i>","<i>","<b>", "<uppercase><color=red>","<uppercase>" };
@@ -25,14 +30,22 @@ public class ChatManager : MonoBehaviour
     {
         if (stylesKeywords.Length != stylesHTML.Length)
             Debug.LogWarning("Lenght of StylesKeyWords is diferent that StylesHTML!");
+
+        client = GameObject.FindGameObjectWithTag("NetWork").GetComponent<UDPClient>();
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        string tmp = client.GetLastMessage();
+        if(tmp != "")
+        {
+            int ind = int.Parse(tmp.Substring(0,1));
+            string[] d = tmp.Substring(1).Split(';');
+            SendMessageToChat(ind, d[0], d[1]);
+        }
     }
-    public void SendMessageToChat(string text, Message.MessageType type = Message.MessageType.PLAYER)
+    public void SendMessageToChat(int colorIdx, string username, string text, Message.MessageType type = Message.MessageType.PLAYER)
     {
         // If list is fill, applay FIFO
         if (messageList.Count >= maxMessages)
@@ -51,7 +64,7 @@ public class ChatManager : MonoBehaviour
         // Set color in function message type
         if (type == Message.MessageType.PLAYER)
         {
-            message.textObject.text = "<color=#" + ColorUtility.ToHtmlStringRGB(userColors[3]) + ">" + username + ": " + "</color>" + message.text;
+            message.textObject.text = "<color=#" + ColorUtility.ToHtmlStringRGB(userColors[colorIdx]) + ">" + username + ": " + "</color>" + message.text;
         }
         else
         {
@@ -94,7 +107,7 @@ public class ChatManager : MonoBehaviour
     {
         if(chatBox.text != "")
         {
-            SendMessageToChat(chatBox.text);
+            client.SendMessageToServer(chatBox.text);
             chatBox.text = "";
             if(scrollBar.value <= 0)
                 scrollBar.value = 0;
