@@ -2,16 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
+using TMPro;
+using UnityEditor.PackageManager;
 
 public class RoomSelect : MonoBehaviour
 {
     // UI Element to join room
     public GameObject joinRoomPanel, dropdown;
     public GameObject[] mainButtons = new GameObject[2];
+    public TextMeshProUGUI errorText;
+    private float errorTime;
     private int serverType = 0;
 
     public GameObject udpServer, tcpServer, udpClient, tcpClient;
     private UDPClient udp;
+    private GameObject udpC;
+
+    private void Start()
+    {
+        errorText.enabled = false;
+    }
 
     // When clicking to create a room
     public void OnCreateClick()
@@ -43,13 +55,28 @@ public class RoomSelect : MonoBehaviour
 
     private void Update()
     {
-        if(udp != null && udp.GetCurrentState() == 0)
+        if (errorText.enabled && errorTime > 0.0F)
+        {
+            errorTime -= Time.deltaTime;
+        }
+        else if (errorText.enabled && errorTime < 0.0F)
+        {
+            errorText.enabled = false;
+        }
+
+        if(udpC != null && udp.GetCurrentState() == 0)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
-        else if (udp != null && udp.GetCurrentState() == 3)
+        else if (udpC != null && udp.GetCurrentState() == 3)
         {
-            // TODO failed to connect message on screen
+            errorText.text = "Connection timed out";
+            errorText.enabled = true;
+            errorTime = 5.0F;
+            udp.ShutdownClient();
+            Destroy(udpC);
+            udpC = null;
+            udp = null;
         }
     }
 
@@ -67,11 +94,21 @@ public class RoomSelect : MonoBehaviour
             case 0:
                 client = Instantiate(udpClient);
                 DontDestroyOnLoad(client);
-                bool result = client.GetComponent<UDPClient>().ConnectToIp(ip);
-                if (!result)Destroy(client);// TODO error message on screen (invalid format)
+                udp = client.GetComponent<UDPClient>();
+                udp.ClientStart();
+                bool result = udp.ConnectToIp(ip);
+                if (!result)
+                {
+                    errorText.text = "IP invalid format";
+                    errorText.enabled = true;
+                    errorTime = 5.0F;
+                    udp.ShutdownClient();
+                    Destroy(client);
+                    udp = null;
+                }
                 else
                 {
-                    udp = client.GetComponent<UDPClient>();
+                    udpC = client;
                 }
                 break;
             case 1:
@@ -99,6 +136,17 @@ public class RoomSelect : MonoBehaviour
         dropdown.SetActive(true);
 
         joinRoomPanel.SetActive(false);
+
+        if (udp != null)
+        {
+            udp.ShutdownClient();
+            udp = null;
+        }
+        if (udpC != null)
+        {
+            Destroy(udpC);
+            udpC = null;
+        }
     }
 
     public void ChangeDropdownValue(int value)

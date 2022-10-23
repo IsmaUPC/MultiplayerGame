@@ -35,8 +35,10 @@ public class UDPServer : MonoBehaviour
     {
         EVENT_CONNECTION,       // A client wants to connect
         EVENT_DISCONNETION,     // A client wants to disconnect
+        EVENT_DENIEDCONNECT,    // No more client free spaces
         EVENT_KEEPCONNECT,      // A client is still connected
         EVENT_MESSAGE,          // A client sent a message
+        EVENT_NAMES,            // Send client usernames
         EVENT_UPDATE,           // A client sent an updated "transform"
     };
 
@@ -61,7 +63,7 @@ public class UDPServer : MonoBehaviour
     {
         public string name;
         public IPEndPoint ipep;
-        public int id;
+        public string id;
         public float lastContact;
     }
 
@@ -321,11 +323,12 @@ public class UDPServer : MonoBehaviour
 
                         break;
                     case EVENT_TYPE.EVENT_CONNECTION:
-
+                        bool canJoin = false;
                         for (int i = 0; i < prts.Length; ++i)
                         {
                             if (!prts[i].isUsed)
                             {
+                                canJoin = true;
                                 lock (portsLock)
                                 {
                                     ports[i].isUsed = true;
@@ -339,18 +342,29 @@ public class UDPServer : MonoBehaviour
                                 break;
                             }
                         }
-                        for (int i = 0; i < clients.Length; ++i)
+                        for (int i = 0;canJoin && i < clients.Length; ++i)
                         {
-                            if (clients[i].id == 0)
+                            if (clients[i].id.Length == 0)
                             {
                                 lock (clientsLock)
                                 {
                                     clientsData[i].lastContact = 0.0F;
                                     clientsData[i].ipep = e.ipep;
-                                    clientsData[i].id = int.Parse(e.data.Substring(0, 3));
+                                    clientsData[i].id = e.data.Substring(0, 3);
                                     clientsData[i].name = e.data.Substring(4);
                                 }
                                 break;
+                            }
+                        }
+                        if(!canJoin)
+                        {
+                            Event ev = new Event();
+                            ev.type = EVENT_TYPE.EVENT_DENIEDCONNECT;
+                            ev.data = e.data;
+                            ev.ipep = e.ipep;
+                            lock (sendQueueLock)
+                            {
+                                sendQueue.Enqueue(ev);
                             }
                         }
 
@@ -438,12 +452,24 @@ public class UDPServer : MonoBehaviour
                         }
 
                         break;
+                    case EVENT_TYPE.EVENT_DENIEDCONNECT:
+                        {
+                            byte[] data = new byte[4];
+                            string tmp = "000F";        // Full as F event
+                            data = Encoding.ASCII.GetBytes(tmp);
+
+                            lock (socketsLock)
+                            {
+                                ((Socket)clientSockets[0]).SendTo(data, e.ipep);
+                            }
+                        }
+                        break;
 
                     case EVENT_TYPE.EVENT_MESSAGE:
 
                         for(int i = 0; i < clients.Length; ++i)
                         {
-                            if (clients[i].ipep != e.ipep && clients[i].id != 0)
+                            if (clients[i].ipep != e.ipep && clients[i].id.Length != 0)
                             {
                                 int ind = clients[i].ipep.Port - initialPort;
                                 byte[] data = new byte[1024];
