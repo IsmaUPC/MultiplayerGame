@@ -35,6 +35,12 @@ public class UDPClient : MonoBehaviour
         public string data;     // Event data itself
     }
 
+    struct ClientData
+    {
+        public string name;
+        public string id;
+    }
+
     IPAddress host;
     IPEndPoint sep;
     EndPoint remote;
@@ -42,9 +48,12 @@ public class UDPClient : MonoBehaviour
     Thread threadRecieve;
     Thread threadProcess;
 
+    ClientData[] clientsInfo;
+
     private object socketLock = new object();
     private object eventQueueLock = new object();
     private object stateLock = new object();
+    private object clientsLock = new object();
 
     string myID;
 
@@ -203,6 +212,15 @@ public class UDPClient : MonoBehaviour
                             eventQueue.Enqueue(e);
                         }
                         break;
+                    case 'N':
+                        e = new Event();
+                        e.type=EVENT_TYPE.EVENT_NAMES;
+                        e.data = tmpMessage;
+                        lock(eventQueueLock)
+                        {
+                            eventQueue.Enqueue(e);
+                        }
+                        break;
                     case 'U':
                         e = new Event();
                         e.type = EVENT_TYPE.EVENT_UPDATE;
@@ -251,7 +269,7 @@ public class UDPClient : MonoBehaviour
                     case EVENT_TYPE.EVENT_DISCONNETION:
                         lock (stateLock)
                         {
-                            state = CONNECTION_STATE.CONNECTED;
+                            state = CONNECTION_STATE.DISCONNECTED;
                         }
                         break;
                     case EVENT_TYPE.EVENT_KEEPCONNECT:
@@ -269,6 +287,15 @@ public class UDPClient : MonoBehaviour
 
                         break;
                     case EVENT_TYPE.EVENT_NAMES:
+
+                        string[] d = e.data.Substring(4).Split(';');
+                        ClientData[] c = new ClientData[d.Length];
+                        for (int i = 0; i < d.Length - 1; ++i)
+                        {
+                            c[i].id = d[i].Substring(0, 3);
+                            c[i].name = d[i].Substring(3);
+                        }
+
                         break;
 
                     case EVENT_TYPE.EVENT_DENIEDCONNECT:
@@ -323,6 +350,11 @@ public class UDPClient : MonoBehaviour
             }
         }
         return "";
+    }
+
+    private void OnDestroy()
+    {
+        ShutdownClient();
     }
 }
 

@@ -33,13 +33,13 @@ public class UDPServer : MonoBehaviour
     // Event types
     enum EVENT_TYPE
     {
-        EVENT_CONNECTION,       // A client wants to connect
-        EVENT_DISCONNETION,     // A client wants to disconnect
-        EVENT_DENIEDCONNECT,    // No more client free spaces
-        EVENT_KEEPCONNECT,      // A client is still connected
-        EVENT_MESSAGE,          // A client sent a message
-        EVENT_NAMES,            // Send client usernames
-        EVENT_UPDATE,           // A client sent an updated "transform"
+        EVENT_CONNECTION,       // A client wants to connect                [C]
+        EVENT_DISCONNETION,     // A client wants to disconnect             [D]
+        EVENT_DENIEDCONNECT,    // No more client free spaces               [F]
+        EVENT_KEEPCONNECT,      // A client is still connected              [K]
+        EVENT_MESSAGE,          // A client sent a message                  [M]
+        EVENT_NAMES,            // Send client usernames                    [N]
+        EVENT_UPDATE,           // A client sent an updated "transform"     [U]
     };
 
     // Events struct
@@ -245,6 +245,16 @@ public class UDPServer : MonoBehaviour
                             eventQueue.Enqueue(e);
                         }
                         break;
+                    case 'N':
+                        e = new Event();
+                        e.type = EVENT_TYPE.EVENT_NAMES;
+                        e.data = tmpMessage;
+                        e.ipep = remote as IPEndPoint;
+                        lock(eventQueueLock)
+                        {
+                            eventQueue.Enqueue(e);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -329,6 +339,7 @@ public class UDPServer : MonoBehaviour
                             if (!prts[i].isUsed)
                             {
                                 canJoin = true;
+                                Debug.Log("New client connected");
                                 lock (portsLock)
                                 {
                                     ports[i].isUsed = true;
@@ -382,10 +393,29 @@ public class UDPServer : MonoBehaviour
 
                         lock(sendQueueLock)
                         {
-                            // Resend to other users
                             sendQueue.Enqueue(e);
                         }
 
+                        break;
+                    case EVENT_TYPE.EVENT_NAMES:
+                        {
+                            Event ev = new Event();
+                            string tmp = "000N";
+                            for(int i = 0; i < clients.Length; ++i)
+                            {
+                                if(e.ipep != clients[i].ipep)
+                                {
+                                    tmp += (clients[i].id + clients[i].name + ";");
+                                }
+                            }
+                            ev.type = EVENT_TYPE.EVENT_NAMES;
+                            ev.data = tmp;
+                            ev.ipep = e.ipep;
+                            lock(sendQueueLock)
+                            {
+                                sendQueue.Enqueue(ev);
+                            }
+                        }
                         break;
                     case EVENT_TYPE.EVENT_UPDATE:
                         break;
@@ -444,7 +474,7 @@ public class UDPServer : MonoBehaviour
 
                                 lock(socketsLock)
                                 {
-                                    ((Socket)clientSockets[0]).SendTo(data, clients[i].ipep); // TODO: send all IDs and usernames to new clients
+                                    ((Socket)clientSockets[0]).SendTo(data, clients[i].ipep); // TODO: refactor port process and only send it 
                                 }
 
                                 break;
@@ -455,7 +485,7 @@ public class UDPServer : MonoBehaviour
                     case EVENT_TYPE.EVENT_DENIEDCONNECT:
                         {
                             byte[] data = new byte[4];
-                            string tmp = "000F";        // Full as F event
+                            string tmp = "000F";
                             data = Encoding.ASCII.GetBytes(tmp);
 
                             lock (socketsLock)
@@ -517,5 +547,9 @@ public class UDPServer : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        OnServerClose();
+    }
 }
 
