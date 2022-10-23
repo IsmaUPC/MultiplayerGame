@@ -50,9 +50,51 @@ public class ChatManager : MonoBehaviour
             message.textObject.color = infoColor;
         }
 
+        //Add styles to text
+        message.textObject.text = AddStyles(message.textObject.text);
+
         messageList.Add(message);
 
         Debug.Log(text);
+    }
+
+    public string AddStyles(string text)
+    {
+        if (text.Contains("***"))
+        {
+            int index = text.IndexOf("***");
+            int index2 = text.IndexOf("***", index + 3);
+            if (index2 != -1)
+            {
+                text = text.Remove(index, 3).Insert(index, "<b><i>");
+                index2 += 3;
+                text = text.Remove(index2, 3);
+                text = text.Insert(index2, "</b></i>");
+            }
+        }
+        else if (text.Contains("**"))
+        {
+            int index = text.IndexOf("**");
+            int index2 = text.IndexOf("**", index + 2);
+            if (index2 != -1)
+            {
+                text = text.Remove(index, 2).Insert(index, "<i>");
+                index2 += 1;
+                text = text.Remove(index2, 2).Insert(index2, "</i>");
+            }
+        }
+        else if (text.Contains("*"))
+        {
+            int index = text.IndexOf("*");
+            int index2 = text.IndexOf("*", index + 1);
+            if (index2 != -1)
+            {
+                text = text.Remove(index, 1).Insert(index, "<b>");
+                index2 += 2;
+                text = text.Remove(index2, 1).Insert(index2, "</b>");
+            }
+        }
+        return text;
     }
 
     public void OnSendMessage()
@@ -62,6 +104,10 @@ public class ChatManager : MonoBehaviour
             SendMessageToChat(chatBox.text);
             chatBox.text = "";
         }
+    }
+    public void OnFocusChatbox()
+    {
+        if (!chatBox.isFocused) chatBox.ActivateInputField();
     }
 }
 

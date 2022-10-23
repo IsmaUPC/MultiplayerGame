@@ -917,6 +917,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "FocusChatbox",
+                    "type": "Button",
+                    "id": "8bc614ca-9c98-4ef2-8236-8acc2c6b9310",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -939,6 +948,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "SendMessage",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "47d0415a-31db-49be-92c0-eed2f6930ad6",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FocusChatbox",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
