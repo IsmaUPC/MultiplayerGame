@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.UI;
+using UnityEngine.UI;
 using TMPro;
 
 public class ChatManager : MonoBehaviour
@@ -11,14 +12,14 @@ public class ChatManager : MonoBehaviour
 
     public GameObject chatPanel, textObject;
     public TMP_InputField chatBox;
+    public Scrollbar scrollBar;
     public Color infoColor;
 
     public List<Color> userColors = new List<Color>();
     private string[] stylesKeywords = {"***","**","*","!!","!"};
     private string[] stylesHTML = { "<b><i>","<i>","<b>", "<uppercase><color=red>","<uppercase>" };
 
-    [SerializeField]
-    List<Message> messageList = new List<Message>();
+    private List<Message> messageList = new List<Message>();
     // Start is called before the first frame update
     void Start()
     {
@@ -95,6 +96,7 @@ public class ChatManager : MonoBehaviour
         {
             SendMessageToChat(chatBox.text);
             chatBox.text = "";
+            scrollBar.value = 0;
         }
     }
 }
