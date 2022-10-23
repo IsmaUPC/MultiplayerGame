@@ -16,8 +16,8 @@ public class ChatManager : MonoBehaviour
     public Color infoColor;
 
     public List<Color> userColors = new List<Color>();
-    private string[] stylesKeywords = {"***","**","*","!!","!"};
-    private string[] stylesHTML = { "<b><i>","<i>","<b>", "<uppercase><color=red>","<uppercase>" };
+    [SerializeField] private string[] stylesKeywords = {"***","**","*","!!","!"};
+    [SerializeField] private string[] stylesHTML = { "<b><i>","<i>","<b>", "<uppercase><color=red>","<uppercase>" };
 
     private List<Message> messageList = new List<Message>();
     // Start is called before the first frame update
@@ -96,7 +96,8 @@ public class ChatManager : MonoBehaviour
         {
             SendMessageToChat(chatBox.text);
             chatBox.text = "";
-            scrollBar.value = 0;
+            if(scrollBar.value <= 0)
+                scrollBar.value = 0;
         }
     }
 }
