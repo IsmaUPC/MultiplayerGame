@@ -105,7 +105,7 @@ public class UDPClient : MonoBehaviour
         }
     }
 
-    public bool ConnectToIp(string ip)
+    public bool ConnectToIp(string ip, string username)
     {
         bool ret = false;
 
@@ -124,7 +124,7 @@ public class UDPClient : MonoBehaviour
 
         sep = new IPEndPoint(currentIP, 9050);
 
-        string tmp = myID+"C";
+        string tmp = myID+"C"+username;
         byte[] data = new byte[1024];
         data = Encoding.ASCII.GetBytes(tmp);
         Debug.Log(tmp + " " + data.Length.ToString() + " " + sep.Address.ToString()) ;

@@ -19,6 +19,7 @@ public class RoomSelect : MonoBehaviour
     public GameObject udpServer, tcpServer, udpClient, tcpClient;
     private UDPClient udp;
     private GameObject udpC;
+    private string username;
 
     private void Start()
     {
@@ -80,8 +81,20 @@ public class RoomSelect : MonoBehaviour
         }
     }
 
+    public void OnEditUsername(string _username)
+    {
+        username = _username;
+    }
+
     public void OnEditIPEnter(string ip)
     {
+        if(username == "")
+        {
+            errorText.text = "Input a username";
+            errorText.enabled = true;
+            errorTime = 5.0F;
+            return;
+        }
         GameObject[] lastServers = GameObject.FindGameObjectsWithTag("NetWork");
         if (lastServers.Length > 0)
         {
@@ -96,7 +109,7 @@ public class RoomSelect : MonoBehaviour
                 DontDestroyOnLoad(client);
                 udp = client.GetComponent<UDPClient>();
                 udp.ClientStart();
-                bool result = udp.ConnectToIp(ip);
+                bool result = udp.ConnectToIp(ip, username);
                 if (!result)
                 {
                     errorText.text = "IP invalid format";
