@@ -8,7 +8,6 @@ using TMPro;
 public class ChatManager : MonoBehaviour
 {
     public int maxMessages = 20;
-    public string username = "Alejandro";
 
     public GameObject chatPanel, textObject;
     public TMP_InputField chatBox;

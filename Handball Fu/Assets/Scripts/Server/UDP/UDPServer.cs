@@ -140,6 +140,8 @@ public class UDPServer : MonoBehaviour
 
     private void Update()
     {
+
+        // Increment how much time has elapsed since last contact
         lock(clientsLock)
         {
             for(int i = 0; i < clientsData.Length; ++i)
@@ -206,7 +208,7 @@ public class UDPServer : MonoBehaviour
                 // Check what event type it is and save it to process
                 switch (tmpMessage[3])
                 {
-                    case 'C':
+                    case 'C': // Connection event only if its on port 9050
                         IPEndPoint ep = ((Socket)rr[i]).LocalEndPoint as IPEndPoint;
                         if (ep.Port != 9050)
                             break;
@@ -219,7 +221,7 @@ public class UDPServer : MonoBehaviour
                             eventQueue.Enqueue(e);
                         }
                         break;
-                    case 'D':
+                    case 'D': // Desconnection event
                         e = new Event();
                         e.type = EVENT_TYPE.EVENT_DISCONNETION;
                         e.data = tmpMessage;
@@ -229,7 +231,7 @@ public class UDPServer : MonoBehaviour
                             eventQueue.Enqueue(e);
                         }
                         break;
-                    case 'K':
+                    case 'K': // Client is still connected
                         e = new Event();
                         e.type = EVENT_TYPE.EVENT_KEEPCONNECT;
                         e.data = tmpMessage;
@@ -239,7 +241,7 @@ public class UDPServer : MonoBehaviour
                             eventQueue.Enqueue(e);
                         }
                         break;
-                    case 'M':
+                    case 'M': // Message recieved
                         e = new Event();
                         e.type = EVENT_TYPE.EVENT_MESSAGE;
                         e.data = tmpMessage;
@@ -249,7 +251,7 @@ public class UDPServer : MonoBehaviour
                             eventQueue.Enqueue(e);
                         }
                         break;
-                    case 'U':
+                    case 'U': // Update [STILL NOT USED]
                         e = new Event();
                         e.type = EVENT_TYPE.EVENT_UPDATE;
                         e.data = tmpMessage;
@@ -259,7 +261,7 @@ public class UDPServer : MonoBehaviour
                             eventQueue.Enqueue(e);
                         }
                         break;
-                    case 'N':
+                    case 'N': // Resquesting all users names [STILL NOT USED]
                         e = new Event();
                         e.type = EVENT_TYPE.EVENT_NAMES;
                         e.data = tmpMessage;
@@ -309,9 +311,11 @@ public class UDPServer : MonoBehaviour
                 }
                 switch (e.type)
                 {
+                    // Process disconnection
                     case EVENT_TYPE.EVENT_DISCONNETION:
 
                         bool disconnected = false;
+                        // The port is now available
                         for (int i = 0; i < prts.Length; ++i)
                         {
                             if (prts[i].remoteIP.Equals(e.ipep.Address))
@@ -325,6 +329,8 @@ public class UDPServer : MonoBehaviour
                                 break;
                             }
                         }
+
+                        // The client data is removed
                         for (int i = 0; disconnected && i < clients.Length; ++i)
                         {
                             if (clients[i].ipep.Equals(e.ipep))
@@ -347,6 +353,7 @@ public class UDPServer : MonoBehaviour
                         
 
                         break;
+                        // Said client is still in touch
                     case EVENT_TYPE.EVENT_KEEPCONNECT:
 
                         for (int i = 0; i < clients.Length; ++i)
@@ -362,9 +369,13 @@ public class UDPServer : MonoBehaviour
                         }
 
                         break;
+
+                        // Look for room for an incoming client
                     case EVENT_TYPE.EVENT_CONNECTION:
                         bool canJoin = false;
                         int p = 0;
+
+                        // Check for a free port
                         for (int i = 0; i < prts.Length; ++i)
                         {
                             if (!prts[i].isUsed)
@@ -385,6 +396,8 @@ public class UDPServer : MonoBehaviour
                                 break;
                             }
                         }
+
+                        // Add client data
                         for (int i = 0;canJoin && i < clients.Length; ++i)
                         {
                             if (clients[i].id == null)
@@ -400,6 +413,8 @@ public class UDPServer : MonoBehaviour
                                 break;
                             }
                         }
+
+                        // If a client cannot join, send him a timeout exception
                         if(!canJoin)
                         {
                             Event ev = new Event();
@@ -413,6 +428,8 @@ public class UDPServer : MonoBehaviour
                         }
 
                         break;
+
+                        // Message
                     case EVENT_TYPE.EVENT_MESSAGE:
 
                         for(int i = 0; i < clients.Length; ++i)
@@ -492,6 +509,7 @@ public class UDPServer : MonoBehaviour
                 Event e = sendEvents.Dequeue();
                 switch (e.type)
                 {
+                    // Send the client which port has to use
                     case EVENT_TYPE.EVENT_CONNECTION:
 
                         lock(portsLock)
@@ -521,6 +539,7 @@ public class UDPServer : MonoBehaviour
                                     ((Socket)clientSockets[0]).SendTo(data, clients[i].ipep); // TODO: refactor port process and only send it 
                                 }
 
+                                // Send to evey client that a new user has joined!
                                 Event ev;
                                 ev.type = EVENT_TYPE.EVENT_MESSAGE;
                                 ev.data = "000M" + clients[i].name + " has connected!";
@@ -535,6 +554,8 @@ public class UDPServer : MonoBehaviour
                         }
 
                         break;
+
+                        // Send failed connection message to said client
                     case EVENT_TYPE.EVENT_DENIEDCONNECT:
                         {
                             byte[] data = new byte[4];
@@ -548,6 +569,8 @@ public class UDPServer : MonoBehaviour
                         }
                         break;
 
+                        // Send message to everyone! So we know data, that only server knows
+                        // such as color codes, ids and other
                     case EVENT_TYPE.EVENT_MESSAGE:
                         string n = "SERVER";
                         int colorIdx = 0;
@@ -581,9 +604,10 @@ public class UDPServer : MonoBehaviour
                 }
             }
 
+            // Check if someone has not been in touch in some time
             for (int i = 0; i < clients.Length; ++i)
             {
-                if (clients[i].id != null && clients[i].lastContact > 1.5F)
+                if (clients[i].id != null && clients[i].lastContact > 2.5F)
                 {
                     int ind = clients[i].port - initialPort;
                     byte[] data = new byte[4];
