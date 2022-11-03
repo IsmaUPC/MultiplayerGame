@@ -343,24 +343,15 @@ public class UDPServer : MonoBehaviour
                                 name = clientsData[playerIdx].name;
                                 clientsData[playerIdx] = new ClientData();
                             }
-                        }
 
-
-                        // Send message to everyone that x player has desconnected
-                        for (int i = 0; disconnected && i < clients.Length; ++i)
-                        {
-                            if (clients[i].ipep != null)
-                            {   
-                                Event ev;
-                                ev.type = EVENT_TYPE.EVENT_MESSAGE;
-                                ev.data = "000M" + name + " has disconnected!";
-                                ev.ipep = clients[i].ipep;
-                                lock (eventQueueLock)
-                                {
-                                    eventQueue.Enqueue(ev);
-                                }
-                                break;
-                            }
+                            Event ev;
+                            ev.type = EVENT_TYPE.EVENT_MESSAGE;
+                            ev.data = "000M" + name + " has disconnected!";
+                            ev.ipep = e.ipep;
+                            lock (eventQueueLock)
+                            {
+                                eventQueue.Enqueue(ev);
+                            }  
                         }
                         
 
@@ -452,11 +443,18 @@ public class UDPServer : MonoBehaviour
                                 clients[i].lastContact = 0.0F;
                                 break;
                             }
-                        }
 
-                        lock(sendQueueLock)
-                        {
-                            sendQueue.Enqueue(e);
+                            if (clients[i].ipep != null)
+                            {
+                                Event ev;
+                                ev.data = e.data;
+                                ev.ipep = clients[i].ipep;
+                                ev.type = EVENT_TYPE.EVENT_MESSAGE;
+                                lock (sendQueueLock)
+                                {
+                                    sendQueue.Enqueue(ev);
+                                }
+                            }
                         }
 
                         break;
@@ -484,6 +482,24 @@ public class UDPServer : MonoBehaviour
                         break;
                     default:
                         break;
+                }
+
+                // Check if someone has not been in touch in some time
+                for (int i = 0; i < clients.Length; ++i)
+                {
+                    if (clients[i].id != null && clients[i].lastContact > 2.5F)
+                    {
+                        int ind = clients[i].port - initialPort;
+                        string data = "000K";
+                        Event ev;
+                        ev.ipep = clients[i].ipep;
+                        ev.type = EVENT_TYPE.EVENT_KEEPCONNECT;
+                        ev.data = data;
+                        lock (sendQueue)
+                        {
+                            sendQueue.Enqueue(ev);
+                        }
+                    }
                 }
             }
         }
@@ -614,21 +630,6 @@ public class UDPServer : MonoBehaviour
                         break;
                     default:
                         break;
-                }
-            }
-
-            // Check if someone has not been in touch in some time
-            for (int i = 0; i < clients.Length; ++i)
-            {
-                if (clients[i].id != null && clients[i].lastContact > 2.5F)
-                {
-                    int ind = clients[i].port - initialPort;
-                    byte[] data = new byte[4];
-                    data = Encoding.ASCII.GetBytes("000K");
-                    lock (socketsLock)
-                    {
-                        ((Socket)clientSockets[ind]).SendTo(data, clients[i].ipep);
-                    }
                 }
             }
         }
