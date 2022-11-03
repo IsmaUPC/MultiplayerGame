@@ -4,12 +4,19 @@ using UnityEngine;
 
 public class PlayerData : MonoBehaviour
 {
-    [SerializeField] public int playerID;
-    [SerializeField] public Vector3 startPos;
-    [SerializeField] public GameObject[] bodyParts;
+    public int playerID;
+    public GameObject[] bodyParts;
+    private Transform startTrasnform;
+
     // Start is called before the first frame update
     void Start()
     {
-        transform.position = startPos;
+        transform.position = startTrasnform.position;
+        transform.rotation = startTrasnform.rotation;
+    }
+
+    public void SetStartTransform(Transform trans)
+    {
+        startTrasnform = trans;
     }
 }

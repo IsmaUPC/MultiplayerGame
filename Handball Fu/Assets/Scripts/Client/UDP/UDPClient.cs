@@ -5,97 +5,395 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Text;
-
+using System;
+using System.Security.Cryptography;
 
 public class UDPClient : MonoBehaviour
 {
-    byte[] data = new byte[1024];
-    string input, stringData;
-    string tmpMessage;
-    int recv;
-    bool exit;
+    enum EVENT_TYPE
+    {
+        EVENT_CONNECTION,       // A client wants to connect
+        EVENT_DISCONNETION,     // A client wants to disconnect
+        EVENT_DENIEDCONNECT,    // No more client free spaces
+        EVENT_KEEPCONNECT,      // A client is still connected
+        EVENT_MESSAGE,          // A client sent a message
+        EVENT_NAMES,            // Send client usernames
+        EVENT_UPDATE,           // A client sent an updated "transform"
+    };
+    enum CONNECTION_STATE
+    {
+        CONNECTED,
+        DISCONNECTED,
+        CONNECTING,
+        FAILED
+    }
 
-    IPEndPoint ipep,sender;
+    // Events struct
+    struct Event
+    {
+        public EVENT_TYPE type; // What kind of event is
+        public string data;     // Event data itself
+    }
+
+    struct ClientData
+    {
+        public string name;
+        public string id;
+    }
+
+    IPAddress host;
+    IPEndPoint sep;
     EndPoint remote;
-    Socket servSock;
-    Thread threadConnect;
+    Socket serverSocket;
+    Thread threadRecieve;
+    Thread threadProcess;
 
+    ClientData[] clientsInfo;
+
+    private object socketLock = new object();
+    private object eventQueueLock = new object();
+    private object stateLock = new object();
+    private object clientsLock = new object();
+    private object messagesLock = new object();
+
+    string myID;
+
+    private CONNECTION_STATE state;
+    private Queue<Event> eventQueue;
+
+    private Queue<string> chatMessages;
+
+    private float timeOut;
 
     // Start is called before the first frame update
-    void Start()
+    public void ClientStart()
     {
-        Debug.Log("I'am a client");
+        myID = GetHostID();
 
-        // Set IP adress o
-        // f server
-        ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
+        serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
-        // Create Socket whit IPv4 
-        servSock = new Socket(AddressFamily.InterNetwork,
-                       SocketType.Dgram, ProtocolType.Udp);
-        // The client sends a message to ask that the server iss listening
-        tmpMessage = "Hello, are you there?";
-        data = Encoding.ASCII.GetBytes(tmpMessage);
-        threadConnect = new Thread(ThreadNetConnect);
-        threadConnect.Start();
+        state = CONNECTION_STATE.DISCONNECTED;
 
+        eventQueue = new Queue<Event>();
+        chatMessages = new Queue<string>();
+
+        timeOut = 5.0F;
+
+        threadProcess = new Thread(ThreadProcessData);
+        threadRecieve = new Thread(ThreadRecieveData);
+        threadProcess.Start();
+        threadRecieve.Start();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("c"))
+        CONNECTION_STATE st;
+        lock(stateLock)
         {
-            Debug.Log("Press c");
-
-            exit = true;
+            st = state;
+        }
+        if (st == CONNECTION_STATE.CONNECTING)
+        {
+            timeOut -= Time.deltaTime;
+            if(timeOut < 0.0F)
+            {
+                lock(stateLock)
+                {
+                    state = CONNECTION_STATE.FAILED;
+                }
+            }
         }
     }
-    void ThreadNetConnect()
+
+    public bool ConnectToIp(string ip, string username)
     {
-        Debug.Log("Thread start");
+        bool ret = false;
 
-        // Client send data to server with data length and flags to ip end point of server
-        servSock.SendTo(data, data.Length, SocketFlags.None, ipep);
+        IPAddress currentIP;
+        try
+        {
+            currentIP = IPAddress.Parse(ip);
+        }
+        catch
+        {
+            Debug.Log("IP to connect has not a correct format!");
+            return ret;
+        }
 
-        // IP endpoint variable with an ip 0.0.0.0 which will later
-        // be filled in by the ReciveFrom function.
-        sender = new IPEndPoint(IPAddress.Any, 0);
-        remote = (EndPoint)sender;
+        state = CONNECTION_STATE.CONNECTING;
 
-        // Clear data
-        data = new byte[1024];
-        // Obtain server information and fill the variable named Remote
-        recv = servSock.ReceiveFrom(data, ref remote);
+        sep = new IPEndPoint(currentIP, 9050);
 
-        // Print message from server
-        Debug.Log("Message received from {0}:"+ remote.ToString());
-        Debug.Log(Encoding.ASCII.GetString(data, 0, recv));
+        string tmp = myID+"C"+username;
+        byte[] data = new byte[1024];
+        data = Encoding.ASCII.GetBytes(tmp);
+        Debug.Log(tmp + " " + data.Length.ToString() + " " + sep.Address.ToString()) ;
+        serverSocket.SendTo(data, data.Length, SocketFlags.None, sep);
 
+        return true;
+
+    }
+
+    private void ThreadRecieveData()
+    {
         while (true)
         {
-            //Debug.Log("Client Online");
+            ArrayList rr = new ArrayList();
+            ArrayList rw = new ArrayList();
+            ArrayList re = new ArrayList();
 
-            // Wait for input client
-            input = "test input";
-            if (exit)
-                break;
+            lock (socketLock)
+            {
+                // Copy array to evaluate data input
+                rr.Add(serverSocket);
+                rw.Add(serverSocket);
+                re.Add(serverSocket);
+            }
 
-            //Send input client to server
-            servSock.SendTo(Encoding.ASCII.GetBytes(input), remote);
-            data = new byte[1024];
+            // Delete array sockets that hasn't send any data
+            Socket.Select(rr, rw, re, 0);
 
-            // Fill Remote reference variable and data
-            recv = servSock.ReceiveFrom(data, ref remote);
-            stringData = Encoding.ASCII.GetString(data, 0, recv);
+            // If we have data to check do:
+            for (int i = 0; i < rr.Count; ++i)
+            {
+                // Get data
+                int recv;
+                byte[] data = new byte[1024];
+                string tmpMessage;
 
-            // Print Message of server
-            Debug.Log("message server to client "+stringData);
+                IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
+                EndPoint remote = (EndPoint)sender;
+
+                recv = ((Socket)rr[i]).ReceiveFrom(data, ref remote);
+                tmpMessage = Encoding.ASCII.GetString(data, 0, recv);
+                Event e;
+
+                // Check what event type it is and save it to process
+                switch (tmpMessage[3])
+                {
+                    case 'C':
+                        e = new Event();
+                        e.type = EVENT_TYPE.EVENT_CONNECTION;
+                        e.data = tmpMessage;
+                        lock (eventQueueLock)
+                        {
+                            eventQueue.Enqueue(e);
+                        }
+                        break;
+                    case 'D':
+                        e = new Event();
+                        e.type = EVENT_TYPE.EVENT_DISCONNETION;
+                        e.data = tmpMessage;
+                        lock (eventQueueLock)
+                        {
+                            eventQueue.Enqueue(e);
+                        }
+                        break;
+                    case 'F':
+                        e = new Event();
+                        e.type = EVENT_TYPE.EVENT_DENIEDCONNECT;
+                        e.data = tmpMessage;
+                        lock (eventQueueLock)
+                        {
+                            eventQueue.Enqueue(e);
+                        }
+                        break;
+                    case 'K':
+                        e = new Event();
+                        e.type = EVENT_TYPE.EVENT_KEEPCONNECT;
+                        e.data = tmpMessage;
+                        lock (eventQueueLock)
+                        {
+                            eventQueue.Enqueue(e);
+                        }
+                        break;
+                    case 'M':
+                        e = new Event();
+                        e.type = EVENT_TYPE.EVENT_MESSAGE;
+                        e.data = tmpMessage;
+                        lock (eventQueueLock)
+                        {
+                            eventQueue.Enqueue(e);
+                        }
+                        break;
+                    case 'N':
+                        e = new Event();
+                        e.type=EVENT_TYPE.EVENT_NAMES;
+                        e.data = tmpMessage;
+                        lock(eventQueueLock)
+                        {
+                            eventQueue.Enqueue(e);
+                        }
+                        break;
+                    case 'U':
+                        e = new Event();
+                        e.type = EVENT_TYPE.EVENT_UPDATE;
+                        e.data = tmpMessage;
+                        lock (eventQueueLock)
+                        {
+                            eventQueue.Enqueue(e);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
-        Debug.Log("Stopping client");
-        servSock.Close();
     }
 
+    private void ThreadProcessData()
+    {
+        while(true)
+        {
+            Queue<Event> events;
+            lock (eventQueueLock)
+            {
+                events = new Queue<Event>(eventQueue);
+                eventQueue.Clear();
+            }
+            while (events.Count > 0)
+            {
+                Event e = events.Dequeue();
+                switch (e.type)
+                {
+                    case EVENT_TYPE.EVENT_CONNECTION:
+
+                        if(e.data.Substring(0,3) == "000")
+                        {
+                            IPAddress ip = sep.Address;
+                            sep = new IPEndPoint(ip, int.Parse(e.data.Substring(4, 4)));
+                            Debug.Log("New endpoint connection:" + sep.ToString());
+                            lock(stateLock)
+                            {
+                                state = CONNECTION_STATE.CONNECTED;
+                            }
+                        }
+
+                        break;
+                    case EVENT_TYPE.EVENT_DISCONNETION:
+                        lock (stateLock)
+                        {
+                            state = CONNECTION_STATE.DISCONNECTED;
+                        }
+                        break;
+                    case EVENT_TYPE.EVENT_KEEPCONNECT:
+
+                        if (e.data.Substring(0, 3) == "000")
+                        {
+                            byte[] data = new byte[4];
+                            string tmp = myID + "K";
+                            data = Encoding.ASCII.GetBytes(tmp);
+                            lock (socketLock)
+                            {
+                                serverSocket.SendTo(data, SocketFlags.None, sep);
+                            }
+                        }
+
+                        break;
+                    case EVENT_TYPE.EVENT_NAMES:
+
+                        string[] d = e.data.Substring(4).Split(';');
+                        ClientData[] c = new ClientData[d.Length];
+                        for (int i = 0; i < d.Length - 1; ++i)
+                        {
+                            c[i].id = d[i].Substring(0, 3);
+                            c[i].name = d[i].Substring(3);
+                        }
+
+                        break;
+
+                    case EVENT_TYPE.EVENT_DENIEDCONNECT:
+                        lock (stateLock)
+                        {
+                            state = CONNECTION_STATE.FAILED;
+                        }
+                        break;
+
+                    case EVENT_TYPE.EVENT_MESSAGE:
+                        lock (messagesLock)
+                        {
+                            chatMessages.Enqueue(e.data.Substring(4));
+
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    public string GetLastMessage()
+    {
+        if (chatMessages.Count > 0)
+        {
+            return chatMessages.Dequeue();
+        }
+        return "";
+    }
+
+    public void SendMessageToServer(string message)
+    {
+        byte[] data = new byte[1024];
+        string tmp = myID + "M" + message;
+        data = Encoding.ASCII.GetBytes(tmp);
+        lock(socketLock)
+        { 
+        serverSocket.SendTo(data, SocketFlags.None, sep);
+        }
+    }
+
+    public void DisconnectFromServer()
+    {
+        string tmp = myID + "D";
+        byte[] data = new byte[4];
+        data = Encoding.ASCII.GetBytes(tmp);
+        lock (socketLock)
+        {
+            serverSocket.SendTo(data, SocketFlags.None, sep);
+        }
+    }
+
+    public void ShutdownClient()
+    {
+        if (threadProcess.IsAlive) threadProcess.Abort();
+        if (threadRecieve.IsAlive) threadRecieve.Abort();
+        serverSocket.Close();
+        Debug.Log("Shuttingdown udp client");
+    }
+
+    public int GetCurrentState()
+    {
+        int ret;
+        lock(stateLock)
+        {
+            ret = ((int)state);
+        }
+        return ret;
+    }
+
+    private string GetHostID()
+    {
+        IPHostEntry entry = Dns.GetHostEntry(Dns.GetHostName());
+        for (int i = 0; i < entry.AddressList.Length; ++i)
+        {
+            if (entry.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
+            {
+                host = entry.AddressList[i];
+                int j = host.ToString().LastIndexOf(".");
+                string tmp = host.ToString().Substring(j + 1);
+                if (tmp.Length == 1) tmp = "00" + tmp;
+                if (tmp.Length == 2) tmp = "0" + tmp;
+                return tmp;
+            }
+        }
+        return "";
+    }
+
+    private void OnDestroy()
+    {
+        ShutdownClient();
+    }
 }
 
 

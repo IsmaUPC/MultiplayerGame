@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     public float dashSpeed = 20;
     private TrailRenderer trail;
 
+    // States
     enum State { AWAKE, MOVE, DASH, ATTACK, LOAD_ARM, DIE };
     private State state = State.AWAKE;
 
@@ -38,22 +39,30 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (state == State.MOVE)
+        switch (state)
         {
-            if (movement.magnitude != 0)
-            {
-                characterController.Move(new Vector3(movement.x * Time.deltaTime, 0, movement.y * Time.deltaTime));
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetDirection, rotVelocity * Time.deltaTime);
-            }
-            else if (stillTime < propHunt.timeToConvert)
-                stillTime += Time.deltaTime;
-            else propHunt.ChangeMesh();
-        }
-        else if (state == State.LOAD_ARM)
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetDirection, rotVelocity * Time.deltaTime);
-        else if (state == State.DASH)
-            characterController.Move(transform.forward * dashSpeed * Time.deltaTime);
+            case State.MOVE:
+                if (movement.magnitude != 0)
+                {
+                    characterController.Move(new Vector3(movement.x * Time.deltaTime, 0, movement.y * Time.deltaTime));
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, targetDirection, rotVelocity * Time.deltaTime);
+                }
+                else if (stillTime < propHunt.timeToConvert)
+                    stillTime += Time.deltaTime;
+                else propHunt.ChangeMesh();
+                break;
 
+            case State.DASH:
+                characterController.Move(transform.forward * dashSpeed * Time.deltaTime);
+                break;
+
+            case State.LOAD_ARM:
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetDirection, rotVelocity * Time.deltaTime);
+                break;
+
+            default:
+                break;
+        }
     }
 
 
@@ -65,23 +74,23 @@ public class PlayerController : MonoBehaviour
             targetDirection = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.y), Vector3.up);
 
         animator.SetFloat("Velocity", dir.magnitude);
-        stillTime = 0;
-        propHunt.ResetMesh();
+        ResetPropHuntCount();
 
-        if (state != State.MOVE) return;
+        if (state != State.MOVE) 
+            return;
         state = State.MOVE;
     }
 
     void OnDash()
     {
-        if (state != State.MOVE) return;
+        // If player is doing other action -> return
+        if (state != State.MOVE) 
+            return;
 
         animator.SetBool("Dash", true);
+        ResetPropHuntCount();
 
-        stillTime = 0;
-        propHunt.ResetMesh();
-
-        if(state != State.DASH)
+        if (state != State.DASH)
             StartCoroutine(Dash());
     }
 
@@ -89,7 +98,9 @@ public class PlayerController : MonoBehaviour
     {
         state = State.DASH;
         trail.emitting = true;
+
         yield return new WaitForSeconds(dashTime);
+
         state = State.MOVE;
         trail.emitting = false;
         animator.SetBool("Dash", false);
@@ -97,30 +108,38 @@ public class PlayerController : MonoBehaviour
 
     void OnCut()
     {
-        if (state != State.MOVE) return;
+        if (state != State.MOVE) 
+            return;
 
         animator.SetBool("Attack", true);
         state = State.ATTACK;
 
-        stillTime = 0;
-        propHunt.ResetMesh();
+        ResetPropHuntCount();
     }
 
     void OnShoot(InputValue value)
     {
-        if (state != State.MOVE && value.Get<float>() == 1) return;
+        if (state != State.MOVE && value.Get<float>() == 1) 
+            return;
 
+        // Key DOWN
         if (value.Get<float>() == 1)
         {
             animator.SetBool("Shoot", true);
             state = State.LOAD_ARM;
         }
+        // Key UP
         else if (state == State.LOAD_ARM)
         {
             animator.SetBool("Shoot", false);
             state = State.ATTACK;
         }
 
+        ResetPropHuntCount();
+    }
+
+    private void ResetPropHuntCount()
+    {
         stillTime = 0;
         propHunt.ResetMesh();
     }
