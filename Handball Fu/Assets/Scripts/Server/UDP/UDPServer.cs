@@ -315,7 +315,10 @@ public class UDPServer : MonoBehaviour
                     case EVENT_TYPE.EVENT_DISCONNETION:
 
                         bool disconnected = false;
-                        // The port is now available
+                        int playerIdx = -1;
+                        string name="";
+
+                        // The port is now available, clear old data and save client index
                         for (int i = 0; i < prts.Length; ++i)
                         {
                             if (prts[i].remoteIP.Equals(e.ipep.Address))
@@ -324,28 +327,37 @@ public class UDPServer : MonoBehaviour
                                 {
                                     ports[i].isUsed = false;
                                     ports[i].remoteIP = IPAddress.Any;
+                                    playerIdx = ports[i].port- (initialPort + 1);
+                                    Debug.Log("Disconnected from port " + ports[i].port.ToString() + " with port id " + playerIdx.ToString());
                                 }
                                 disconnected = true;
                                 break;
                             }
                         }
 
-                        // The client data is removed
+                        // Client data is removed
+                        if (disconnected)
+                        {
+                            lock (clientsLock)
+                            {
+                                name = clientsData[playerIdx].name;
+                                clientsData[playerIdx] = new ClientData();
+                            }
+                        }
+
+
+                        // Send message to everyone that x player has desconnected
                         for (int i = 0; disconnected && i < clients.Length; ++i)
                         {
-                            if (clients[i].ipep.Equals(e.ipep))
-                            {
+                            if (clients[i].ipep != null)
+                            {   
                                 Event ev;
                                 ev.type = EVENT_TYPE.EVENT_MESSAGE;
-                                ev.data = "000M" + clients[i].name + " has disconnected!";
-                                ev.ipep = null;
-                                lock (sendQueueLock)
+                                ev.data = "000M" + name + " has disconnected!";
+                                ev.ipep = clients[i].ipep;
+                                lock (eventQueueLock)
                                 {
-                                    sendQueue.Enqueue(ev);
-                                }
-                                lock (clientsLock)
-                                {
-                                    clientsData[i] = new ClientData();
+                                    eventQueue.Enqueue(ev);
                                 }
                                 break;
                             }
@@ -358,7 +370,7 @@ public class UDPServer : MonoBehaviour
 
                         for (int i = 0; i < clients.Length; ++i)
                         {
-                            if (clients[i].ipep.Equals(e.ipep))
+                            if (clients[i].ipep != null && clients[i].ipep.Equals(e.ipep))
                             {
                                 lock (clientsLock)
                                 {
@@ -409,6 +421,7 @@ public class UDPServer : MonoBehaviour
                                     clientsData[i].id = e.data.Substring(0, 3);
                                     clientsData[i].name = e.data.Substring(4);
                                     clientsData[i].port = p;
+                                    Debug.Log("User " + clients[i].name + " connected at port: " + clients[i].port);
                                 }
                                 break;
                             }
