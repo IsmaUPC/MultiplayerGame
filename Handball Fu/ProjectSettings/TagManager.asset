@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - NetWork
+  - Data
   layers:
   - Default
   - TransparentFX

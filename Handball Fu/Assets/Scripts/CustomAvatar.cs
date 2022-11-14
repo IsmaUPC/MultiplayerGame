@@ -13,7 +13,7 @@ public class CustomAvatar : MonoBehaviour
     public GameObject[] gloves;
     public GameObject[] tails;
 
-    private PlayerData data;
+    private DataTransfer data;
     private List<GameObject[]> cosmetics = new List<GameObject[]>();
     private int[] indexs;
     private int bodyPart = 0;
@@ -23,7 +23,8 @@ public class CustomAvatar : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        data = GetComponent<PlayerData>();
+        data = GameObject.FindGameObjectWithTag("Data").GetComponent<DataTransfer>();
+        data.SetCustomAvatar(this);
 
         // Add all GameObject to list 
         cosmetics.Add(bodies);
@@ -49,12 +50,11 @@ public class CustomAvatar : MonoBehaviour
         if (dir != 0)
             transform.Rotate(Vector3.up, dir * rotateSpeed * Time.deltaTime);
     }
-    private void UpdateAvatar()
+    public void UpdateAvatar()
     {
-        for (int i = 0; i < indexs.Length; i++)
-        {
-            data.bodyParts[i] = cosmetics[i][indexs[i]];
-        }
+        data.cosmetics = cosmetics;
+        data.indexs = new int[cosmetics.Count];
+        data.indexs = indexs;
     }
 
     void OnSelector(InputValue value)
@@ -81,9 +81,6 @@ public class CustomAvatar : MonoBehaviour
                 bodyPart++;
                 if (bodyPart >= cosmetics.Count)
                     bodyPart = 0;
-
-                // TODO: Call this function on Start button
-                UpdateAvatar();
             }
         }
         
