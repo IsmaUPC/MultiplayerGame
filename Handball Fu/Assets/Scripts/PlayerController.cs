@@ -25,6 +25,10 @@ public class PlayerController : MonoBehaviour
     public float dashSpeed = 20;
     private TrailRenderer trail;
 
+    // Shoot
+    [HideInInspector] public GameObject projectile;
+    public Transform projectilePos;
+
     // States
     enum State { AWAKE, MOVE, DASH, ATTACK, LOAD_ARM, DIE };
     private State state = State.AWAKE;
@@ -136,6 +140,13 @@ public class PlayerController : MonoBehaviour
         }
 
         ResetPropHuntCount();
+    }
+
+    public void SpawnProjectile()
+    {
+        Instantiate(projectile, projectilePos.position, transform.rotation);
+
+        // TODO: Call shader mask to hide right punch
     }
 
     private void ResetPropHuntCount()

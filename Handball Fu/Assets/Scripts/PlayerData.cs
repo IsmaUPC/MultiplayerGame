@@ -20,13 +20,16 @@ public class PlayerData : MonoBehaviour
         startTrasnform = trans;
     }
 
-    public void SetBodyParts(List<Mesh[]> cosmetics, int[] indexs, bool spawnPlayerManual)
+    public void SetBodyParts(List<Mesh[]> cosmetics, GameObject projectile, int[] indexs, bool spawnPlayerManual)
     {
         for (int i = 0; i < indexs.Length; i++)
         {
             bodyParts[i].GetComponent<SkinnedMeshRenderer>().sharedMesh = cosmetics[i][indexs[i]];
         }
         if (!spawnPlayerManual)
+        {
             GetComponent<PropHunt>().SetBodyParts(bodyParts);
+            GetComponent<PlayerController>().projectile = projectile;
+        }
     }
 }

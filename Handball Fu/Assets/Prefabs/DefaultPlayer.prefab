@@ -937,6 +937,8 @@ MonoBehaviour:
   propHunt: {fileID: 9199772107878511850}
   dashTime: 0.2
   dashSpeed: 20
+  projectile: {fileID: 0}
+  projectilePos: {fileID: 6513695632484412280}
 --- !u!114 &5153129509673550620
 MonoBehaviour:
   m_ObjectHideFlags: 0

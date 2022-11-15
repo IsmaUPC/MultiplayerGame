@@ -37,7 +37,10 @@ public class PlayerSpawner : MonoBehaviour
             playerInput.gameObject.GetComponent<PlayerData>().SetStartTransform(spawnLocations[playerInput.playerIndex]);
 
             if(data)
-                playerInput.gameObject.GetComponent<PlayerData>().SetBodyParts(data.cosmetics, data.indexs, spawnPlayerManual);
+            {
+                data.projectilePrefab.GetComponent<MeshFilter>().mesh = data.projectiles[data.indexs[5]]; // 5 = gloves
+                playerInput.gameObject.GetComponent<PlayerData>().SetBodyParts(data.cosmetics, data.projectilePrefab, data.indexs, spawnPlayerManual);
+            }
         }  
         
         // TODO: Notify to server: Create this player on other clients

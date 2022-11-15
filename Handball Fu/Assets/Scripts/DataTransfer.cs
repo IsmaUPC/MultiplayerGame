@@ -12,6 +12,9 @@ public class DataTransfer : MonoBehaviour
     public Mesh[] gloves;
     public Mesh[] tails;
 
+    public Mesh[] projectiles;
+    public GameObject projectilePrefab;
+
     public List<Mesh[]> cosmetics = new List<Mesh[]>();
     public int[] indexs;
     private CustomAvatar ca;
