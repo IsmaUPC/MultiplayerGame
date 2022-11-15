@@ -4,12 +4,30 @@ using UnityEngine;
 
 public class DataTransfer : MonoBehaviour
 {
-    public List<GameObject[]> cosmetics = new List<GameObject[]>();
+    public Mesh[] bodies;
+    public Mesh[] headParts;
+    public Mesh[] eyes;
+    public Mesh[] mouthandNoses;
+    public Mesh[] bodyParts;
+    public Mesh[] gloves;
+    public Mesh[] tails;
+
+    public List<Mesh[]> cosmetics = new List<Mesh[]>();
     public int[] indexs;
     private CustomAvatar ca;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        // Add all GameObject to list 
+        cosmetics.Add(bodies);
+        cosmetics.Add(headParts);
+        cosmetics.Add(eyes);
+        cosmetics.Add(mouthandNoses);
+        cosmetics.Add(bodyParts);
+        cosmetics.Add(gloves);
+        cosmetics.Add(tails);
+
+        // Preserve GO
         DontDestroyOnLoad(this);
     }
 
@@ -20,6 +38,6 @@ public class DataTransfer : MonoBehaviour
 
     public void TransferData()
     {
-        ca.UpdateAvatar();
+        ca.UpdateAvatar();    
     }
 }

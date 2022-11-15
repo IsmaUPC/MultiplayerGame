@@ -11,6 +11,8 @@ public class PlayerSpawner : MonoBehaviour
 
     [HideInInspector] public bool spawnPlayerManual = false;
     [HideInInspector] public GameObject playerPrefab;
+
+    private DataTransfer data = null;
     private void Start()
     {
         if(spawnPlayerManual)
@@ -19,10 +21,11 @@ public class PlayerSpawner : MonoBehaviour
             im.playerPrefab = playerPrefab;
             im.JoinPlayer();
         }
+        data = GameObject.FindGameObjectWithTag("Data").GetComponent<DataTransfer>();
     }
     void OnPlayerJoined(PlayerInput playerInput)
     {
-        Debug.Log("PlayerInput ID: " + playerInput.playerIndex);
+        Debug.Log("PlayerInput ID: " + playerInput.playerIndex + "  Name: " + playerInput.gameObject.name);
 
         // Temporal condition, delete when we have other way to close sockets
         if(playerInput.gameObject.GetComponent<PlayerData>())
@@ -32,7 +35,12 @@ public class PlayerSpawner : MonoBehaviour
 
             // Set the start spawn position of the player using the location at the associated element into the array.
             playerInput.gameObject.GetComponent<PlayerData>().SetStartTransform(spawnLocations[playerInput.playerIndex]);
-        }        
+
+            if(data)
+                playerInput.gameObject.GetComponent<PlayerData>().SetBodyParts(data.cosmetics, data.indexs, spawnPlayerManual);
+        }  
+        
+        // TODO: Notify to server: Create this player on other clients
     }
 }
 
