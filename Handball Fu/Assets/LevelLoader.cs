@@ -15,6 +15,11 @@ public class LevelLoader : MonoBehaviour
 
     private float timer = 0;
 
+    void Awake()
+    {
+        DontDestroyOnLoad(this.gameObject);
+    }
+
     void Start()
     {
         ResetLevels();
@@ -49,6 +54,8 @@ public class LevelLoader : MonoBehaviour
         Debug.Log("Loaded scene: " + sceneName);
 
         levels.Remove(sceneName);
+
+        transition.Play("Crossfade_End");
     }
 
     public void ResetLevels()
