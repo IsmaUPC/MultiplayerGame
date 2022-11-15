@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.4964127, b: 0.57481724, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -464,6 +464,7 @@ MonoBehaviour:
   levelCount: 4
   transition: {fileID: 19985413}
   transitionTime: 1
+  circleWipe: {fileID: 1014316507}
 --- !u!114 &948665671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -505,6 +506,8 @@ GameObject:
   - component: {fileID: 1014316506}
   - component: {fileID: 1014316505}
   - component: {fileID: 1014316504}
+  - component: {fileID: 1014316507}
+  - component: {fileID: 1014316508}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -578,6 +581,38 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1014316507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014316503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5c5b7fba7bddb4aa03f4c39e416eba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shader: {fileID: 4800000, guid: f78a6131742a8cc4693c21408d15e4aa, type: 3}
+  radius: 2
+  horizontal: 16
+  verical: 9
+  duration: 1
+  fadeColour: {r: 1, g: 1, b: 1, a: 1}
+  fadeTexture: {fileID: 2800000, guid: f8f38bd36ccd3284ebd50b6cbef10476, type: 3}
+  offset: {x: 0, y: 0}
+--- !u!114 &1014316508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014316503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 768eea1ce04da7640b70e3ab55c3a48e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1132918765
 GameObject:
   m_ObjectHideFlags: 0
@@ -733,7 +768,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1202357589}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class LevelLoader : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class LevelLoader : MonoBehaviour
     public Animator transition;
 
     public float transitionTime = 1f;
+
+    public CircleWipeController circleWipe;
 
     //private float timer = 0;
 
@@ -46,17 +49,33 @@ public class LevelLoader : MonoBehaviour
 
     IEnumerator LoadLevel(string sceneName)
     {
-        transition.SetTrigger("Start");
+        //transition.SetTrigger("Start");
 
-        yield return new WaitForSeconds(transitionTime);
+        var mousePos = Mouse.current.position.ReadValue();
+        var x = (mousePos.x - Screen.width / 2f);
+        var y = (mousePos.y - Screen.height / 2f);
+        var offset = new Vector2(x / Screen.width, y / Screen.height);
+        circleWipe.offset = offset;
+        circleWipe.FadeOut();
 
-        SceneManager.LoadScene(sceneName);
+        yield return new WaitForSeconds(circleWipe.duration);
+        var asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        circleWipe.FadeIn();
+        yield return new WaitForSeconds(circleWipe.duration);
+
+        //SceneManager.LoadScene(sceneName);
 
         Debug.Log("Loaded scene: " + sceneName);
 
         levels.Remove(sceneName);
 
-        transition.Play("Crossfade_End");
+        //transition.Play("Crossfade_End");
     }
 
     public void ResetLevels()
