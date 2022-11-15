@@ -23,10 +23,7 @@ public class CustomAvatar : MonoBehaviour
 
         // Fill index[] to 0
         indexs = new int[cosmetics.Count];
-        for (int i = 0; i < indexs.Length; i++)
-        {
-            indexs[i] = 0;
-        }
+        indexs = data.indexs;
 
         // Fill body parts
         bodyParts = new GameObject[indexs.Length];
