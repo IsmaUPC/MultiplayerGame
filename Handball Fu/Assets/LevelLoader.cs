@@ -13,7 +13,7 @@ public class LevelLoader : MonoBehaviour
 
     public float transitionTime = 1f;
 
-    private float timer = 0;
+    //private float timer = 0;
 
     void Awake()
     {
@@ -29,18 +29,19 @@ public class LevelLoader : MonoBehaviour
     void Update()
     {
 
-        timer += Time.deltaTime;
+        // timer += Time.deltaTime;
 
-        if(timer >= 6.0f && levels.Count > 0)
-        {
-            LoadNextLevel();
-            timer = 0f;
-        }
+        // if(timer >= 6.0f && levels.Count > 0)
+        // {
+        //     //LoadNextLevel();
+        //     timer = 0f;
+        // }*
     }
 
-    public void LoadNextLevel()
+    public void OnNextLevel()
     {
-        StartCoroutine(LoadLevel(levels[Random.Range(0, levels.Count)]));
+        if(levels.Count > 0) 
+            StartCoroutine(LoadLevel(levels[Random.Range(0, levels.Count)]));
     }
 
     IEnumerator LoadLevel(string sceneName)
