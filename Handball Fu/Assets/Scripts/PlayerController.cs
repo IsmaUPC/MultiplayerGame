@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
 
     // Shoot
     [HideInInspector] public GameObject projectile;
+    [HideInInspector] public ActiveShader shader;
     public Transform projectilePos;
 
     // States
@@ -38,6 +39,8 @@ public class PlayerController : MonoBehaviour
     {
         trail = GetComponent<TrailRenderer>();
         state = State.MOVE;
+
+        shader = GetComponentInChildren<ActiveShader>();
     }
 
     // Update is called once per frame
@@ -144,7 +147,9 @@ public class PlayerController : MonoBehaviour
 
     public void SpawnProjectile()
     {
-        Instantiate(projectile, projectilePos.position, transform.rotation);
+        GameObject proj = Instantiate(projectile, projectilePos.position, transform.rotation);
+        proj.GetComponent<Projectile>().parent = this;
+        shader.MakeTransparent();
 
         // TODO: Call shader mask to hide right punch
     }

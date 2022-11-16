@@ -6,6 +6,7 @@ TagManager:
   tags:
   - NetWork
   - Data
+  - Floor
   layers:
   - Default
   - TransparentFX

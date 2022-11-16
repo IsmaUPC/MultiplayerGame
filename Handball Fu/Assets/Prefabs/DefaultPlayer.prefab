@@ -495,6 +495,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7446231889327580689}
   - component: {fileID: 7609813524756348727}
+  - component: {fileID: 7250431151837282973}
   m_Layer: 0
   m_Name: Glove02
   m_TagString: Untagged
@@ -537,7 +538,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ac8c63ca3b81ca041840a9c9d42aa2e2, type: 2}
+  - {fileID: 2100000, guid: 1cdc8b42ba4f7bd4899804c7b263e983, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -625,6 +626,18 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: -0.025102377, z: 0.94690526}
     m_Extent: {x: 1.4392316, y: 0.282662, z: 0.2909137}
   m_DirtyAABB: 0
+--- !u!114 &7250431151837282973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 457581159168928012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e384f0ab68b8b844b532cb90d5a64a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &552048188342594656
 GameObject:
   m_ObjectHideFlags: 0
@@ -758,7 +771,7 @@ GameObject:
   - component: {fileID: 1839459130}
   m_Layer: 0
   m_Name: DefaultPlayer
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -938,6 +951,7 @@ MonoBehaviour:
   dashTime: 0.2
   dashSpeed: 20
   projectile: {fileID: 0}
+  shader: {fileID: 0}
   projectilePos: {fileID: 6513695632484412280}
 --- !u!114 &5153129509673550620
 MonoBehaviour:
