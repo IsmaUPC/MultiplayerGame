@@ -86,10 +86,8 @@ public class ChatManager : MonoBehaviour
             {
                 // Contain the keyword style?
                 int index = text.IndexOf(stylesKeywords[i]);
-                Debug.Log(index);
                 // And user close it?
                 int index2 = text.IndexOf(stylesKeywords[i], index + 1);
-                Debug.Log(index2);
                 // Yes
                 if (index2 != -1)
                 {

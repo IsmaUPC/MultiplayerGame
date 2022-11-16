@@ -17,11 +17,12 @@ public class PropHunt : MonoBehaviour
     public float timeToConvert = 2;
     public bool iAmTransformed = false;
 
-    void Start()
+    public void SetBodyParts(GameObject[] parts)
     {
+        bodyParts = parts;
+        meshFilter = bodyParts[0].GetComponent<SkinnedMeshRenderer>();
         originalMesh = meshFilter.sharedMesh;
         originalMaterial = meshFilter.sharedMaterial;
-        bodyParts = GetComponent<PlayerData>().bodyParts;
     }
 
     // Change aspect to random object
@@ -34,7 +35,7 @@ public class PropHunt : MonoBehaviour
             meshFilter.sharedMaterial = newMaterials[index];
 
             // Hide cuurent meshes
-            for (int i = 0; i < bodyParts.Length; i++)
+            for (int i = 1; i < bodyParts.Length; i++)
             {
                 bodyParts[i].SetActive(false);
             }
@@ -51,7 +52,7 @@ public class PropHunt : MonoBehaviour
             meshFilter.sharedMaterial = originalMaterial;
 
             // Show original meshes
-            for (int i = 0; i < bodyParts.Length; i++)
+            for (int i = 1; i < bodyParts.Length; i++)
             {
                 bodyParts[i].SetActive(true);
             }

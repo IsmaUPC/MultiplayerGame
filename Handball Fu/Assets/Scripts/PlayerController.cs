@@ -25,6 +25,11 @@ public class PlayerController : MonoBehaviour
     public float dashSpeed = 20;
     private TrailRenderer trail;
 
+    // Shoot
+    [HideInInspector] public GameObject projectile;
+    [HideInInspector] public ActiveShader shader;
+    public Transform projectilePos;
+
     // States
     enum State { AWAKE, MOVE, DASH, ATTACK, LOAD_ARM, DIE };
     private State state = State.AWAKE;
@@ -34,6 +39,8 @@ public class PlayerController : MonoBehaviour
     {
         trail = GetComponent<TrailRenderer>();
         state = State.MOVE;
+
+        shader = GetComponentInChildren<ActiveShader>();
     }
 
     // Update is called once per frame
@@ -136,6 +143,15 @@ public class PlayerController : MonoBehaviour
         }
 
         ResetPropHuntCount();
+    }
+
+    public void SpawnProjectile()
+    {
+        GameObject proj = Instantiate(projectile, projectilePos.position, transform.rotation);
+        proj.GetComponent<Projectile>().parent = this;
+        shader.MakeTransparent();
+
+        // TODO: Call shader mask to hide right punch
     }
 
     private void ResetPropHuntCount()
