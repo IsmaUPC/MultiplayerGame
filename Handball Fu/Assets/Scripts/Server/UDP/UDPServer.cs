@@ -438,11 +438,6 @@ public class UDPServer : MonoBehaviour
 
                         for(int i = 0; i < clients.Length; ++i)
                         {
-                            if (clients[i].ipep.Equals(e.ipep))
-                            {
-                                clients[i].lastContact = 0.0F;
-                                break;
-                            }
 
                             if (clients[i].ipep != null)
                             {
@@ -453,6 +448,13 @@ public class UDPServer : MonoBehaviour
                                 lock (sendQueueLock)
                                 {
                                     sendQueue.Enqueue(ev);
+                                }
+                                if(clients[i].ipep.Equals(e.ipep))
+                                {
+                                    lock(clientsLock)
+                                    {
+                                        clientsData[i].lastContact = 0.0F;
+                                    }
                                 }
                             }
                         }
