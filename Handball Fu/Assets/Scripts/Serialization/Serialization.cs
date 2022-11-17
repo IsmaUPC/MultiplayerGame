@@ -28,23 +28,23 @@ public class Serialization : MonoBehaviour
     public void Deserialize()
     {
 
-        InitializeReader();
+        //InitializeReader();
 
         Debug.Log(reader.ReadInt32());
 
 
     }
 
-    public byte[] SerializePosition(int id, char type, int netId, Transform pos)
+    public byte[] SerializeTransform(int id, char type, int netId, Transform pos)
     {
 
         InitializeWriter();
-        float x = pos.position.x;
-        float z = pos.position.z;
+        double x = pos.position.x;
+        double z = pos.position.z;
 
-        float rx = pos.eulerAngles.x;
-        float ry = pos.eulerAngles.y;
-        float rz = pos.eulerAngles.z;
+        double rx = pos.eulerAngles.x;
+        double ry = pos.eulerAngles.y;
+        double rz = pos.eulerAngles.z;
 
         writer.Write(id);
         writer.Write(type);
@@ -61,11 +61,32 @@ public class Serialization : MonoBehaviour
 
         return bytes;
     }
+    public byte[] DeserializeTransform(byte[] data)
+    {
 
-    private void InitializeReader()
+        InitializeReader(data);
+        int id= reader.ReadInt32();
+        char type= reader.ReadChar();
+        int netId= reader.ReadInt32();
+
+        float x = (float)reader.ReadDouble();
+        float z = (float)reader.ReadDouble();
+
+        float rx = (float)reader.ReadDouble();
+        float ry = (float)reader.ReadDouble();
+        float rz = (float)reader.ReadDouble();
+
+        bytes = stream.ToArray();
+
+        return bytes;
+    }
+
+
+
+    private void InitializeReader(byte[] data)
     {
         stream = new MemoryStream();
-        stream.Write(bytes, 0, bytes.Length);
+        stream.Write(data, 0, data.Length);
 
         BinaryReader reader = new BinaryReader(stream);
         stream.Seek(0, SeekOrigin.Begin);
