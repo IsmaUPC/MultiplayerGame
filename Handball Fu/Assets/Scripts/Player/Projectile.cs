@@ -6,25 +6,33 @@ public class Projectile : MonoBehaviour
 {
     public float velocity = 10;
     public int maxBounce = 4;
+    public float timeToLive = 4;
     private int currentBounce = 0;
     [HideInInspector] public PlayerController parent;
+    private float initY = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        initY = transform.position.y;
     }
 
     // Update is called once per frame
     void Update()
     {
         transform.position += transform.forward * velocity * Time.deltaTime;
+        transform.position = new Vector3(transform.position.x, initY, transform.position.z);
+        timeToLive -= Time.deltaTime;
+        if (timeToLive < 0.0F)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         // Check no collision with his owner
-        if(collision.gameObject != parent.gameObject)
+        if (collision.gameObject != parent.gameObject)
         {
             currentBounce++;
             if (currentBounce >= maxBounce)
@@ -43,6 +51,6 @@ public class Projectile : MonoBehaviour
                 newDir = Vector3.Reflect(curDir, contact.normal);
                 transform.rotation = Quaternion.FromToRotation(Vector3.forward, newDir);
             }
-        }        
+        }
     }
 }
