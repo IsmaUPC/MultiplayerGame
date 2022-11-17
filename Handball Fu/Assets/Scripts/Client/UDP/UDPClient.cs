@@ -358,6 +358,7 @@ public class UDPClient : MonoBehaviour
     {
         if (threadProcess.IsAlive) threadProcess.Abort();
         if (threadRecieve.IsAlive) threadRecieve.Abort();
+        DisconnectFromServer();
         serverSocket.Close();
         Debug.Log("Shuttingdown udp client");
     }
