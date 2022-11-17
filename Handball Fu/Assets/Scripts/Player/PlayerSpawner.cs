@@ -15,34 +15,30 @@ public class PlayerSpawner : MonoBehaviour
     private DataTransfer data = null;
     private void Start()
     {
-        if(spawnPlayerManual)
+        data = GameObject.FindGameObjectWithTag("Data").GetComponent<DataTransfer>();
+        if (spawnPlayerManual)
         {
             im = GetComponent<PlayerInputManager>();
             im.playerPrefab = playerPrefab;
             im.JoinPlayer();
         }
-        data = GameObject.FindGameObjectWithTag("Data").GetComponent<DataTransfer>();
     }
     void OnPlayerJoined(PlayerInput playerInput)
     {
         Debug.Log("PlayerInput ID: " + playerInput.playerIndex + "  Name: " + playerInput.gameObject.name);
+        PlayerData playerData = playerInput.gameObject.GetComponent<PlayerData>();
 
-        // Temporal condition, delete when we have other way to close sockets
-        if(playerInput.gameObject.GetComponent<PlayerData>())
+        // Set the player ID, add one to the index to start at Player 1
+        playerData.playerID = playerInput.playerIndex;
+
+        // Set the start spawn position of the player using the location at the associated element into the array.
+        playerData.SetStartTransform(spawnLocations[playerInput.playerIndex]);
+
+        if (data)
         {
-            // Set the player ID, add one to the index to start at Player 1
-            playerInput.gameObject.GetComponent<PlayerData>().playerID = playerInput.playerIndex;
-
-            // Set the start spawn position of the player using the location at the associated element into the array.
-            playerInput.gameObject.GetComponent<PlayerData>().SetStartTransform(spawnLocations[playerInput.playerIndex]);
-
-            if(data)
-            {
-                data.projectilePrefab.GetComponent<MeshFilter>().mesh = data.projectiles[data.indexs[5]]; // 5 = gloves
-                playerInput.gameObject.GetComponent<PlayerData>().SetBodyParts(data.cosmetics, data.projectilePrefab, data.indexs, spawnPlayerManual);
-            }
-        }  
-        
+            data.projectilePrefab.GetComponent<MeshFilter>().mesh = data.projectiles[data.indexs[5]]; // 5 = gloves
+            playerData.SetBodyParts(data.cosmetics, data.projectilePrefab, data.indexs);
+        }
         // TODO: Notify to server: Create this player on other clients
     }
 }
