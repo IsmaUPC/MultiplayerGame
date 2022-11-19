@@ -96,9 +96,10 @@ public class Serialization : MonoBehaviour
         MemoryStream ms = new MemoryStream(m);
 
         BinaryReader br = new BinaryReader(ms);
-        readStream.Seek(2, SeekOrigin.Begin);
+        ms.Seek(2, SeekOrigin.Begin);
 
-        return br.ReadString();
+        string aux = br.ReadString();
+        return aux;
     }
 
     public byte[] SerializeChatMessage(byte id, string message)
