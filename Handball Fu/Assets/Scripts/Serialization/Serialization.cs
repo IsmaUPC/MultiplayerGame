@@ -175,10 +175,9 @@ public class Serialization : MonoBehaviour
 
     private void InitializeReader(byte[] data)
     {
-        readStream = new MemoryStream();
-        readStream.Write(data, 0, data.Length);
+        readStream = new MemoryStream(data);
 
-        BinaryReader reader = new BinaryReader(readStream);
+        reader = new BinaryReader(readStream);
         readStream.Seek(0, SeekOrigin.Begin);
     }
     private void InitializeWriter()
