@@ -231,7 +231,8 @@ public class UDPClient : MonoBehaviour
                         if (e.id == 0)
                         {
                             IPAddress ip = sep.Address;
-                            sep = new IPEndPoint(ip, serializer.DeserializeConnectionPort(e.data));
+                            int port = serializer.DeserializeConnectionPort(e.data);
+                            sep = new IPEndPoint(ip, port);
                             portIdx = sep.Port - 9051;
                             Debug.Log("New endpoint connection:" + sep.ToString());
                             lock (stateLock)

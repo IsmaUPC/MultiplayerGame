@@ -35,7 +35,7 @@ public class Serialization : MonoBehaviour
         InitializeWriter();
 
         writer.Write(id);
-        writer.Write("C");
+        writer.Write('C');
         writer.Write(name);
 
         return writeStream.ToArray();
@@ -46,7 +46,7 @@ public class Serialization : MonoBehaviour
         InitializeWriter();
 
         writer.Write(id);
-        writer.Write("C");
+        writer.Write('C');
         writer.Write(port);
 
         return writeStream.ToArray();
@@ -57,7 +57,7 @@ public class Serialization : MonoBehaviour
         InitializeWriter();
 
         writer.Write(0);
-        writer.Write("F");
+        writer.Write('F');
 
         return writeStream.ToArray();
     }
@@ -74,7 +74,7 @@ public class Serialization : MonoBehaviour
         InitializeWriter();
 
         writer.Write(id);
-        writer.Write("K");
+        writer.Write('K');
 
         return writeStream.ToArray();
     }
@@ -84,7 +84,7 @@ public class Serialization : MonoBehaviour
         InitializeWriter();
 
         writer.Write(0);
-        writer.Write("M");
+        writer.Write('M');
         writer.Write(color);
         writer.Write(username);
 
@@ -97,7 +97,7 @@ public class Serialization : MonoBehaviour
         InitializeWriter();
 
         writer.Write(id);
-        writer.Write("M");
+        writer.Write('M');
         writer.Write(message);
 
         return writeStream.ToArray();
@@ -108,7 +108,7 @@ public class Serialization : MonoBehaviour
         InitializeWriter();
 
         writer.Write(id);
-        writer.Write("D");
+        writer.Write('D');
 
         return writeStream.ToArray();
     }
