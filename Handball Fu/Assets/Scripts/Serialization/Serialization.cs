@@ -83,12 +83,14 @@ public class Serialization : MonoBehaviour
     {
         InitializeWriter();
 
-        writer.Write(0);
+        writer.Write(((byte)0));
         writer.Write('M');
         writer.Write(color);
         writer.Write(username);
+        byte[] aux = new byte[actualMessage.Length - 2];
+        Array.Copy(actualMessage, 2, aux, 0, aux.Length);
 
-        IEnumerable<byte> ret = writeStream.ToArray().Concat(actualMessage);
+        IEnumerable<byte> ret = writeStream.ToArray().Concat(aux);
         return ret.ToArray();
     }
 

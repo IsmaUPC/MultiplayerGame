@@ -497,7 +497,7 @@ public class UDPServer : MonoBehaviour
 
                         for (int i = 0; i < clients.Length; ++i)
                         {
-                            if (clients[i].ipep.Equals(e.ipep))
+                            if (clients[i].ipep != null && clients[i].ipep.Equals(e.ipep))
                             {
                                 int p = 9050;
                                 for (int j = 0; j < prts.Length; ++j)
