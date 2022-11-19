@@ -35,7 +35,11 @@ public class DataTransfer : MonoBehaviour
         // Preserve GO
         DontDestroyOnLoad(this);
 
-        portId = FindObjectOfType<UDPClient>().GetPortIdx();
+        UDPClient tmp = FindObjectOfType<UDPClient>();
+        if (tmp != null)
+        {
+            portId = tmp.GetPortIdx();
+        }
     }
 
     public void SetCustomAvatar(CustomAvatar custom)

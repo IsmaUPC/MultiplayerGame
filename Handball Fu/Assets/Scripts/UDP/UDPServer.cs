@@ -119,6 +119,7 @@ public class UDPServer : MonoBehaviour
 
             if (initialPort + i > 9050)
             {
+                ports[i - 1].remoteIP = IPAddress.Any;
                 ports[i - 1].port = initialPort + i;
                 ports[i - 1].isUsed = false;
             }

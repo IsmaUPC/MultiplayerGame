@@ -12,12 +12,12 @@ public class Home : MonoBehaviour
     public void OnBackClick()
     {
         // Provisional
-        GameObject[] go = GameObject.FindGameObjectsWithTag("NetWork");
-        UDPClient udp = go[0].GetComponent<UDPClient>();
-        if (go[0] != null)
+        GameObject go = GameObject.FindGameObjectWithTag("NetWork");
+        UDPClient udp = go.GetComponent<UDPClient>();
+        if (go != null)
         {
-            if(udp != null) udp.DisconnectFromServer();
-            Destroy(go[0]);
+            if(udp != null) udp.ShutdownClient();
+            Destroy(go);
         }
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
