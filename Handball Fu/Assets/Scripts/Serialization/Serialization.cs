@@ -8,7 +8,6 @@ using System.Text;
 
 public class Serialization : MonoBehaviour
 {
-
     int integer = 1;
     static MemoryStream stream;
     BinaryWriter writer;
@@ -18,33 +17,26 @@ public class Serialization : MonoBehaviour
     public void Serialize(int DataInt)
     {
         InitializeWriter();
-
-
-        //TODO:
         writer.Write(DataInt);
         bytes = stream.ToArray();
     }
 
     public void Deserialize()
     {
-
         //InitializeReader();
-
         Debug.Log(reader.ReadInt32());
-
-
     }
 
-    public byte[] SerializeTransform(int id, char type, int netId, Transform pos)
+    public byte[] SerializeTransform(int id, char type, int netId, Transform t)
     {
 
         InitializeWriter();
-        double x = pos.position.x;
-        double z = pos.position.z;
+        double x = t.position.x;
+        double z = t.position.z;
 
-        double rx = pos.eulerAngles.x;
-        double ry = pos.eulerAngles.y;
-        double rz = pos.eulerAngles.z;
+        double rx = t.eulerAngles.x;
+        double ry = t.eulerAngles.y;
+        double rz = t.eulerAngles.z;
 
         writer.Write(id);
         writer.Write(type);
@@ -75,8 +67,6 @@ public class Serialization : MonoBehaviour
         float rx = (float)reader.ReadDouble();
         float ry = (float)reader.ReadDouble();
         float rz = (float)reader.ReadDouble();
-
-        bytes = stream.ToArray();
 
         return bytes;
     }
