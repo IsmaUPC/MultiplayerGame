@@ -64,7 +64,7 @@ public class Serialization : MonoBehaviour
 
     public string DeserializeUsername(byte[] data)
     {
-        InitializeReader(data);
+        InitializeReader(data, 2);
 
         return reader.ReadString();
     }
@@ -115,13 +115,13 @@ public class Serialization : MonoBehaviour
 
     public string DeserializeChatMessage(byte[] data)
     {
-        InitializeReader(data);
+        InitializeReader(data, 2);
         return reader.ReadString();
     }
 
     public int DeserializeConnectionPort(byte[] data)
     {
-        InitializeReader(data);
+        InitializeReader(data, 2);
         return reader.ReadInt32();
     }
 
@@ -162,7 +162,7 @@ public class Serialization : MonoBehaviour
     // TODO
     public void DeserializeTransform(byte[] data)
     {
-        InitializeReader(data);
+        InitializeReader(data, 2);
 
         float x = (float)reader.ReadDouble();
         float z = (float)reader.ReadDouble();
@@ -173,13 +173,14 @@ public class Serialization : MonoBehaviour
 
     }
 
-    private void InitializeReader(byte[] data)
+    private void InitializeReader(byte[] data, int pos = 0)
     {
         readStream = new MemoryStream(data);
 
         reader = new BinaryReader(readStream);
-        readStream.Seek(0, SeekOrigin.Begin);
+        readStream.Seek(pos, SeekOrigin.Begin);
     }
+
     private void InitializeWriter()
     {
         bytes = new byte[0];
