@@ -17,7 +17,6 @@ public class UDPClient : MonoBehaviour
         EVENT_DENIEDCONNECT,    // No more client free spaces
         EVENT_KEEPCONNECT,      // A client is still connected
         EVENT_MESSAGE,          // A client sent a message
-        EVENT_NAMES,            // Send client usernames
         EVENT_UPDATE,           // A client sent an updated "transform"
     };
     enum CONNECTION_STATE
@@ -32,13 +31,15 @@ public class UDPClient : MonoBehaviour
     struct Event
     {
         public EVENT_TYPE type; // What kind of event is
-        public string data;     // Event data itself
+        public byte[] data;     // Event data itself
+        public byte id;
     }
 
     struct ClientData
     {
         public string name;
         public string id;
+        public GameObject clientPlayer;
     }
 
     IPAddress host;
@@ -56,7 +57,7 @@ public class UDPClient : MonoBehaviour
     private object clientsLock = new object();
     private object messagesLock = new object();
 
-    string myID;
+    byte myID;
 
     private CONNECTION_STATE state;
     private Queue<Event> eventQueue;
@@ -73,7 +74,6 @@ public class UDPClient : MonoBehaviour
     public void ClientStart()
     {
         portIdx = -1;
-        serializer = FindObjectOfType<Serialization>();
         myID = GetHostID();
 
         serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -87,6 +87,8 @@ public class UDPClient : MonoBehaviour
 
         timeOut = 5.0F;
 
+        serializer = new Serialization();
+
         threadProcess = new Thread(ThreadProcessData);
         threadRecieve = new Thread(ThreadRecieveData);
         threadProcess.Start();
@@ -96,16 +98,16 @@ public class UDPClient : MonoBehaviour
     void Update()
     {
         CONNECTION_STATE st;
-        lock(stateLock)
+        lock (stateLock)
         {
             st = state;
         }
         if (st == CONNECTION_STATE.CONNECTING)
         {
             timeOut -= Time.deltaTime;
-            if(timeOut < 0.0F)
+            if (timeOut < 0.0F)
             {
-                lock(stateLock)
+                lock (stateLock)
                 {
                     state = CONNECTION_STATE.FAILED;
                 }
@@ -132,10 +134,8 @@ public class UDPClient : MonoBehaviour
 
         sep = new IPEndPoint(currentIP, 9050);
 
-        string tmp = myID+"C"+username;
-        byte[] data = new byte[1024];
-        data = Encoding.ASCII.GetBytes(tmp);
-        Debug.Log(tmp + " " + data.Length.ToString() + " " + sep.Address.ToString()) ;
+        byte[] data;
+        data = serializer.SerializeConnection(myID, username);
         serverSocket.SendTo(data, data.Length, SocketFlags.None, sep);
 
         return true;
@@ -167,83 +167,45 @@ public class UDPClient : MonoBehaviour
                 // Get data
                 int recv;
                 byte[] data = new byte[1024];
-                string tmpMessage;
 
                 IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
                 EndPoint remote = (EndPoint)sender;
 
                 recv = ((Socket)rr[i]).ReceiveFrom(data, ref remote);
-                tmpMessage = Encoding.ASCII.GetString(data, 0, recv);
-                Event e;
+                (byte id, char type) header = serializer.DeserializeHeader(data);
+
+                Event e = new Event();
+                e.data = serializer.GetReaderStreamBytes();
+                e.id = header.id;
 
                 // Check what event type it is and save it to process
-                switch (tmpMessage[3])
+                switch (header.type)
                 {
                     case 'C':
-                        e = new Event();
                         e.type = EVENT_TYPE.EVENT_CONNECTION;
-                        e.data = tmpMessage;
-                        lock (eventQueueLock)
-                        {
-                            eventQueue.Enqueue(e);
-                        }
                         break;
                     case 'D':
-                        e = new Event();
                         e.type = EVENT_TYPE.EVENT_DISCONNETION;
-                        e.data = tmpMessage;
-                        lock (eventQueueLock)
-                        {
-                            eventQueue.Enqueue(e);
-                        }
                         break;
                     case 'F':
-                        e = new Event();
                         e.type = EVENT_TYPE.EVENT_DENIEDCONNECT;
-                        e.data = tmpMessage;
-                        lock (eventQueueLock)
-                        {
-                            eventQueue.Enqueue(e);
-                        }
                         break;
                     case 'K':
-                        e = new Event();
                         e.type = EVENT_TYPE.EVENT_KEEPCONNECT;
-                        e.data = tmpMessage;
-                        lock (eventQueueLock)
-                        {
-                            eventQueue.Enqueue(e);
-                        }
                         break;
                     case 'M':
-                        e = new Event();
                         e.type = EVENT_TYPE.EVENT_MESSAGE;
-                        e.data = tmpMessage;
-                        lock (eventQueueLock)
-                        {
-                            eventQueue.Enqueue(e);
-                        }
-                        break;
-                    case 'N':
-                        e = new Event();
-                        e.type=EVENT_TYPE.EVENT_NAMES;
-                        e.data = tmpMessage;
-                        lock(eventQueueLock)
-                        {
-                            eventQueue.Enqueue(e);
-                        }
                         break;
                     case 'U':
-                        e = new Event();
                         e.type = EVENT_TYPE.EVENT_UPDATE;
-                        e.data = tmpMessage;
-                        lock (eventQueueLock)
-                        {
-                            eventQueue.Enqueue(e);
-                        }
                         break;
                     default:
                         break;
+                }
+
+                lock (eventQueueLock)
+                {
+                    eventQueue.Enqueue(e);
                 }
             }
         }
@@ -251,7 +213,7 @@ public class UDPClient : MonoBehaviour
 
     private void ThreadProcessData()
     {
-        while(true)
+        while (true)
         {
             Queue<Event> events;
             lock (eventQueueLock)
@@ -266,13 +228,13 @@ public class UDPClient : MonoBehaviour
                 {
                     case EVENT_TYPE.EVENT_CONNECTION:
 
-                        if(e.data.Substring(0,3) == "000")
+                        if (e.id == 0)
                         {
                             IPAddress ip = sep.Address;
-                            sep = new IPEndPoint(ip, int.Parse(e.data.Substring(4, 4)));
+                            sep = new IPEndPoint(ip, serializer.DeserializeConnectionPort(e.data));
                             portIdx = sep.Port - 9051;
                             Debug.Log("New endpoint connection:" + sep.ToString());
-                            lock(stateLock)
+                            lock (stateLock)
                             {
                                 state = CONNECTION_STATE.CONNECTED;
                             }
@@ -287,26 +249,14 @@ public class UDPClient : MonoBehaviour
                         break;
                     case EVENT_TYPE.EVENT_KEEPCONNECT:
 
-                        if (e.data.Substring(0, 3) == "000")
+                        if (e.id == 0)
                         {
-                            byte[] data = new byte[4];
-                            string tmp = myID + "K";
-                            data = Encoding.ASCII.GetBytes(tmp);
+                            byte[] data;
+                            data = serializer.SerializeKeepConnect(myID);
                             lock (socketLock)
                             {
                                 serverSocket.SendTo(data, SocketFlags.None, sep);
                             }
-                        }
-
-                        break;
-                    case EVENT_TYPE.EVENT_NAMES:
-
-                        string[] d = e.data.Substring(4).Split(';');
-                        ClientData[] c = new ClientData[d.Length];
-                        for (int i = 0; i < d.Length - 1; ++i)
-                        {
-                            c[i].id = d[i].Substring(0, 3);
-                            c[i].name = d[i].Substring(3);
                         }
 
                         break;
@@ -321,7 +271,7 @@ public class UDPClient : MonoBehaviour
                     case EVENT_TYPE.EVENT_MESSAGE:
                         lock (messagesLock)
                         {
-                            chatMessages.Enqueue(e.data.Substring(4));
+                            chatMessages.Enqueue(serializer.DeserializeChatMessage(e.data));
 
                         }
                         break;
@@ -353,20 +303,18 @@ public class UDPClient : MonoBehaviour
 
     public void SendMessageToServer(string message)
     {
-        byte[] data = new byte[1024];
-        string tmp = myID + "M" + message;
-        data = Encoding.ASCII.GetBytes(tmp);
-        lock(socketLock)
-        { 
-        serverSocket.SendTo(data, SocketFlags.None, sep);
+        byte[] data;
+        data = serializer.SerializeChatMessage(myID, message);
+        lock (socketLock)
+        {
+            serverSocket.SendTo(data, SocketFlags.None, sep);
         }
     }
 
     public void DisconnectFromServer()
     {
-        string tmp = myID + "D";
-        byte[] data = new byte[4];
-        data = Encoding.ASCII.GetBytes(tmp);
+        byte[] data;
+        data = serializer.SerializeDisconnection(myID);
         if (isSocketAlive)
         {
             lock (socketLock)
@@ -389,14 +337,14 @@ public class UDPClient : MonoBehaviour
     public int GetCurrentState()
     {
         int ret;
-        lock(stateLock)
+        lock (stateLock)
         {
             ret = ((int)state);
         }
         return ret;
     }
 
-    private string GetHostID()
+    private byte GetHostID()
     {
         IPHostEntry entry = Dns.GetHostEntry(Dns.GetHostName());
         for (int i = 0; i < entry.AddressList.Length; ++i)
@@ -406,12 +354,10 @@ public class UDPClient : MonoBehaviour
                 host = entry.AddressList[i];
                 int j = host.ToString().LastIndexOf(".");
                 string tmp = host.ToString().Substring(j + 1);
-                if (tmp.Length == 1) tmp = "00" + tmp;
-                if (tmp.Length == 2) tmp = "0" + tmp;
-                return tmp;
+                return byte.Parse(tmp);
             }
         }
-        return "";
+        return 0;
     }
 
     private void OnDestroy()

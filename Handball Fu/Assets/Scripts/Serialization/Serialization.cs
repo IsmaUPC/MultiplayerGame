@@ -5,26 +5,133 @@ using UnityEngine;
 using System;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 public class Serialization : MonoBehaviour
 {
-    int integer = 1;
-    static MemoryStream stream;
+    static MemoryStream readStream;
+    static MemoryStream writeStream;
     BinaryWriter writer;
     BinaryReader reader;
     byte[] bytes;
 
-    public void Serialize(int DataInt)
+    public byte[] GetReaderStreamBytes()
     {
-        InitializeWriter();
-        writer.Write(DataInt);
-        bytes = stream.ToArray();
+        return readStream.ToArray();
     }
 
-    public void Deserialize()
+    public (byte, char) DeserializeHeader(byte[] data)
     {
-        //InitializeReader();
-        Debug.Log(reader.ReadInt32());
+        InitializeReader(data);
+
+        byte id = reader.ReadByte();
+        char type = reader.ReadChar();
+
+        return (id, type);
+    }
+
+    public byte[] SerializeConnection(byte id, string name)
+    {
+        InitializeWriter();
+
+        writer.Write(id);
+        writer.Write("C");
+        writer.Write(name);
+
+        return writeStream.ToArray();
+    }
+
+    public byte[] SerializeConnection(byte id, int port)
+    {
+        InitializeWriter();
+
+        writer.Write(id);
+        writer.Write("C");
+        writer.Write(port);
+
+        return writeStream.ToArray();
+    }
+
+    public byte[] SerializeDeniedConnection()
+    {
+        InitializeWriter();
+
+        writer.Write(0);
+        writer.Write("F");
+
+        return writeStream.ToArray();
+    }
+
+    public string DeserializeUsername(byte[] data)
+    {
+        InitializeReader(data);
+
+        return reader.ReadString();
+    }
+
+    public byte[] SerializeKeepConnect(byte id)
+    {
+        InitializeWriter();
+
+        writer.Write(id);
+        writer.Write("K");
+
+        return writeStream.ToArray();
+    }
+
+    public byte[] SerializeChatMessage(int color, string username, byte[] actualMessage)
+    {
+        InitializeWriter();
+
+        writer.Write(0);
+        writer.Write("M");
+        writer.Write(color);
+        writer.Write(username);
+
+        IEnumerable<byte> ret = writeStream.ToArray().Concat(actualMessage);
+        return ret.ToArray();
+    }
+
+    public byte[] SerializeChatMessage(byte id, string message)
+    {
+        InitializeWriter();
+
+        writer.Write(id);
+        writer.Write("M");
+        writer.Write(message);
+
+        return writeStream.ToArray();
+    }
+
+    public byte[] SerializeDisconnection(byte id)
+    {
+        InitializeWriter();
+
+        writer.Write(id);
+        writer.Write("D");
+
+        return writeStream.ToArray();
+    }
+
+    public string DeserializeChatMessage(byte[] data)
+    {
+        InitializeReader(data);
+        return reader.ReadString();
+    }
+
+    public int DeserializeConnectionPort(byte[] data)
+    {
+        InitializeReader(data);
+        return reader.ReadInt32();
+    }
+
+    public byte[] SerializePlayerCreation(int id, char type, ref Transform t)
+    {
+        byte[] bytes = new byte[2];
+        bytes[0] = 4;
+
+
+        return bytes;
     }
 
     public byte[] SerializeTransform(int id, char type, int netId, Transform t)
@@ -49,17 +156,13 @@ public class Serialization : MonoBehaviour
         writer.Write(ry);
         writer.Write(rz);
 
-        bytes = stream.ToArray();
-
-        return bytes;
+        return writeStream.ToArray();
     }
-    public byte[] DeserializeTransform(byte[] data)
-    {
 
+    // TODO
+    public void DeserializeTransform(byte[] data)
+    {
         InitializeReader(data);
-        int id= reader.ReadInt32();
-        char type= reader.ReadChar();
-        int netId= reader.ReadInt32();
 
         float x = (float)reader.ReadDouble();
         float z = (float)reader.ReadDouble();
@@ -68,24 +171,21 @@ public class Serialization : MonoBehaviour
         float ry = (float)reader.ReadDouble();
         float rz = (float)reader.ReadDouble();
 
-        return bytes;
     }
-
-
 
     private void InitializeReader(byte[] data)
     {
-        stream = new MemoryStream();
-        stream.Write(data, 0, data.Length);
+        readStream = new MemoryStream();
+        readStream.Write(data, 0, data.Length);
 
-        BinaryReader reader = new BinaryReader(stream);
-        stream.Seek(0, SeekOrigin.Begin);
+        BinaryReader reader = new BinaryReader(readStream);
+        readStream.Seek(0, SeekOrigin.Begin);
     }
     private void InitializeWriter()
     {
         bytes = new byte[0];
-        stream = new MemoryStream();
-        writer = new BinaryWriter(stream);
+        writeStream = new MemoryStream();
+        writer = new BinaryWriter(writeStream);
     }
 
 

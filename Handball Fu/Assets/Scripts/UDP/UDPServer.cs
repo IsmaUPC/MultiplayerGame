@@ -38,7 +38,6 @@ public class UDPServer : MonoBehaviour
         EVENT_DENIEDCONNECT,    // No more client free spaces               [F]
         EVENT_KEEPCONNECT,      // A client is still connected              [K]
         EVENT_MESSAGE,          // A client sent a message                  [M]
-        EVENT_NAMES,            // Send client usernames                    [N]
         EVENT_UPDATE,           // A client sent an updated "transform"     [U]
     };
 
@@ -46,8 +45,9 @@ public class UDPServer : MonoBehaviour
     struct Event
     {
         public EVENT_TYPE type; // What kind of event is
-        public string data;     // Event data itself
+        public byte[] data;     // Event data itself
         public IPEndPoint ipep;   // Who sent it
+        public byte senderId;
     }
 
     // Event list to process
@@ -63,7 +63,7 @@ public class UDPServer : MonoBehaviour
     {
         public string name;
         public IPEndPoint ipep;
-        public string id;
+        public byte id;
         public float lastContact;
         public int port;
     }
@@ -97,6 +97,8 @@ public class UDPServer : MonoBehaviour
 
     // Host address
     IPAddress host;
+
+    Serialization serializer;
 
     // Start is called before the first frame update
     void Start()
@@ -137,17 +139,19 @@ public class UDPServer : MonoBehaviour
         // Initialize event queue
         eventQueue = new Queue<Event>();
         sendQueue = new Queue<Event>();
+
+        serializer = new Serialization();
     }
 
     private void Update()
     {
 
         // Increment how much time has elapsed since last contact
-        lock(clientsLock)
+        lock (clientsLock)
         {
-            for(int i = 0; i < clientsData.Length; ++i)
+            for (int i = 0; i < clientsData.Length; ++i)
             {
-                if (clientsData[i].id != null)
+                if (clientsData[i].id != 0)
                 {
                     clientsData[i].lastContact += Time.deltaTime;
                 }
@@ -197,83 +201,43 @@ public class UDPServer : MonoBehaviour
                 // Get data
                 int recv;
                 byte[] data = new byte[1024];
-                string tmpMessage;
 
                 IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
                 EndPoint remote = (EndPoint)sender;
 
                 recv = ((Socket)rr[i]).ReceiveFrom(data, ref remote);
-                tmpMessage = Encoding.ASCII.GetString(data, 0, recv);
-                Event e;
+
+                (byte id, char type) header = serializer.DeserializeHeader(data);
+
+                Event e = new Event();
+                e.ipep = remote as IPEndPoint;
+                e.data = serializer.GetReaderStreamBytes();
+                e.senderId = header.id;
 
                 // Check what event type it is and save it to process
-                switch (tmpMessage[3])
+                switch (header.type)
                 {
                     case 'C': // Connection event only if its on port 9050
-                        IPEndPoint ep = ((Socket)rr[i]).LocalEndPoint as IPEndPoint;
-                        if (ep.Port != 9050)
-                            break;
-                        e = new Event();
                         e.type = EVENT_TYPE.EVENT_CONNECTION;
-                        e.data = tmpMessage;
-                        e.ipep = remote as IPEndPoint;
-                        lock (eventQueueLock)
-                        {
-                            eventQueue.Enqueue(e);
-                        }
                         break;
                     case 'D': // Desconnection event
-                        e = new Event();
                         e.type = EVENT_TYPE.EVENT_DISCONNETION;
-                        e.data = tmpMessage;
-                        e.ipep = remote as IPEndPoint;
-                        lock (eventQueueLock)
-                        {
-                            eventQueue.Enqueue(e);
-                        }
                         break;
                     case 'K': // Client is still connected
-                        e = new Event();
                         e.type = EVENT_TYPE.EVENT_KEEPCONNECT;
-                        e.data = tmpMessage;
-                        e.ipep = remote as IPEndPoint;
-                        lock (eventQueueLock)
-                        {
-                            eventQueue.Enqueue(e);
-                        }
                         break;
                     case 'M': // Message recieved
-                        e = new Event();
                         e.type = EVENT_TYPE.EVENT_MESSAGE;
-                        e.data = tmpMessage;
-                        e.ipep = remote as IPEndPoint;
-                        lock (eventQueueLock)
-                        {
-                            eventQueue.Enqueue(e);
-                        }
                         break;
                     case 'U': // Update [STILL NOT USED]
-                        e = new Event();
                         e.type = EVENT_TYPE.EVENT_UPDATE;
-                        e.data = tmpMessage;
-                        e.ipep = remote as IPEndPoint;
-                        lock (eventQueueLock)
-                        {
-                            eventQueue.Enqueue(e);
-                        }
-                        break;
-                    case 'N': // Resquesting all users names [STILL NOT USED]
-                        e = new Event();
-                        e.type = EVENT_TYPE.EVENT_NAMES;
-                        e.data = tmpMessage;
-                        e.ipep = remote as IPEndPoint;
-                        lock(eventQueueLock)
-                        {
-                            eventQueue.Enqueue(e);
-                        }
                         break;
                     default:
                         break;
+                }
+                lock (eventQueueLock)
+                {
+                    eventQueue.Enqueue(e);
                 }
             }
         }
@@ -306,7 +270,7 @@ public class UDPServer : MonoBehaviour
                 {
                     clients = clientsData;
                 }
-                lock(portsLock)
+                lock (portsLock)
                 {
                     prts = ports;
                 }
@@ -317,7 +281,7 @@ public class UDPServer : MonoBehaviour
 
                         bool disconnected = false;
                         int playerIdx = -1;
-                        string name="";
+                        string name = "";
 
                         // The port is now available, clear old data and save client index
                         for (int i = 0; i < prts.Length; ++i)
@@ -328,7 +292,7 @@ public class UDPServer : MonoBehaviour
                                 {
                                     ports[i].isUsed = false;
                                     ports[i].remoteIP = IPAddress.Any;
-                                    playerIdx = ports[i].port- (initialPort + 1);
+                                    playerIdx = ports[i].port - (initialPort + 1);
                                     Debug.Log("Disconnected from port " + ports[i].port.ToString() + " with port id " + playerIdx.ToString());
                                 }
                                 disconnected = true;
@@ -347,17 +311,18 @@ public class UDPServer : MonoBehaviour
 
                             Event ev;
                             ev.type = EVENT_TYPE.EVENT_MESSAGE;
-                            ev.data = "000M" + name + " has disconnected!";
+                            ev.data = serializer.SerializeChatMessage(0, name + " has disconnected!");
                             ev.ipep = e.ipep;
+                            ev.senderId = e.senderId;
                             lock (eventQueueLock)
                             {
                                 eventQueue.Enqueue(ev);
-                            }  
+                            }
                         }
-                        
+
 
                         break;
-                        // Said client is still in touch
+                    // Said client is still in touch
                     case EVENT_TYPE.EVENT_KEEPCONNECT:
 
                         for (int i = 0; i < clients.Length; ++i)
@@ -374,7 +339,7 @@ public class UDPServer : MonoBehaviour
 
                         break;
 
-                        // Look for room for an incoming client
+                    // Look for room for an incoming client
                     case EVENT_TYPE.EVENT_CONNECTION:
                         bool canJoin = false;
                         int p = 0;
@@ -402,16 +367,16 @@ public class UDPServer : MonoBehaviour
                         }
 
                         // Add client data
-                        for (int i = 0;canJoin && i < clients.Length; ++i)
+                        for (int i = 0; canJoin && i < clients.Length; ++i)
                         {
-                            if (clients[i].id == null)
+                            if (clients[i].id == 0)
                             {
                                 lock (clientsLock)
                                 {
                                     clientsData[i].lastContact = 0.0F;
                                     clientsData[i].ipep = e.ipep;
-                                    clientsData[i].id = e.data.Substring(0, 3);
-                                    clientsData[i].name = e.data.Substring(4);
+                                    clientsData[i].id = e.senderId;
+                                    clientsData[i].name = serializer.DeserializeUsername(e.data);
                                     clientsData[i].port = p;
                                     Debug.Log("User " + clients[i].name + " connected at port: " + clients[i].port);
                                 }
@@ -420,7 +385,7 @@ public class UDPServer : MonoBehaviour
                         }
 
                         // If a client cannot join, send him a timeout exception
-                        if(!canJoin)
+                        if (!canJoin)
                         {
                             Event ev = new Event();
                             ev.type = EVENT_TYPE.EVENT_DENIEDCONNECT;
@@ -434,10 +399,10 @@ public class UDPServer : MonoBehaviour
 
                         break;
 
-                        // Message
+                    // Message
                     case EVENT_TYPE.EVENT_MESSAGE:
 
-                        for(int i = 0; i < clients.Length; ++i)
+                        for (int i = 0; i < clients.Length; ++i)
                         {
 
                             if (clients[i].ipep != null)
@@ -446,13 +411,14 @@ public class UDPServer : MonoBehaviour
                                 ev.data = e.data;
                                 ev.ipep = clients[i].ipep;
                                 ev.type = EVENT_TYPE.EVENT_MESSAGE;
+                                ev.senderId = e.senderId;
                                 lock (sendQueueLock)
                                 {
                                     sendQueue.Enqueue(ev);
                                 }
-                                if(clients[i].ipep.Equals(e.ipep))
+                                if (clients[i].ipep.Equals(e.ipep))
                                 {
-                                    lock(clientsLock)
+                                    lock (clientsLock)
                                     {
                                         clientsData[i].lastContact = 0.0F;
                                     }
@@ -460,26 +426,6 @@ public class UDPServer : MonoBehaviour
                             }
                         }
 
-                        break;
-                    case EVENT_TYPE.EVENT_NAMES:
-                        {
-                            Event ev = new Event();
-                            string tmp = "000N";
-                            for(int i = 0; i < clients.Length; ++i)
-                            {
-                                if(e.ipep != clients[i].ipep)
-                                {
-                                    tmp += (clients[i].id + clients[i].name + ";");
-                                }
-                            }
-                            ev.type = EVENT_TYPE.EVENT_NAMES;
-                            ev.data = tmp;
-                            ev.ipep = e.ipep;
-                            lock(sendQueueLock)
-                            {
-                                sendQueue.Enqueue(ev);
-                            }
-                        }
                         break;
                     case EVENT_TYPE.EVENT_UPDATE:
                         break;
@@ -490,14 +436,14 @@ public class UDPServer : MonoBehaviour
                 // Check if someone has not been in touch in some time
                 for (int i = 0; i < clients.Length; ++i)
                 {
-                    if (clients[i].id != null && clients[i].lastContact > 2.5F)
+                    if (clients[i].id != 0 && clients[i].lastContact > 2.5F)
                     {
                         int ind = clients[i].port - initialPort;
-                        string data = "000K";
                         Event ev;
                         ev.ipep = clients[i].ipep;
                         ev.type = EVENT_TYPE.EVENT_KEEPCONNECT;
-                        ev.data = data;
+                        ev.data = serializer.SerializeKeepConnect(0);
+                        ev.senderId = 0;
                         lock (sendQueue)
                         {
                             sendQueue.Enqueue(ev);
@@ -514,7 +460,7 @@ public class UDPServer : MonoBehaviour
         while (true)
         {
             Queue<Event> sendEvents;
-            Ports[] prts= new Ports[6];
+            Ports[] prts = new Ports[6];
             lock (sendQueueLock)
             {
                 if (sendQueue != null && sendQueue.Count > 0)
@@ -527,7 +473,7 @@ public class UDPServer : MonoBehaviour
                     sendEvents = null;
                 }
             }
-            lock(portsLock)
+            lock (portsLock)
             {
                 prts = ports;
             }
@@ -544,12 +490,12 @@ public class UDPServer : MonoBehaviour
                     // Send the client which port has to use
                     case EVENT_TYPE.EVENT_CONNECTION:
 
-                        lock(portsLock)
+                        lock (portsLock)
                         {
                             prts = ports;
                         }
 
-                        for(int i = 0; i < clients.Length; ++i)
+                        for (int i = 0; i < clients.Length; ++i)
                         {
                             if (clients[i].ipep.Equals(e.ipep))
                             {
@@ -562,20 +508,19 @@ public class UDPServer : MonoBehaviour
                                         break;
                                     }
                                 }
-                                byte[] data = new byte[8];
-                                string tmp = "000C" + p.ToString();
-                                data = Encoding.ASCII.GetBytes(tmp);
+                                byte[] data = serializer.SerializeConnection(0, p);
 
                                 lock (socketsLock)
                                 {
-                                    ((Socket)clientSockets[0]).SendTo(data, clients[i].ipep); // TODO: refactor port process and only send it 
+                                    ((Socket)clientSockets[0]).SendTo(data, clients[i].ipep);
                                 }
 
                                 // Send to evey client that a new user has joined!
                                 Event ev;
                                 ev.type = EVENT_TYPE.EVENT_MESSAGE;
-                                ev.data = "000M" + clients[i].name + " has connected!";
+                                ev.data = serializer.SerializeChatMessage(0, clients[i].name + " has connected!");
                                 ev.ipep = null;
+                                ev.senderId = 0;
                                 lock (sendQueueLock)
                                 {
                                     sendQueue.Enqueue(ev);
@@ -587,12 +532,10 @@ public class UDPServer : MonoBehaviour
 
                         break;
 
-                        // Send failed connection message to said client
+                    // Send failed connection message to said client
                     case EVENT_TYPE.EVENT_DENIEDCONNECT:
                         {
-                            byte[] data = new byte[4];
-                            string tmp = "000F";
-                            data = Encoding.ASCII.GetBytes(tmp);
+                            byte[] data = serializer.SerializeDeniedConnection();
 
                             lock (socketsLock)
                             {
@@ -601,12 +544,12 @@ public class UDPServer : MonoBehaviour
                         }
                         break;
 
-                        // Send message to everyone! So we know data, that only server knows
-                        // such as color codes, ids and other
+                    // Send message to everyone! So we know data, that only server knows
+                    // such as color codes, ids and other
                     case EVENT_TYPE.EVENT_MESSAGE:
                         string n = "SERVER";
                         int colorIdx = 0;
-                        for(int i = 0;e.ipep != null && i < clients.Length; ++i)
+                        for (int i = 0; e.ipep != null && i < clients.Length; ++i)
                         {
                             if (clients[i].ipep.Equals(e.ipep))
                             {
@@ -617,12 +560,10 @@ public class UDPServer : MonoBehaviour
                         }
                         for (int i = 0; i < clients.Length; ++i)
                         {
-                            if (clients[i].id != null)
+                            if (clients[i].id != 0)
                             {
                                 int ind = clients[i].port - initialPort;
-                                byte[] data = new byte[1024];
-                                string tmp = "000M" + colorIdx.ToString() + n + ";" + e.data.Substring(4);
-                                data = Encoding.ASCII.GetBytes(tmp);
+                                byte[] data = serializer.SerializeChatMessage(colorIdx, n + ";", e.data);
                                 lock (socketsLock)
                                 {
                                     ((Socket)clientSockets[ind]).SendTo(data, clients[i].ipep);

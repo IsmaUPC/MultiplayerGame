@@ -32,5 +32,8 @@ public class WorldUpdateServer : MonoBehaviour
         
     }
 
-    //public void CreateWorldObject(byte type, )
+    public void CreateWorldObject(byte type)
+    {
+
+    }
 }
