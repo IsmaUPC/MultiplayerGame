@@ -61,6 +61,8 @@ public class UDPClient : MonoBehaviour
     private CONNECTION_STATE state;
     private Queue<Event> eventQueue;
 
+    private int portIdx;
+
     private Queue<string> chatMessages;
     Serialization serializer;
     private float timeOut;
@@ -68,6 +70,7 @@ public class UDPClient : MonoBehaviour
     // Start is called before the first frame update
     public void ClientStart()
     {
+        portIdx = -1;
         serializer = FindObjectOfType<Serialization>();
         myID = GetHostID();
 
@@ -263,6 +266,7 @@ public class UDPClient : MonoBehaviour
                         {
                             IPAddress ip = sep.Address;
                             sep = new IPEndPoint(ip, int.Parse(e.data.Substring(4, 4)));
+                            portIdx = sep.Port - 9051;
                             Debug.Log("New endpoint connection:" + sep.ToString());
                             lock(stateLock)
                             {
@@ -327,6 +331,11 @@ public class UDPClient : MonoBehaviour
                 }
             }
         }
+    }
+
+    public int GetPortIdx()
+    {
+        return portIdx;
     }
 
     public string GetLastMessage()

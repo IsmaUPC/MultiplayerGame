@@ -12,10 +12,20 @@ public class PlayerSpawner : MonoBehaviour
     [HideInInspector] public bool spawnPlayerManual = false;
     [HideInInspector] public GameObject playerPrefab;
 
+    public bool isCustomAvatarScene = false;
+
     private DataTransfer data = null;
+
+    private int[] cosmeticsIdxs;
+    private int portId;
+
     private void Start()
     {
         data = GameObject.FindGameObjectWithTag("Data").GetComponent<DataTransfer>();
+
+        portId = (isCustomAvatarScene) ? 0 : data.portId;
+        cosmeticsIdxs = data.indexs;
+
         if (spawnPlayerManual)
         {
             im = GetComponent<PlayerInputManager>();
@@ -25,21 +35,36 @@ public class PlayerSpawner : MonoBehaviour
     }
     void OnPlayerJoined(PlayerInput playerInput)
     {
-        Debug.Log("PlayerInput ID: " + playerInput.playerIndex + "  Name: " + playerInput.gameObject.name);
+        Debug.Log("PlayerInput ID: " + portId + "  Name: " + playerInput.gameObject.name);
         PlayerData playerData = playerInput.gameObject.GetComponent<PlayerData>();
 
         // Set the player ID, add one to the index to start at Player 1
-        playerData.playerID = playerInput.playerIndex;
+        playerData.playerID = portId;
 
         // Set the start spawn position of the player using the location at the associated element into the array.
-        playerData.SetStartTransform(spawnLocations[playerInput.playerIndex]);
+        playerData.SetStartTransform(spawnLocations[portId]);
 
         if (data)
         {
-            data.projectilePrefab.GetComponent<MeshFilter>().mesh = data.projectiles[data.indexs[5]]; // 5 = gloves
-            playerData.SetBodyParts(data.cosmetics, data.projectilePrefab, data.indexs);
+            data.projectilePrefab.GetComponent<MeshFilter>().mesh = data.projectiles[cosmeticsIdxs[5]]; // 5 = gloves
+            playerData.SetBodyParts(data.cosmetics, data.projectilePrefab, cosmeticsIdxs);
         }
-        // TODO: Notify to server: Create this player on other clients
+
+        if(portId == data.portId && !isCustomAvatarScene)
+        {
+            // Create remote player
+        }
+        else
+        {
+            playerInput.enabled = false;
+        }
+    }
+
+    public void SpawnNetPlayer(int[] cosmeticsIdxs, int portId)
+    {
+        this.cosmeticsIdxs = cosmeticsIdxs;
+        this.portId = portId;
+        im.JoinPlayer();
     }
 }
 

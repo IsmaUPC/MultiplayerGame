@@ -18,6 +18,8 @@ public class DataTransfer : MonoBehaviour
     public List<Mesh[]> cosmetics = new List<Mesh[]>();
     public int[] indexs;
     private CustomAvatar ca;
+
+    public int portId = 0;
     // Start is called before the first frame update
     void Awake()
     {
@@ -32,6 +34,8 @@ public class DataTransfer : MonoBehaviour
 
         // Preserve GO
         DontDestroyOnLoad(this);
+
+        portId = FindObjectOfType<UDPClient>().GetPortIdx();
     }
 
     public void SetCustomAvatar(CustomAvatar custom)
