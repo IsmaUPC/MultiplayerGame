@@ -67,6 +67,8 @@ public class UDPClient : MonoBehaviour
     Serialization serializer;
     private float timeOut;
 
+    private bool isSocketAlive;
+
     // Start is called before the first frame update
     public void ClientStart()
     {
@@ -75,6 +77,8 @@ public class UDPClient : MonoBehaviour
         myID = GetHostID();
 
         serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+        isSocketAlive = true;
 
         state = CONNECTION_STATE.DISCONNECTED;
 
@@ -363,9 +367,14 @@ public class UDPClient : MonoBehaviour
         string tmp = myID + "D";
         byte[] data = new byte[4];
         data = Encoding.ASCII.GetBytes(tmp);
-        lock (socketLock)
+        if (isSocketAlive)
         {
-            serverSocket.SendTo(data, SocketFlags.None, sep);
+            lock (socketLock)
+            {
+                serverSocket.SendTo(data, SocketFlags.None, sep);
+            }
+            serverSocket.Close();
+            isSocketAlive = false;
         }
     }
 
@@ -374,7 +383,6 @@ public class UDPClient : MonoBehaviour
         if (threadProcess.IsAlive) threadProcess.Abort();
         if (threadRecieve.IsAlive) threadRecieve.Abort();
         DisconnectFromServer();
-        serverSocket.Close();
         Debug.Log("Shuttingdown udp client");
     }
 

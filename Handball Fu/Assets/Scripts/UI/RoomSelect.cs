@@ -108,7 +108,7 @@ public class RoomSelect : MonoBehaviour
         GameObject lastObj = GameObject.FindGameObjectWithTag("NetWork");
         if (lastObj != null)
         {
-            lastObj.GetComponent<UDPServer>().OnServerClose();
+            lastObj.GetComponent<UDPClient>().ShutdownClient();
             Destroy(lastObj);
         }
         GameObject client;

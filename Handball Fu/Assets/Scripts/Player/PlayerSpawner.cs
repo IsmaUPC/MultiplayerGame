@@ -50,9 +50,13 @@ public class PlayerSpawner : MonoBehaviour
             playerData.SetBodyParts(data.cosmetics, data.projectilePrefab, cosmeticsIdxs);
         }
 
-        if(portId == data.portId && !isCustomAvatarScene)
+        if (portId == data.portId)
         {
-            // Create remote player
+            if (!isCustomAvatarScene)
+            {
+                // Create remote player
+
+            }
         }
         else
         {
