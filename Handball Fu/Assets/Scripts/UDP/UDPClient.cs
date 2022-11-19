@@ -65,7 +65,7 @@ public class UDPClient : MonoBehaviour
     private int portIdx;
 
     private Queue<string> chatMessages;
-    Serialization serializer;
+    private Serialization serializer;
     private float timeOut;
 
     private bool isSocketAlive;
@@ -87,7 +87,7 @@ public class UDPClient : MonoBehaviour
 
         timeOut = 5.0F;
 
-        serializer = new Serialization();
+        serializer = gameObject.AddComponent<Serialization>();
 
         threadProcess = new Thread(ThreadProcessData);
         threadRecieve = new Thread(ThreadRecieveData);

@@ -98,7 +98,7 @@ public class UDPServer : MonoBehaviour
     // Host address
     IPAddress host;
 
-    Serialization serializer;
+    private Serialization serializer;
 
     // Start is called before the first frame update
     void Start()
@@ -140,7 +140,7 @@ public class UDPServer : MonoBehaviour
         eventQueue = new Queue<Event>();
         sendQueue = new Queue<Event>();
 
-        serializer = new Serialization();
+        serializer = gameObject.AddComponent<Serialization>();
     }
 
     private void Update()
