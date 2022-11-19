@@ -41,19 +41,20 @@ public class LevelLoader : MonoBehaviour
         // }*
     }
 
-    public void OnNextLevel()
+    public void OnNextLevel(Vector2 pos)
     {
         if(levels.Count > 0) 
-            StartCoroutine(LoadLevel(levels[Random.Range(0, levels.Count)]));
+            StartCoroutine(LoadLevel(levels[Random.Range(0, levels.Count)], pos));
     }
 
-    IEnumerator LoadLevel(string sceneName)
+    IEnumerator LoadLevel(string sceneName, Vector2 position)
     {
         //transition.SetTrigger("Start");
 
-        var mousePos = Mouse.current.position.ReadValue();
-        var x = (mousePos.x - Screen.width / 2f);
-        var y = (mousePos.y - Screen.height / 2f);
+        // Find position where the center of the circle will be
+        //var mousePos = Mouse.current.position.ReadValue();
+        var x = (position.x - Screen.width / 2f);
+        var y = (position.y - Screen.height / 2f);
         var offset = new Vector2(x / Screen.width, y / Screen.height);
         circleWipe.offset = offset;
         circleWipe.FadeOut();
