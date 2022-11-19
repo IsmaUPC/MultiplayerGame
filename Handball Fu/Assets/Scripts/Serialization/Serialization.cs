@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Linq;
+using static UnityEditor.PlayerSettings;
 
 public class Serialization : MonoBehaviour
 {
@@ -85,12 +86,19 @@ public class Serialization : MonoBehaviour
 
         writer.Write(((byte)0));
         writer.Write('M');
-        writer.Write(color.ToString()+username);
-        byte[] aux = new byte[actualMessage.Length - 2];
-        Array.Copy(actualMessage, 2, aux, 0, aux.Length);
+        writer.Write(color.ToString()+username+ AuxiliarDeserializeMessage(actualMessage));
 
-        IEnumerable<byte> ret = writeStream.ToArray().Concat(aux);
-        return ret.ToArray();
+        return writeStream.ToArray();
+    }
+
+    public string AuxiliarDeserializeMessage(byte[] m)
+    {
+        MemoryStream ms = new MemoryStream(m);
+
+        BinaryReader br = new BinaryReader(ms);
+        readStream.Seek(2, SeekOrigin.Begin);
+
+        return br.ReadString();
     }
 
     public byte[] SerializeChatMessage(byte id, string message)
