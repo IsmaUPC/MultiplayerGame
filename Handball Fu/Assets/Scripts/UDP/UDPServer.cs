@@ -200,12 +200,14 @@ public class UDPServer : MonoBehaviour
             {
                 // Get data
                 int recv;
-                byte[] data = new byte[1024];
+                byte[] d = new byte[1024];
 
                 IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
                 EndPoint remote = (EndPoint)sender;
 
-                recv = ((Socket)rr[i]).ReceiveFrom(data, ref remote);
+                recv = ((Socket)rr[i]).ReceiveFrom(d, ref remote);
+                byte[] data = new byte[recv];
+                Array.Copy(d, 0, data, 0, recv);
 
                 (byte id, char type) header = serializer.DeserializeHeader(data);
 

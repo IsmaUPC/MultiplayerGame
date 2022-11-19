@@ -85,8 +85,7 @@ public class Serialization : MonoBehaviour
 
         writer.Write(((byte)0));
         writer.Write('M');
-        writer.Write(color);
-        writer.Write(username);
+        writer.Write(color.ToString()+username);
         byte[] aux = new byte[actualMessage.Length - 2];
         Array.Copy(actualMessage, 2, aux, 0, aux.Length);
 
@@ -118,7 +117,8 @@ public class Serialization : MonoBehaviour
     public string DeserializeChatMessage(byte[] data)
     {
         InitializeReader(data, 2);
-        return reader.ReadString();
+        string a = reader.ReadString();
+        return a;
     }
 
     public int DeserializeConnectionPort(byte[] data)
