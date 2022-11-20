@@ -335,6 +335,7 @@ public class UDPServer : MonoBehaviour
                                 {
                                     clientsData[i].lastContact = 0.0F;
                                 }
+                                Debug.Log(clients[i].name + " is still connected!");
                                 break;
                             }
                         }
