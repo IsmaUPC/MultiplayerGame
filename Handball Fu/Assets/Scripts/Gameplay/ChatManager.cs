@@ -15,9 +15,6 @@ public class ChatManager : MonoBehaviour
     public Color infoColor;
 
     public UDPClient client;
-    public UDPServer server;
-
-    private int myColorIdx;
 
     public List<Color> userColors = new List<Color>();
     [SerializeField] private string[] stylesKeywords = {"***","**","*","!!","!"};

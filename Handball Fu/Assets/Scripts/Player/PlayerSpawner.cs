@@ -16,8 +16,13 @@ public class PlayerSpawner : MonoBehaviour
 
     private DataTransfer data = null;
 
-    private int[] cosmeticsIdxs;
-    private int portId;
+    struct PlayerSpawnInfo
+    {
+        public int[] cosmeticsIdxs;
+        public int portId;
+    }
+
+    private List<PlayerSpawnInfo> playerPendingToSpawn;
     private UDPClient client;
 
     private void Start()
@@ -27,10 +32,12 @@ public class PlayerSpawner : MonoBehaviour
         if (client)
         {
             data = GameObject.FindGameObjectWithTag("Data").GetComponent<DataTransfer>();
-
-            portId = (isCustomAvatarScene) ? 0 : data.portId;
-            cosmeticsIdxs = data.indexs;
             client.spawner = this;
+
+            PlayerSpawnInfo p = new PlayerSpawnInfo();
+            p.portId = (isCustomAvatarScene) ? 0 : data.portId;
+            p.cosmeticsIdxs = data.indexs;
+            playerPendingToSpawn.Add(p);
 
             if (spawnPlayerManual)
             {
@@ -41,29 +48,41 @@ public class PlayerSpawner : MonoBehaviour
         }
 
     }
+
+    private void Update()
+    {
+        if(playerPendingToSpawn.Count != 0)
+        {
+            for (int i = 0; i < playerPendingToSpawn.Count; i++)
+            {
+                im.JoinPlayer();
+                playerPendingToSpawn.RemoveAt(0);
+            }
+        }
+    }
     void OnPlayerJoined(PlayerInput playerInput)
     {
-        Debug.Log("PlayerInput ID: " + portId + "  Name: " + playerInput.gameObject.name);
+        Debug.Log("PlayerInput ID: " + playerPendingToSpawn[0].portId + "  Name: " + playerInput.gameObject.name);
         PlayerData playerData = playerInput.gameObject.GetComponent<PlayerData>();
 
         // Set the player ID, add one to the index to start at Player 1
-        playerData.playerID = portId;
+        playerData.playerID = playerPendingToSpawn[0].portId;
 
         // Set the start spawn position of the player using the location at the associated element into the array.
-        playerData.SetStartTransform(spawnLocations[portId]);
+        playerData.SetStartTransform(spawnLocations[playerData.playerID]);
 
         if (data)
         {
-            data.projectilePrefab.GetComponent<MeshFilter>().mesh = data.projectiles[cosmeticsIdxs[5]]; // 5 = gloves
-            playerData.SetBodyParts(data.cosmetics, data.projectilePrefab, cosmeticsIdxs);
+            data.projectilePrefab.GetComponent<MeshFilter>().mesh = data.projectiles[playerPendingToSpawn[0].cosmeticsIdxs[5]]; // 5 = gloves
+            playerData.SetBodyParts(data.cosmetics, data.projectilePrefab, playerPendingToSpawn[0].cosmeticsIdxs);
         }
 
-        if (portId == data.portId)
+        if (playerPendingToSpawn[0].portId == data.portId)
         {
             if (!isCustomAvatarScene)
             {
                 // Create remote player
-                client.SendInfoSpawnToServer(cosmeticsIdxs, portId);
+                client.SendInfoSpawnToServer(playerPendingToSpawn[0].cosmeticsIdxs, playerPendingToSpawn[0].portId);
             }
         }
         else
@@ -74,9 +93,10 @@ public class PlayerSpawner : MonoBehaviour
 
     public void SpawnNetPlayer(int[] cosmeticsIdxs, int portId)
     {
-        this.cosmeticsIdxs = cosmeticsIdxs;
-        this.portId = portId;
-        im.JoinPlayer();
+        PlayerSpawnInfo p = new PlayerSpawnInfo();
+        p.portId = portId;
+        p.cosmeticsIdxs = cosmeticsIdxs;
+        playerPendingToSpawn.Add(p);
     }
 }
 
