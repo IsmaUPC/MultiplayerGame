@@ -67,15 +67,12 @@ public class UDPClient : MonoBehaviour
 
     private Queue<string> chatMessages;
     private Serialization serializer;
-    private PlayerSpawner spawner;
+    [HideInInspector] public PlayerSpawner spawner;
     private float timeOut;
 
     private bool isSocketAlive;
 
     int numCosmetis = 7;
-
-    public PlayerSpawner Spawner { get => spawner; set => spawner = value; }
-
     // Start is called before the first frame update
     public void ClientStart()
     {

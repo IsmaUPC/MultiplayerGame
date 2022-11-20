@@ -22,18 +22,22 @@ public class PlayerSpawner : MonoBehaviour
 
     private void Start()
     {
-        data = GameObject.FindGameObjectWithTag("Data").GetComponent<DataTransfer>();
         client = GameObject.FindGameObjectWithTag("NetWork").GetComponent<UDPClient>();
-        client.Spawner = this;
 
-        portId = (isCustomAvatarScene) ? 0 : data.portId;
-        cosmeticsIdxs = data.indexs;
-
-        if (spawnPlayerManual)
+        if (client)
         {
-            im = GetComponent<PlayerInputManager>();
-            im.playerPrefab = playerPrefab;
-            im.JoinPlayer();
+            data = GameObject.FindGameObjectWithTag("Data").GetComponent<DataTransfer>();
+
+            portId = (isCustomAvatarScene) ? 0 : data.portId;
+            cosmeticsIdxs = data.indexs;
+            client.spawner = this;
+
+            if (spawnPlayerManual)
+            {
+                im = GetComponent<PlayerInputManager>();
+                im.playerPrefab = playerPrefab;
+                im.JoinPlayer();
+            }
         }
 
     }
@@ -59,7 +63,7 @@ public class PlayerSpawner : MonoBehaviour
             if (!isCustomAvatarScene)
             {
                 // Create remote player
-                client.SendInfoSpawnToServer(cosmeticsIdxs,portId);
+                client.SendInfoSpawnToServer(cosmeticsIdxs, portId);
             }
         }
         else
