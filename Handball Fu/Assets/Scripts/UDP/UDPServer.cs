@@ -410,32 +410,33 @@ public class UDPServer : MonoBehaviour
                         break;
                     // Message
                     case EVENT_TYPE.EVENT_MESSAGE:
-
-                        for (int i = 0; i < clients.Length; ++i)
                         {
-
-                            if (clients[i].ipep != null)
+                            Event ev;
+                            ev.data = e.data;
+                            ev.ipep = clients[i].ipep;
+                            ev.type = EVENT_TYPE.EVENT_MESSAGE;
+                            ev.senderId = e.senderId;
+                            lock (sendQueueLock)
                             {
-                                Event ev;
-                                ev.data = e.data;
-                                ev.ipep = clients[i].ipep;
-                                ev.type = EVENT_TYPE.EVENT_MESSAGE;
-                                ev.senderId = e.senderId;
-                                lock (sendQueueLock)
+                                sendQueue.Enqueue(ev);
+                            }
+                            for (int i = 0; i < clients.Length; ++i)
+                            {
+
+                                if (clients[i].ipep != null)
                                 {
-                                    sendQueue.Enqueue(ev);
-                                }
-                                if (clients[i].ipep.Equals(e.ipep))
-                                {
-                                    lock (clientsLock)
+                                    if (clients[i].ipep.Equals(e.ipep))
                                     {
-                                        clientsData[i].reaching = false;
-                                        clientsData[i].lastContact = 0.0F;
+                                        lock (clientsLock)
+                                        {
+                                            clientsData[i].reaching = false;
+                                            clientsData[i].lastContact = 0.0F;
+                                        }
+                                        break;
                                     }
                                 }
                             }
                         }
-
                         break;
                     case EVENT_TYPE.EVENT_UPDATE:
                         break;
