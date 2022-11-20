@@ -23,6 +23,8 @@ public class PlayerSpawner : MonoBehaviour
     private void Start()
     {
         data = GameObject.FindGameObjectWithTag("Data").GetComponent<DataTransfer>();
+        client = GameObject.FindGameObjectWithTag("NetWork").GetComponent<UDPClient>();
+        client.Spawner = this;
 
         portId = (isCustomAvatarScene) ? 0 : data.portId;
         cosmeticsIdxs = data.indexs;
@@ -33,8 +35,6 @@ public class PlayerSpawner : MonoBehaviour
             im.playerPrefab = playerPrefab;
             im.JoinPlayer();
         }
-        client = GameObject.FindGameObjectWithTag("NetWork").GetComponent<UDPClient>();
-        client.Spawner = this;
 
     }
     void OnPlayerJoined(PlayerInput playerInput)
