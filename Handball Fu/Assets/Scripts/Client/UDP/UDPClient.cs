@@ -62,12 +62,13 @@ public class UDPClient : MonoBehaviour
     private Queue<Event> eventQueue;
 
     private Queue<string> chatMessages;
-
+    Serialization serializer;
     private float timeOut;
 
     // Start is called before the first frame update
     public void ClientStart()
     {
+        serializer = FindObjectOfType<Serialization>();
         myID = GetHostID();
 
         serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -316,6 +317,11 @@ public class UDPClient : MonoBehaviour
 
                         }
                         break;
+                    case EVENT_TYPE.EVENT_UPDATE:
+                        //TODO: Serialize position player
+                        //serializer.SerializePosition(1,'U',1,transform);
+
+                        break;
                     default:
                         break;
                 }
@@ -358,6 +364,7 @@ public class UDPClient : MonoBehaviour
     {
         if (threadProcess.IsAlive) threadProcess.Abort();
         if (threadRecieve.IsAlive) threadRecieve.Abort();
+        DisconnectFromServer();
         serverSocket.Close();
         Debug.Log("Shuttingdown udp client");
     }

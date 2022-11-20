@@ -10,16 +10,16 @@ using UnityEditor.PackageManager;
 public class RoomSelect : MonoBehaviour
 {
     // UI Element to join room
-    public GameObject joinRoomPanel, dropdown;
+    public GameObject ipPanel, usernamePanel;
     public GameObject[] mainButtons = new GameObject[2];
     public TextMeshProUGUI errorText;
     private float errorTime;
-    private int serverType = 0;
 
-    public GameObject udpServer, tcpServer, udpClient, tcpClient;
-    private UDPClient udp;
-    private GameObject udpC;
-    private string username;
+    // Server starting logic
+    public GameObject udpServerPrefab, udpClientPrefab;
+    private UDPClient udpComponent;
+    private GameObject udpGO;
+    private string username, ip;
 
     private void Start()
     {
@@ -29,33 +29,26 @@ public class RoomSelect : MonoBehaviour
     // When clicking to create a room
     public void OnCreateClick()
     {
-        // Create a game object and give it the corresponding component depending on the server type we want
+        // Create a udp server prefab clone
         Debug.Log("Creating server game object");
-        GameObject[] lastServers = GameObject.FindGameObjectsWithTag("NetWork");
-        if (lastServers.Length > 0)
+        GameObject lastServers = GameObject.FindGameObjectWithTag("NetWork");
+        if (lastServers != null)
         {
-            lastServers[0].GetComponent<UDPServer>().OnServerClose();
-            Destroy(lastServers[0]);
+            lastServers.GetComponent<UDPServer>().OnServerClose();
+            Destroy(lastServers);
         }
 
         GameObject serverGO;
-        switch (serverType)
-        {
-            case 0:
-                serverGO = Instantiate(udpServer);
-                DontDestroyOnLoad(serverGO);
-                break;
-            case 1:
-                serverGO = Instantiate(tcpServer);
-                DontDestroyOnLoad(serverGO);
-                break;
-        }
+        serverGO = Instantiate(udpServerPrefab);
+        DontDestroyOnLoad(serverGO);
+
         Debug.Log("Loading Lobby");
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     private void Update()
     {
+        // Check if error total show time is exhausted
         if (errorText.enabled && errorTime > 0.0F)
         {
             errorTime -= Time.deltaTime;
@@ -65,70 +58,83 @@ public class RoomSelect : MonoBehaviour
             errorText.enabled = false;
         }
 
-        if(udpC != null && udp.GetCurrentState() == 0)
+        // Check connection state, if could connect, load next scene if not show error and reset objects
+        if (udpGO != null && udpComponent.GetCurrentState() == 0)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
-        else if (udpC != null && udp.GetCurrentState() == 3)
+        else if (udpGO != null && udpComponent.GetCurrentState() == 3)
         {
-            errorText.text = "Connection timed out";
-            errorText.enabled = true;
-            errorTime = 5.0F;
-            udp.ShutdownClient();
-            Destroy(udpC);
-            udpC = null;
-            udp = null;
+            ShowErrorMessage("Connection timed out");
+            udpComponent.ShutdownClient();
+            Destroy(udpGO);
+            udpGO = null;
+            udpComponent = null;
         }
     }
 
-    public void EditUsername(string u)
+    public void EditUsername(string tmp)
     {
-        username = u;
+        username = tmp;
     }
 
-    public void OnEditIPEnter(string ip)
+    public void OnUsernameEnter()
     {
         if(username == "")
         {
-            errorText.text = "Input a username";
-            errorText.enabled = true;
-            errorTime = 5.0F;
+            ShowErrorMessage("Username cannot be blank!");
             return;
         }
-        GameObject[] lastServers = GameObject.FindGameObjectsWithTag("NetWork");
-        if (lastServers.Length > 0)
+        else if(username.Length > 20)
         {
-            lastServers[0].GetComponent<UDPServer>().OnServerClose();
-            Destroy(lastServers[0]);
+            ShowErrorMessage("Username cannot be longer than 20 characters!");
+            username = "";
+            return;
+        }
+        else
+        {
+            ipPanel.SetActive(true);
+            usernamePanel.SetActive(false);
+        }
+    }
+
+    public void EditIP(string tmp)
+    {
+        ip = tmp;
+    }
+
+    public void OnIPEnter()
+    {
+        GameObject lastObj = GameObject.FindGameObjectWithTag("NetWork");
+        if (lastObj != null)
+        {
+            lastObj.GetComponent<UDPServer>().OnServerClose();
+            Destroy(lastObj);
         }
         GameObject client;
-        switch(serverType)
+        client = Instantiate(udpClientPrefab);
+        DontDestroyOnLoad(client);
+        udpComponent = client.GetComponent<UDPClient>();
+        udpComponent.ClientStart();
+        bool result = udpComponent.ConnectToIp(ip, username);
+        if (!result)
         {
-            case 0:
-                client = Instantiate(udpClient);
-                DontDestroyOnLoad(client);
-                udp = client.GetComponent<UDPClient>();
-                udp.ClientStart();
-                bool result = udp.ConnectToIp(ip, username);
-                if (!result)
-                {
-                    errorText.text = "IP invalid format";
-                    errorText.enabled = true;
-                    errorTime = 5.0F;
-                    udp.ShutdownClient();
-                    Destroy(client);
-                    udp = null;
-                }
-                else
-                {
-                    udpC = client;
-                }
-                break;
-            case 1:
-                client = Instantiate(tcpClient);
-                DontDestroyOnLoad(client);
-                break;
+            ShowErrorMessage("IP invalid format");
+            udpComponent.ShutdownClient();
+            Destroy(client);
+            udpComponent = null;
         }
+        else
+        {
+            udpGO = client;
+        }
+    }
+
+    private void ShowErrorMessage(string message)
+    {
+        errorText.text = message;
+        errorText.enabled = true;
+        errorTime = 5.0F;
     }
 
     public void OnJoinClick()
@@ -136,9 +142,25 @@ public class RoomSelect : MonoBehaviour
         // Change UI
         mainButtons[0].SetActive(false);
         mainButtons[1].SetActive(false);
-        dropdown.SetActive(false);
 
-        joinRoomPanel.SetActive(true);
+        usernamePanel.SetActive(true);
+    }
+
+    public void IPBackToUsername()
+    {
+        ipPanel.SetActive(false);
+        usernamePanel.SetActive(true);
+
+        if (udpComponent != null)
+        {
+            udpComponent.ShutdownClient();
+            udpComponent = null;
+        }
+        if (udpGO != null)
+        {
+            Destroy(udpGO);
+            udpGO = null;
+        }
     }
 
     public void OnBackClick()
@@ -146,25 +168,7 @@ public class RoomSelect : MonoBehaviour
         // Change UI
         mainButtons[0].SetActive(true);
         mainButtons[1].SetActive(true);
-        dropdown.SetActive(true);
 
-        joinRoomPanel.SetActive(false);
-
-        if (udp != null)
-        {
-            udp.ShutdownClient();
-            udp = null;
-        }
-        if (udpC != null)
-        {
-            Destroy(udpC);
-            udpC = null;
-        }
-    }
-
-    public void ChangeDropdownValue(int value)
-    {
-        serverType = (serverType+value)%2;
-        Debug.Log(serverType);
+        usernamePanel.SetActive(false);
     }
 }
