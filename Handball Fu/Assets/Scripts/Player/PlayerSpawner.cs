@@ -55,7 +55,8 @@ public class PlayerSpawner : MonoBehaviour
         if(playerPendingToSpawn.Count != 0)
         {
             Debug.Log("Spawning player...");
-            im.JoinPlayer();
+            PlayerInput pi = Instantiate(playerPrefab).GetComponent<PlayerInput>();
+            pi.DeactivateInput();
             playerPendingToSpawn.RemoveAt(0);
         }
     }
@@ -68,7 +69,7 @@ public class PlayerSpawner : MonoBehaviour
         playerData.playerID = playerPendingToSpawn[0].portId;
 
         // Set the start spawn position of the player using the location at the associated element into the array.
-        playerData.SetStartTransform(spawnLocations[playerData.playerID]);
+        playerData.SetStartTransform(spawnLocations[playerPendingToSpawn[0].portId]);
         if (data)
         {
             data.projectilePrefab.GetComponent<MeshFilter>().mesh = data.projectiles[playerPendingToSpawn[0].cosmeticsIdxs[5]]; // 5 = gloves
