@@ -68,7 +68,7 @@ public class PlayerSpawner : MonoBehaviour
         }
         else
         {
-            playerInput.enabled = false;
+            playerInput.DeactivateInput();
         }
     }
 
