@@ -410,47 +410,16 @@ public class UDPServer : MonoBehaviour
                         break;
                     // Message
                     case EVENT_TYPE.EVENT_MESSAGE:
-                        {
-                            for (int i = 0; i < clients.Length; ++i)
-                            {
 
-                                if (clients[i].ipep != null)
-                                {
-                                    if (clients[i].ipep.Equals(e.ipep))
-                                    {
-                                        Event ev;
-                                        ev.data = e.data;
-                                        ev.ipep = clients[i].ipep;
-                                        ev.type = EVENT_TYPE.EVENT_MESSAGE;
-                                        ev.senderId = e.senderId;
-                                        lock (sendQueueLock)
-                                        {
-                                            sendQueue.Enqueue(ev);
-                                        }
-                                        lock (clientsLock)
-                                        {
-                                            clientsData[i].reaching = false;
-                                            clientsData[i].lastContact = 0.0F;
-                                        }
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    case EVENT_TYPE.EVENT_UPDATE:
-                        break;
-                    case EVENT_TYPE.EVENT_SPAWN_PLAYER:
-
-                        // TODO: Add event qeue
                         for (int i = 0; i < clients.Length; ++i)
                         {
+
                             if (clients[i].ipep != null)
                             {
                                 Event ev;
                                 ev.data = e.data;
                                 ev.ipep = clients[i].ipep;
-                                ev.type = EVENT_TYPE.EVENT_SPAWN_PLAYER;
+                                ev.type = EVENT_TYPE.EVENT_MESSAGE;
                                 ev.senderId = e.senderId;
                                 lock (sendQueueLock)
                                 {
@@ -460,7 +429,40 @@ public class UDPServer : MonoBehaviour
                                 {
                                     lock (clientsLock)
                                     {
+                                        clientsData[i].reaching = false;
                                         clientsData[i].lastContact = 0.0F;
+                                    }
+                                }
+                            }
+                        }
+
+                        break;
+                    case EVENT_TYPE.EVENT_UPDATE:
+                        break;
+                    case EVENT_TYPE.EVENT_SPAWN_PLAYER:
+
+                        // TODO: Add event qeue
+                        for (int i = 0; i < clients.Length; ++i)
+                        {
+                            if (clients[i].ipep != null)
+                            {                                                                
+                                if (clients[i].ipep.Equals(e.ipep))
+                                {
+                                    lock (clientsLock)
+                                    {
+                                        clientsData[i].lastContact = 0.0F;
+                                    }
+                                }
+                                else
+                                {
+                                    Event ev;
+                                    ev.data = e.data;
+                                    ev.ipep = clients[i].ipep;
+                                    ev.type = EVENT_TYPE.EVENT_SPAWN_PLAYER;
+                                    ev.senderId = e.senderId;
+                                    lock (sendQueueLock)
+                                    {
+                                        sendQueue.Enqueue(ev);
                                     }
                                 }
                             }
@@ -592,7 +594,7 @@ public class UDPServer : MonoBehaviour
                             int colorIdx = 0;
                             for (int i = 0; e.ipep != null && i < clients.Length; ++i)
                             {
-                                if (clients[i].ipep.Equals(e.ipep))
+                                if (clients[i].id != 0 && clients[i].ipep.Equals(e.ipep))
                                 {
                                     n = clients[i].name;
                                     colorIdx = clients[i].port - initialPort;
@@ -621,13 +623,14 @@ public class UDPServer : MonoBehaviour
                             // TODO: Sent info to other players
                             for (int i = 0; i < clients.Length; ++i)
                             {
-                                if (clients[i].id != 0 && !clients[i].ipep.Equals(e.ipep))
+                                if (clients[i].id != 0 && clients[i].ipep.Equals(e.ipep))
                                 {
                                     int ind = clients[i].port - initialPort;
                                     lock (socketsLock)
                                     {
                                         ((Socket)clientSockets[ind]).SendTo(e.data, clients[i].ipep);
                                     }
+                                    break;
                                 }
                             }
                         }
