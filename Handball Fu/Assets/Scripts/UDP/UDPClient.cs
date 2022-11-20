@@ -135,7 +135,7 @@ public class UDPClient : MonoBehaviour
 
         state = CONNECTION_STATE.CONNECTING;
 
-        sep = new IPEndPoint(currentIP, 9050);
+        sep = new IPEndPoint(currentIP, 7400);
 
         byte[] data;
         data = serializer.SerializeConnection(myID, username);
@@ -241,7 +241,7 @@ public class UDPClient : MonoBehaviour
                             IPAddress ip = sep.Address;
                             int port = serializer.DeserializeConnectionPort(e.data);
                             sep = new IPEndPoint(ip, port);
-                            portIdx = sep.Port - 9051;
+                            portIdx = sep.Port - 7401;
                             Debug.Log("New endpoint connection:" + sep.ToString());
                             lock (stateLock)
                             {

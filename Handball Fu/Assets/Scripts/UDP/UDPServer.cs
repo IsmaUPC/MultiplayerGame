@@ -107,8 +107,8 @@ public class UDPServer : MonoBehaviour
     {
         GetHostIP();
 
-        // Ports available from 9050 to 9056
-        initialPort = 9050;
+        // Ports available from 7400 to 9056
+        initialPort = 7400;
         openPorts = 7;
 
         // Fill sockets list to get data
@@ -121,7 +121,7 @@ public class UDPServer : MonoBehaviour
             // Bind each socket with a different port
             ((Socket)clientSockets[i]).Bind(new IPEndPoint(IPAddress.Any, initialPort + i));
 
-            if (initialPort + i > 9050)
+            if (initialPort + i > 7400)
             {
                 ports[i - 1].remoteIP = IPAddress.Any;
                 ports[i - 1].port = initialPort + i;
@@ -221,7 +221,7 @@ public class UDPServer : MonoBehaviour
                 // Check what event type it is and save it to process
                 switch (header.type)
                 {
-                    case 'C': // Connection event only if its on port 9050
+                    case 'C': // Connection event only if its on port 7400
                         e.type = EVENT_TYPE.EVENT_CONNECTION;
                         break;
                     case 'D': // Desconnection event
@@ -411,15 +411,6 @@ public class UDPServer : MonoBehaviour
                     // Message
                     case EVENT_TYPE.EVENT_MESSAGE:
                         {
-                            Event ev;
-                            ev.data = e.data;
-                            ev.ipep = clients[i].ipep;
-                            ev.type = EVENT_TYPE.EVENT_MESSAGE;
-                            ev.senderId = e.senderId;
-                            lock (sendQueueLock)
-                            {
-                                sendQueue.Enqueue(ev);
-                            }
                             for (int i = 0; i < clients.Length; ++i)
                             {
 
@@ -427,6 +418,15 @@ public class UDPServer : MonoBehaviour
                                 {
                                     if (clients[i].ipep.Equals(e.ipep))
                                     {
+                                        Event ev;
+                                        ev.data = e.data;
+                                        ev.ipep = clients[i].ipep;
+                                        ev.type = EVENT_TYPE.EVENT_MESSAGE;
+                                        ev.senderId = e.senderId;
+                                        lock (sendQueueLock)
+                                        {
+                                            sendQueue.Enqueue(ev);
+                                        }
                                         lock (clientsLock)
                                         {
                                             clientsData[i].reaching = false;
@@ -539,7 +539,7 @@ public class UDPServer : MonoBehaviour
                         {
                             if (clients[i].ipep != null && clients[i].ipep.Equals(e.ipep))
                             {
-                                int p = 9050;
+                                int p = 7400;
                                 for (int j = 0; j < prts.Length; ++j)
                                 {
                                     if (e.ipep.Address.Equals(prts[j].remoteIP))
