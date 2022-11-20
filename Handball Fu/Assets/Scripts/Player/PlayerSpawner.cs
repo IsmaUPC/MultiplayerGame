@@ -22,7 +22,7 @@ public class PlayerSpawner : MonoBehaviour
         public int portId;
     }
 
-    private List<PlayerSpawnInfo> playerPendingToSpawn;
+    private List<PlayerSpawnInfo> playerPendingToSpawn = new List<PlayerSpawnInfo>();
     private UDPClient client;
 
     private void Start()
@@ -45,6 +45,7 @@ public class PlayerSpawner : MonoBehaviour
                 im.playerPrefab = playerPrefab;
                 im.JoinPlayer();
             }
+            playerPendingToSpawn.Clear();
         }
 
     }
@@ -53,11 +54,9 @@ public class PlayerSpawner : MonoBehaviour
     {
         if(playerPendingToSpawn.Count != 0)
         {
-            for (int i = 0; i < playerPendingToSpawn.Count; i++)
-            {
-                im.JoinPlayer();
-                playerPendingToSpawn.RemoveAt(0);
-            }
+            Debug.Log("Spawning player...");
+            im.JoinPlayer();
+            playerPendingToSpawn.RemoveAt(0);
         }
     }
     void OnPlayerJoined(PlayerInput playerInput)
@@ -70,7 +69,6 @@ public class PlayerSpawner : MonoBehaviour
 
         // Set the start spawn position of the player using the location at the associated element into the array.
         playerData.SetStartTransform(spawnLocations[playerData.playerID]);
-
         if (data)
         {
             data.projectilePrefab.GetComponent<MeshFilter>().mesh = data.projectiles[playerPendingToSpawn[0].cosmeticsIdxs[5]]; // 5 = gloves
@@ -93,6 +91,7 @@ public class PlayerSpawner : MonoBehaviour
 
     public void SpawnNetPlayer(int[] cosmeticsIdxs, int portId)
     {
+        Debug.Log("Adding player...");
         PlayerSpawnInfo p = new PlayerSpawnInfo();
         p.portId = portId;
         p.cosmeticsIdxs = cosmeticsIdxs;
