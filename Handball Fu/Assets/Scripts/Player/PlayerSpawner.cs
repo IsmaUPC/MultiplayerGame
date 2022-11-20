@@ -18,6 +18,7 @@ public class PlayerSpawner : MonoBehaviour
 
     private int[] cosmeticsIdxs;
     private int portId;
+    private UDPClient client;
 
     private void Start()
     {
@@ -32,6 +33,9 @@ public class PlayerSpawner : MonoBehaviour
             im.playerPrefab = playerPrefab;
             im.JoinPlayer();
         }
+        client = GameObject.FindGameObjectWithTag("NetWork").GetComponent<UDPClient>();
+        client.Spawner = this;
+
     }
     void OnPlayerJoined(PlayerInput playerInput)
     {
@@ -55,7 +59,7 @@ public class PlayerSpawner : MonoBehaviour
             if (!isCustomAvatarScene)
             {
                 // Create remote player
-
+                client.SendInfoSpawnToServer(cosmeticsIdxs,portId);
             }
         }
         else

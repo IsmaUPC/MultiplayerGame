@@ -52,6 +52,32 @@ public class Serialization : MonoBehaviour
 
         return writeStream.ToArray();
     }
+    public byte[] SerializeSpawnInfo(byte myId, int[] index, int portId)
+    {
+        InitializeWriter();
+
+        writer.Write(myId);
+        writer.Write('S');
+
+        foreach (var i in index)
+        {
+            writer.Write(i);
+        }
+
+        writer.Write(portId);
+
+        return writeStream.ToArray();
+    }
+    public (int[],int) DeserializeSpawnInfo(byte[] data,int cosmeticLength)
+    {
+        InitializeReader(data,2);
+        int[] newlist = new int[cosmeticLength];
+        for (int i = 0; i < cosmeticLength; i++)
+        {
+            newlist[i]= reader.ReadInt32();
+        }
+        return (newlist,reader.ReadInt32());
+    }
 
     public byte[] SerializeDeniedConnection()
     {

@@ -39,6 +39,7 @@ public class UDPServer : MonoBehaviour
         EVENT_KEEPCONNECT,      // A client is still connected              [K]
         EVENT_MESSAGE,          // A client sent a message                  [M]
         EVENT_UPDATE,           // A client sent an updated "transform"     [U]
+        EVENT_SPAWN_PLAYER,     // A client sent own spawn                  [S]
     };
 
     // Events struct
@@ -62,6 +63,7 @@ public class UDPServer : MonoBehaviour
     struct ClientData
     {
         public string name;
+        public bool reaching;
         public IPEndPoint ipep;
         public byte id;
         public float lastContact;
@@ -234,6 +236,9 @@ public class UDPServer : MonoBehaviour
                     case 'U': // Update [STILL NOT USED]
                         e.type = EVENT_TYPE.EVENT_UPDATE;
                         break;
+                    case 'S': // Spawn [STILL NOT USED]
+                        e.type = EVENT_TYPE.EVENT_SPAWN_PLAYER;
+                        break;
                     default:
                         break;
                 }
@@ -263,15 +268,16 @@ public class UDPServer : MonoBehaviour
                     events = null;
                 }
             }
+            ClientData[] clients;
+            lock (clientsLock)
+            {
+                clients = clientsData;
+            }
+
             while (events != null && events.Count > 0)
             {
-                ClientData[] clients;
                 Ports[] prts;
                 Event e = events.Dequeue();
-                lock (clientsLock)
-                {
-                    clients = clientsData;
-                }
                 lock (portsLock)
                 {
                     prts = ports;
@@ -322,7 +328,6 @@ public class UDPServer : MonoBehaviour
                             }
                         }
 
-
                         break;
                     // Said client is still in touch
                     case EVENT_TYPE.EVENT_KEEPCONNECT:
@@ -333,6 +338,7 @@ public class UDPServer : MonoBehaviour
                             {
                                 lock (clientsLock)
                                 {
+                                    clientsData[i].reaching = false;
                                     clientsData[i].lastContact = 0.0F;
                                 }
                                 Debug.Log(clients[i].name + " is still connected!");
@@ -376,6 +382,7 @@ public class UDPServer : MonoBehaviour
                             {
                                 lock (clientsLock)
                                 {
+                                    clientsData[i].reaching = false;
                                     clientsData[i].lastContact = 0.0F;
                                     clientsData[i].ipep = e.ipep;
                                     clientsData[i].id = e.senderId;
@@ -401,7 +408,6 @@ public class UDPServer : MonoBehaviour
                         }
 
                         break;
-
                     // Message
                     case EVENT_TYPE.EVENT_MESSAGE:
 
@@ -423,6 +429,7 @@ public class UDPServer : MonoBehaviour
                                 {
                                     lock (clientsLock)
                                     {
+                                        clientsData[i].reaching = false;
                                         clientsData[i].lastContact = 0.0F;
                                     }
                                 }
@@ -432,24 +439,53 @@ public class UDPServer : MonoBehaviour
                         break;
                     case EVENT_TYPE.EVENT_UPDATE:
                         break;
+                    case EVENT_TYPE.EVENT_SPAWN_PLAYER:
+
+                        // TODO: Add event qeue
+                        for (int i = 0; i < clients.Length; ++i)
+                        {
+                            if (clients[i].ipep != null)
+                            {
+                                Event ev;
+                                ev.data = e.data;
+                                ev.ipep = clients[i].ipep;
+                                ev.type = EVENT_TYPE.EVENT_SPAWN_PLAYER;
+                                ev.senderId = e.senderId;
+                                lock (sendQueueLock)
+                                {
+                                    sendQueue.Enqueue(ev);
+                                }
+                                if (clients[i].ipep.Equals(e.ipep))
+                                {
+                                    lock (clientsLock)
+                                    {
+                                        clientsData[i].lastContact = 0.0F;
+                                    }
+                                }
+                            }
+                        }
+                        break;
                     default:
                         break;
                 }
 
                 // Check if someone has not been in touch in some time
-                for (int i = 0; i < clients.Length; ++i)
+            }
+            for (int i = 0; i < clients.Length; ++i)
+            {
+                if (clients[i].id != 0 && clients[i].lastContact > 2.5F)
                 {
-                    if (clients[i].id != 0 && clients[i].lastContact > 2.5F)
+                    if (clients[i].reaching == false)
                     {
                         int ind = clients[i].port - initialPort;
-                        Event ev;
-                        ev.ipep = clients[i].ipep;
-                        ev.type = EVENT_TYPE.EVENT_KEEPCONNECT;
-                        ev.data = serializer.SerializeKeepConnect(0);
-                        ev.senderId = 0;
-                        lock (sendQueue)
+                        lock (clientsLock)
                         {
-                            sendQueue.Enqueue(ev);
+                            clients[i].reaching = true;
+                        }
+                        byte[] data = serializer.SerializeKeepConnect(0);
+                        lock (socketsLock)
+                        {
+                            ((Socket)clientSockets[i + 1]).SendTo(data, clients[i].ipep);
                         }
                     }
                 }
@@ -550,30 +586,50 @@ public class UDPServer : MonoBehaviour
                     // Send message to everyone! So we know data, that only server knows
                     // such as color codes, ids and other
                     case EVENT_TYPE.EVENT_MESSAGE:
-                        string n = "SERVER";
-                        int colorIdx = 0;
-                        for (int i = 0; e.ipep != null && i < clients.Length; ++i)
                         {
-                            if (clients[i].ipep.Equals(e.ipep))
+                            string n = "SERVER";
+                            int colorIdx = 0;
+                            for (int i = 0; e.ipep != null && i < clients.Length; ++i)
                             {
-                                n = clients[i].name;
-                                colorIdx = clients[i].port - initialPort;
-                                break;
-                            }
-                        }
-                        for (int i = 0; i < clients.Length; ++i)
-                        {
-                            if (clients[i].id != 0)
-                            {
-                                int ind = clients[i].port - initialPort;
-                                byte[] data = serializer.SerializeChatMessage(colorIdx, n + ";", e.data);
-                                lock (socketsLock)
+                                if (clients[i].ipep.Equals(e.ipep))
                                 {
-                                    ((Socket)clientSockets[ind]).SendTo(data, clients[i].ipep);
+                                    n = clients[i].name;
+                                    colorIdx = clients[i].port - initialPort;
+                                    break;
+                                }
+                            }
+                            for (int i = 0; i < clients.Length; ++i)
+                            {
+                                if (clients[i].id != 0)
+                                {
+                                    int ind = clients[i].port - initialPort;
+                                    byte[] data = serializer.SerializeChatMessage(colorIdx, n + ";", e.data);
+                                    lock (socketsLock)
+                                    {
+                                        ((Socket)clientSockets[ind]).SendTo(data, clients[i].ipep);
+                                    }
                                 }
                             }
                         }
 
+                        break;
+                    case EVENT_TYPE.EVENT_UPDATE:
+                        break;
+                    case EVENT_TYPE.EVENT_SPAWN_PLAYER:
+                        {
+                            // TODO: Sent info to other players
+                            for (int i = 0; i < clients.Length; ++i)
+                            {
+                                if (clients[i].id != 0 && !clients[i].ipep.Equals(e.ipep))
+                                {
+                                    int ind = clients[i].port - initialPort;
+                                    lock (socketsLock)
+                                    {
+                                        ((Socket)clientSockets[ind]).SendTo(e.data, clients[i].ipep);
+                                    }
+                                }
+                            }
+                        }
                         break;
                     default:
                         break;

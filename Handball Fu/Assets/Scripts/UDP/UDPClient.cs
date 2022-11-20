@@ -18,6 +18,7 @@ public class UDPClient : MonoBehaviour
         EVENT_KEEPCONNECT,      // A client is still connected
         EVENT_MESSAGE,          // A client sent a message
         EVENT_UPDATE,           // A client sent an updated "transform"
+        EVENT_SPAWN_PLAYER,      // A client sent own spawn                 
     };
     enum CONNECTION_STATE
     {
@@ -66,9 +67,14 @@ public class UDPClient : MonoBehaviour
 
     private Queue<string> chatMessages;
     private Serialization serializer;
+    private PlayerSpawner spawner;
     private float timeOut;
 
     private bool isSocketAlive;
+
+    int numCosmetis = 7;
+
+    public PlayerSpawner Spawner { get => spawner; set => spawner = value; }
 
     // Start is called before the first frame update
     public void ClientStart()
@@ -201,6 +207,9 @@ public class UDPClient : MonoBehaviour
                     case 'U':
                         e.type = EVENT_TYPE.EVENT_UPDATE;
                         break;
+                    case 'S':
+                        e.type = EVENT_TYPE.EVENT_SPAWN_PLAYER;
+                        break;
                     default:
                         break;
                 }
@@ -280,7 +289,13 @@ public class UDPClient : MonoBehaviour
                         break;
                     case EVENT_TYPE.EVENT_UPDATE:
                         //TODO: Serialize position player
-                        //serializer.SerializePosition(1,'U',1,transform);
+                        //serializer.SerializeTransform(1,'U',1,transform);
+
+                        break;
+                    case EVENT_TYPE.EVENT_SPAWN_PLAYER:
+                        //TODO: Deserialize Info index cosmetics and spawnpoint player
+                        (int[] indexs, int portId) info = serializer.DeserializeSpawnInfo(e.data, numCosmetis);
+                        spawner.SpawnNetPlayer(info.indexs, info.portId);
 
                         break;
                     default:
@@ -308,6 +323,16 @@ public class UDPClient : MonoBehaviour
     {
         byte[] data;
         data = serializer.SerializeChatMessage(myID, message);
+        lock (socketLock)
+        {
+            serverSocket.SendTo(data, SocketFlags.None, sep);
+        }
+    }
+
+    public void SendInfoSpawnToServer(int[] indexs, int portId)
+    {
+        byte[] data;
+        data = serializer.SerializeSpawnInfo(myID, indexs, portId);
         lock (socketLock)
         {
             serverSocket.SendTo(data, SocketFlags.None, sep);
