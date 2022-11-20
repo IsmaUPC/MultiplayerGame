@@ -7,7 +7,6 @@ using UnityEditor;
 public class PlayerSpawner : MonoBehaviour
 {
     public Transform[] spawnLocations;
-    private PlayerInputManager im;
 
     [HideInInspector] public bool spawnPlayerManual = false;
     [HideInInspector] public GameObject playerPrefab;
@@ -41,9 +40,8 @@ public class PlayerSpawner : MonoBehaviour
 
             if (spawnPlayerManual)
             {
-                im = GetComponent<PlayerInputManager>();
-                im.playerPrefab = playerPrefab;
-                im.JoinPlayer();
+                GameObject player = Instantiate(playerPrefab);
+                OnPlayerJoined(player.GetComponent<PlayerInput>());
             }
             playerPendingToSpawn.Clear();
         }
@@ -55,7 +53,9 @@ public class PlayerSpawner : MonoBehaviour
         if(playerPendingToSpawn.Count != 0)
         {
             Debug.Log("Spawning player...");
-            PlayerInput pi = Instantiate(playerPrefab).GetComponent<PlayerInput>();
+            GameObject player = Instantiate(playerPrefab);
+            PlayerInput pi = player.GetComponent<PlayerInput>();
+            OnPlayerJoined(pi);
             pi.DeactivateInput();
             playerPendingToSpawn.RemoveAt(0);
         }
