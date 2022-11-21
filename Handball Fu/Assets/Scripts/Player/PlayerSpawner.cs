@@ -92,11 +92,14 @@ public class PlayerSpawner : MonoBehaviour
 
     public void SpawnNetPlayer(int[] cosmeticsIdxs, int portId)
     {
-        Debug.Log("Adding player...");
-        PlayerSpawnInfo p = new PlayerSpawnInfo();
-        p.portId = portId;
-        p.cosmeticsIdxs = cosmeticsIdxs;
-        playerPendingToSpawn.Add(p);
+        if(!isCustomAvatarScene)
+        {
+            Debug.Log("Adding player...");
+            PlayerSpawnInfo p = new PlayerSpawnInfo();
+            p.portId = portId;
+            p.cosmeticsIdxs = cosmeticsIdxs;
+            playerPendingToSpawn.Add(p);
+        }
     }
 }
 
