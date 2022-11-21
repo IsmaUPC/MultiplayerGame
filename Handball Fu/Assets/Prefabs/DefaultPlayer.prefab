@@ -950,7 +950,8 @@ MonoBehaviour:
   propHunt: {fileID: 9199772107878511850}
   dashTime: 0.2
   dashSpeed: 20
-  projectile: {fileID: 0}
+  projectile: {fileID: 6943407593300112634, guid: 21698ce583a92d3489a06069fc050db8, type: 3}
+  projectileMesh: {fileID: 0}
   shader: {fileID: 0}
   projectilePos: {fileID: 6513695632484412280}
 --- !u!114 &5153129509673550620

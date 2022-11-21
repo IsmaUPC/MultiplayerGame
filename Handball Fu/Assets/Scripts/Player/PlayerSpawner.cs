@@ -72,8 +72,8 @@ public class PlayerSpawner : MonoBehaviour
         playerData.SetStartTransform(spawnLocations[playerPendingToSpawn[0].portId]);
         if (data)
         {
-            data.projectilePrefab.GetComponent<MeshFilter>().mesh = data.projectiles[playerPendingToSpawn[0].cosmeticsIdxs[5]]; // 5 = gloves
-            playerData.SetBodyParts(data.cosmetics, data.projectilePrefab, playerPendingToSpawn[0].cosmeticsIdxs);
+            Mesh mesh = data.projectiles[playerPendingToSpawn[0].cosmeticsIdxs[5]]; // 5 = gloves
+            playerData.SetBodyParts(data.cosmetics, mesh, playerPendingToSpawn[0].cosmeticsIdxs);
         }
 
         // Create remote player

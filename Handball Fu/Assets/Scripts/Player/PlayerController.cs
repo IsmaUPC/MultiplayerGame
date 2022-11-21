@@ -26,7 +26,8 @@ public class PlayerController : MonoBehaviour
     private TrailRenderer trail;
 
     // Shoot
-    [HideInInspector] public GameObject projectile;
+    public GameObject projectile;
+    [HideInInspector] public Mesh projectileMesh;
     [HideInInspector] public ActiveShader shader;
     public Transform projectilePos;
 
@@ -148,6 +149,7 @@ public class PlayerController : MonoBehaviour
     public void SpawnProjectile()
     {
         GameObject proj = Instantiate(projectile, projectilePos.position, transform.rotation);
+        proj.GetComponent<MeshFilter>().mesh = projectileMesh;
         proj.GetComponent<Projectile>().parent = this;
         shader.MakeTransparent();
 
