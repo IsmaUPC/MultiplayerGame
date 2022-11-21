@@ -413,8 +413,7 @@ public class UDPServer : MonoBehaviour
 
                         for (int i = 0; i < clients.Length; ++i)
                         {
-
-                            if (clients[i].ipep != null)
+                            if (clients[i].ipep != null && clients[i].ipep.Equals(e.ipep))
                             {
                                 Event ev;
                                 ev.data = e.data;
@@ -425,14 +424,13 @@ public class UDPServer : MonoBehaviour
                                 {
                                     sendQueue.Enqueue(ev);
                                 }
-                                if (clients[i].ipep.Equals(e.ipep))
+
+                                lock (clientsLock)
                                 {
-                                    lock (clientsLock)
-                                    {
-                                        clientsData[i].reaching = false;
-                                        clientsData[i].lastContact = 0.0F;
-                                    }
+                                    clientsData[i].reaching = false;
+                                    clientsData[i].lastContact = 0.0F;
                                 }
+                                break;
                             }
                         }
 
@@ -445,7 +443,7 @@ public class UDPServer : MonoBehaviour
                         for (int i = 0; i < clients.Length; ++i)
                         {
                             if (clients[i].ipep != null)
-                            {                                                                
+                            {
                                 if (clients[i].ipep.Equals(e.ipep))
                                 {
                                     lock (clientsLock)
