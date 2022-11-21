@@ -76,18 +76,15 @@ public class PlayerSpawner : MonoBehaviour
             playerData.SetBodyParts(data.cosmetics, data.projectilePrefab, playerPendingToSpawn[0].cosmeticsIdxs);
         }
 
-        if (playerPendingToSpawn[0].portId == data.portId)
+        // Create remote player
+        if(!isCustomAvatarScene)
         {
-            if (!isCustomAvatarScene)
-            {
-                // Create remote player
+            if (playerPendingToSpawn[0].portId == data.portId)          
                 client.SendInfoSpawnToServer(playerPendingToSpawn[0].cosmeticsIdxs, playerPendingToSpawn[0].portId);
-            }
+            else
+                playerInput.DeactivateInput();
         }
-        else
-        {
-            playerInput.DeactivateInput();
-        }
+        
     }
 
     public void SpawnNetPlayer(int[] cosmeticsIdxs, int portId)
