@@ -20,7 +20,7 @@ public class PlayerData : MonoBehaviour
         startTrasnform = trans;
     }
 
-    public void SetBodyParts(List<Mesh[]> cosmetics, Mesh meshProjectile, int[] indexs)
+    public void SetBodyParts(List<Mesh[]> cosmetics, GameObject projectile, int[] indexs)
     {
         for (int i = 0; i < indexs.Length; i++)
         {
@@ -29,7 +29,7 @@ public class PlayerData : MonoBehaviour
         if (GetComponent<CustomAvatar>() == null)
         {
             GetComponent<PropHunt>().SetBodyParts(bodyParts);
-            GetComponent<PlayerController>().projectile.GetComponent<MeshFilter>().mesh = meshProjectile;
+            GetComponent<PlayerController>().projectile = projectile;
         }
     }
 }

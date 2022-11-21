@@ -56,7 +56,7 @@ public class PlayerSpawner : MonoBehaviour
             GameObject player = Instantiate(playerPrefab);
             PlayerInput pi = player.GetComponent<PlayerInput>();
             OnPlayerJoined(pi);
-            //pi.DeactivateInput();
+            pi.DeactivateInput();
             playerPendingToSpawn.RemoveAt(0);
         }
     }
@@ -72,8 +72,8 @@ public class PlayerSpawner : MonoBehaviour
         playerData.SetStartTransform(spawnLocations[playerPendingToSpawn[0].portId]);
         if (data)
         {
-            Mesh mesh = data.projectiles[playerPendingToSpawn[0].cosmeticsIdxs[5]]; // 5 = gloves
-            playerData.SetBodyParts(data.cosmetics, mesh, playerPendingToSpawn[0].cosmeticsIdxs);
+            data.projectilePrefab.GetComponent<MeshFilter>().mesh = data.projectiles[playerPendingToSpawn[0].cosmeticsIdxs[5]]; // 5 = gloves
+            playerData.SetBodyParts(data.cosmetics, data.projectilePrefab, playerPendingToSpawn[0].cosmeticsIdxs);
         }
 
         // Create remote player
