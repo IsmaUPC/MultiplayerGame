@@ -54,6 +54,7 @@ public class UDPServer : MonoBehaviour
     // Event list to process
     private Queue<Event> eventQueue;
     private Queue<Event> sendQueue;
+    private List<byte[]> playerData = new List<byte[]>();
 
     // Accepting 6 clients a part of this
     private ArrayList clientSockets = new ArrayList();
@@ -438,7 +439,7 @@ public class UDPServer : MonoBehaviour
                     case EVENT_TYPE.EVENT_UPDATE:
                         break;
                     case EVENT_TYPE.EVENT_SPAWN_PLAYER:
-
+                        playerData.Add(e.data);
                         // TODO: Add event qeue
                         for (int i = 0; i < clients.Length; ++i)
                         {
@@ -449,6 +450,18 @@ public class UDPServer : MonoBehaviour
                                     lock (clientsLock)
                                     {
                                         clientsData[i].lastContact = 0.0F;
+                                    }
+                                    lock (sendQueueLock)
+                                    {
+                                        for (int j = 0; j < playerData.Count-1; j++)
+                                        {
+                                            Event ev;
+                                            ev.data = playerData[j];
+                                            ev.ipep = clients[i].ipep;
+                                            ev.type = EVENT_TYPE.EVENT_SPAWN_PLAYER;
+                                            ev.senderId = e.senderId;
+                                            sendQueue.Enqueue(ev);
+                                        }                                        
                                     }
                                 }
                                 else
