@@ -23,10 +23,8 @@ public class Projectile : MonoBehaviour
         transform.position += transform.forward * velocity * Time.deltaTime;
         transform.position = new Vector3(transform.position.x, initY, transform.position.z);
         timeToLive -= Time.deltaTime;
-        if (timeToLive < 0.0F)
-        {
-            Destroy(gameObject);
-        }
+        if (timeToLive < 0.0F || transform.position.y < 0)
+            DestroyProjectile();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -39,10 +37,7 @@ public class Projectile : MonoBehaviour
                 GetComponent<Rigidbody>().useGravity = true;
 
             if (collision.gameObject.tag == "Floor")
-            {
-                parent.shader.UndoTransparent();
-                Destroy(transform.gameObject);
-            }
+                DestroyProjectile();
             else
             {
                 var contact = collision.contacts[0];
@@ -52,5 +47,12 @@ public class Projectile : MonoBehaviour
                 transform.rotation = Quaternion.FromToRotation(Vector3.forward, newDir);
             }
         }
+    }
+
+    private void DestroyProjectile()
+    {
+        parent.shader.UndoTransparent();
+        parent.shoot = false;
+        Destroy(gameObject);
     }
 }

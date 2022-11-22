@@ -114,7 +114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: 20
   maxBounce: 4
-  timeToLive: 6
+  timeToLive: 4
   parent: {fileID: 0}
 --- !u!54 &3149554526320769771
 Rigidbody:

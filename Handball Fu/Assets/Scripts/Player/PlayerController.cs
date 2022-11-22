@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     public GameObject projectile;
     [HideInInspector] public Mesh projectileMesh;
     [HideInInspector] public ActiveShader shader;
+    [HideInInspector] public bool shoot = false;
     public Transform projectilePos;
 
     // States
@@ -148,10 +149,14 @@ public class PlayerController : MonoBehaviour
 
     public void SpawnProjectile()
     {
-        GameObject proj = Instantiate(projectile, projectilePos.position, transform.rotation);
-        proj.GetComponent<MeshFilter>().mesh = projectileMesh;
-        proj.GetComponent<Projectile>().parent = this;
-        shader.MakeTransparent();
+        if(!shoot)
+        {
+            GameObject proj = Instantiate(projectile, projectilePos.position, transform.rotation);
+            proj.GetComponent<MeshFilter>().mesh = projectileMesh;
+            proj.GetComponent<Projectile>().parent = this;
+            shader.MakeTransparent();
+            shoot = true;
+        }        
 
         // TODO: Call shader mask to hide right punch
     }

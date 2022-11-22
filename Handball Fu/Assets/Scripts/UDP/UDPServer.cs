@@ -451,18 +451,21 @@ public class UDPServer : MonoBehaviour
                                     {
                                         clientsData[i].lastContact = 0.0F;
                                     }
-                                    lock (sendQueueLock)
+
+
+                                    for (int j = 0; j < playerData.Count - 1; j++)
                                     {
-                                        for (int j = 0; j < playerData.Count-1; j++)
+                                        Event ev;
+                                        ev.data = playerData[j];
+                                        ev.ipep = clients[i].ipep;
+                                        ev.type = EVENT_TYPE.EVENT_SPAWN_PLAYER;
+                                        ev.senderId = e.senderId;
+                                        lock (sendQueueLock)
                                         {
-                                            Event ev;
-                                            ev.data = playerData[j];
-                                            ev.ipep = clients[i].ipep;
-                                            ev.type = EVENT_TYPE.EVENT_SPAWN_PLAYER;
-                                            ev.senderId = e.senderId;
                                             sendQueue.Enqueue(ev);
-                                        }                                        
+                                        }
                                     }
+
                                 }
                                 else
                                 {
