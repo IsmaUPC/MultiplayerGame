@@ -52,7 +52,7 @@ public class UDPServer : MonoBehaviour
     // Event list to process
     private Queue<Event> eventQueue;
     private Queue<Event> sendQueue;
-    private List<byte[]> playerData = new List<byte[]>();
+    private List<Event> playerData = new List<Event>();
 
     // Accepting 6 clients a part of this
     private ArrayList clientSockets = new ArrayList();
@@ -295,6 +295,8 @@ public class UDPServer : MonoBehaviour
                         {
                             if (prts[i].remoteIP.Equals(e.ipep.Address))
                             {
+                                Debug.Log("e.senderId: " + e.senderId.ToString() + "playerData.senderId: " + playerData[i].senderId.ToString());
+                                playerData.RemoveAt(i);
                                 lock (portsLock)
                                 {
                                     ports[i].isUsed = false;
@@ -437,7 +439,8 @@ public class UDPServer : MonoBehaviour
                     case EVENT_TYPE.EVENT_UPDATE:
                         break;
                     case EVENT_TYPE.EVENT_SPAWN_PLAYER:
-                        playerData.Add(e.data);
+                        playerData.Add(e);
+                        Debug.Log("Sender ID: " + e.senderId);
                         // TODO: Add event qeue
                         for (int i = 0; i < clients.Length; ++i)
                         {
@@ -450,18 +453,17 @@ public class UDPServer : MonoBehaviour
                                         clientsData[i].lastContact = 0.0F;
                                     }
 
-
                                     for (int j = 0; j < playerData.Count - 1; j++)
                                     {
-                                        Event ev;
-                                        ev.data = playerData[j];
+                                        Event ev = playerData[j];
                                         ev.ipep = clients[i].ipep;
-                                        ev.type = EVENT_TYPE.EVENT_SPAWN_PLAYER;
-                                        ev.senderId = e.senderId;
-                                        lock (sendQueueLock)
+                                        if(ev.senderId != e.senderId)
                                         {
-                                            sendQueue.Enqueue(ev);
-                                        }
+                                            lock (sendQueueLock)
+                                            {
+                                                sendQueue.Enqueue(ev);
+                                            }
+                                        }                                        
                                     }
 
                                 }
