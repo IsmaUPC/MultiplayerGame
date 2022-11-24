@@ -4,9 +4,6 @@ using UnityEngine;
 
 using System;
 using System.IO;
-using System.Text;
-using System.Linq;
-using static UnityEditor.PlayerSettings;
 
 public class Serialization : MonoBehaviour
 {
