@@ -24,3 +24,16 @@ Lobby:
 + K / Button West: Shoot
 + L / Button North: Hold to aim, release to shoot
 + None control: After x seconds you transform into random object
+
+### Galery
+Stylized Messages
+
+ ![Image](Screenshots/message_style.png)
+ 
+ Custom avatar
+ 
+ ![Image](Screenshots/custom_avatar.png)
+ 
+ Ball bound
+ 
+ ![Image](Screenshots/ball_bound.png)
