@@ -6,10 +6,10 @@ public class Projectile : MonoBehaviour
 {
     public float velocity = 10;
     public int maxBounce = 4;
-    public float timeToLive = 4;
     private int currentBounce = 0;
-    [HideInInspector] public PlayerController parent;
     private float initY = 0;
+    private bool isRecover = false;
+    [HideInInspector] public PlayerController parent;
 
     // Start is called before the first frame update
     void Start()
@@ -20,15 +20,15 @@ public class Projectile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position += transform.forward * velocity * Time.deltaTime;
-        transform.position = new Vector3(transform.position.x, initY, transform.position.z);
-        timeToLive -= Time.deltaTime;
-        if (timeToLive < 0.0F || transform.position.y < 0)
-            DestroyProjectile();
+        if(!isRecover)
+            transform.position += transform.forward * velocity * Time.deltaTime;
+        if(transform.position.y > initY)
+            transform.position = new Vector3(transform.position.x, initY, transform.position.z);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log(collision.gameObject.name);
         // Check no collision with his owner
         if (collision.gameObject != parent.gameObject)
         {
@@ -37,7 +37,11 @@ public class Projectile : MonoBehaviour
                 GetComponent<Rigidbody>().useGravity = true;
 
             if (collision.gameObject.tag == "Floor")
-                DestroyProjectile();
+            {
+                isRecover = true;
+                GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+                GetComponent<SphereCollider>().isTrigger = true;
+            }
             else
             {
                 var contact = collision.contacts[0];
@@ -47,6 +51,11 @@ public class Projectile : MonoBehaviour
                 transform.rotation = Quaternion.FromToRotation(Vector3.forward, newDir);
             }
         }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject == parent.gameObject)
+            DestroyProjectile();
     }
 
     private void DestroyProjectile()

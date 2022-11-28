@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     // General
     [SerializeField] private CharacterController characterController;
     [SerializeField] private Animator animator;
+    private float initY;
 
     // Movement
     private Vector2 movement = Vector2.zero;
@@ -41,7 +42,7 @@ public class PlayerController : MonoBehaviour
     {
         trail = GetComponent<TrailRenderer>();
         state = State.MOVE;
-
+        initY = transform.position.y;
         shader = GetComponentInChildren<ActiveShader>();
     }
 
