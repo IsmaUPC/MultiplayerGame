@@ -521,7 +521,10 @@ public class UDPServer : MonoBehaviour
                                     playerReadys++;
                             }
 
-                            String data = playerReadys.ToString() + " / " + playerConnec.ToString() + " players are ready";
+                            String data = playerReadys.ToString() + " / " + playerConnec.ToString() + " players are ready. ";
+                            if (playerConnec == 1 && !breakReady)
+                                data += "<br><color=red>MINIMUM 2 PLAYERS ARE REQUIRED</color=red>";
+
                             Event ev;
                             ev.data = serializer.SerializeChatMessage(0, data);
                             ev.ipep = new IPEndPoint(IPAddress.Any, 0);
@@ -529,22 +532,14 @@ public class UDPServer : MonoBehaviour
                             ev.senderId = e.senderId;
                             EnqueueEvent(ev);
 
-                            if (playerConnec == 1)
-                            {
-                                ev.data = serializer.SerializeChatMessage(0, "Minimum 2 players required");
-                                EnqueueEvent(ev);
-                            }
                             // If all players are ready game begin
-                            if (playerReadys == playerConnec)
+                            /*else*/if (playerReadys == playerConnec)
                             {
                                 // Begin game event
-                                data = "All players are ready, the game begin in 3 seconds!";
-                                ev.data = serializer.SerializeChatMessage(0, data);
-                                sendQueue.Enqueue(ev);
+                                ev.data = serializer.SerializeChatMessage(0, "All players are ready, the game begin in 3 seconds!");
+                                EnqueueEvent(ev);
                                 ready = true;
                             }
-                            else
-                                Debug.Log("playerReadys: " + playerReadys.ToString() + "    playerConnec: " + playerConnec.ToString());
                         }
                         break;
                     default:
