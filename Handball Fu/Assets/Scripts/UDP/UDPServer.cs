@@ -266,7 +266,7 @@ public class UDPServer : MonoBehaviour
                     case 'M': // Message recieved
                         e.type = EVENT_TYPE.EVENT_MESSAGE;
                         break;
-                    case 'U': // Update [STILL NOT USED]
+                    case 'U': // Update [STILL NOT USED]8
                         e.type = EVENT_TYPE.EVENT_UPDATE;
                         break;
                     case 'S': // Spawn [STILL NOT USED]
@@ -468,6 +468,19 @@ public class UDPServer : MonoBehaviour
 
                         break;
                     case EVENT_TYPE.EVENT_UPDATE:
+                        {
+                            byte netId;
+                            Vector2 pos;
+                            Vector3 rot;
+                            Vector2 vel;
+
+                            (netId,pos, rot, vel) = serializer.DeserializeTransform(e.data);
+
+                            if (netId / 10 == 0) /*PlayerUpdate()*/;
+                            if (netId / 10 == 1) /*BallUpdate()*/;
+                            if (netId / 10 == 3) /*PowerUpUpdate()*/;
+
+                        }
                         break;
                     case EVENT_TYPE.EVENT_SPAWN_PLAYER:
                         playerData.Add(e);

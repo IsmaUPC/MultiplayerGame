@@ -186,7 +186,7 @@ public class Serialization : MonoBehaviour
         return bytes;
     }
 
-    public byte[] SerializeTransform(int id, char type, int netId, Transform t)
+    public byte[] SerializeTransform(int id, char type, int netId, ref Transform t, ref Vector3 velocity)
     {
 
         InitializeWriter();
@@ -196,6 +196,11 @@ public class Serialization : MonoBehaviour
         double rx = t.eulerAngles.x;
         double ry = t.eulerAngles.y;
         double rz = t.eulerAngles.z;
+
+        double vx = velocity.x;
+        double vz = velocity.z;
+
+        
 
         writer.Write(id);
         writer.Write(type);
@@ -208,13 +213,18 @@ public class Serialization : MonoBehaviour
         writer.Write(ry);
         writer.Write(rz);
 
+        writer.Write(vx);
+        writer.Write(vz);
+
         return writeStream.ToArray();
     }
 
     // TODO
-    public void DeserializeTransform(byte[] data)
+    public (byte, Vector2,Vector3,Vector2) DeserializeTransform(byte[] data)
     {
         InitializeReader(data, 2);
+
+        byte netId = reader.ReadByte();
 
         float x = (float)reader.ReadDouble();
         float z = (float)reader.ReadDouble();
@@ -222,6 +232,11 @@ public class Serialization : MonoBehaviour
         float rx = (float)reader.ReadDouble();
         float ry = (float)reader.ReadDouble();
         float rz = (float)reader.ReadDouble();
+
+        float vx = (float)reader.ReadDouble();
+        float vz = (float)reader.ReadDouble();
+
+        return (netId,new Vector2(x, z), new Vector3(rx, ry, rz), new Vector2(vx,vz));
 
     }
 
