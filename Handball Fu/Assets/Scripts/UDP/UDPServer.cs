@@ -520,19 +520,17 @@ public class UDPServer : MonoBehaviour
                         break;
                     case EVENT_TYPE.EVENT_READY_TO_PLAY:
                         {
-                            if (serializer.DeserializeReadyToPlay(e.data))
-                                SetClientReady(clients, e, true);
-                            else
-                            {
-                                SetClientReady(clients, e, false);
-                                breakReady = true;
-                            }
+                            bool playerReady = serializer.DeserializeReadyToPlay(e.data);
+                            SetClientReady(clients, e, playerReady);
+
                             int playerReadys = 0;
                             for (int i = 0; i < clients.Length; i++)
                             {
                                 if (clients[i].ipep != null && clients[i].ready)
                                     playerReadys++;
                             }
+                            if (playerReadys < 2 && !playerReady)
+                                breakReady = true;
 
                             String data = playerReadys.ToString() + " / " + playerConnec.ToString() + " players are ready. ";
                             if (playerConnec == 1 && !breakReady)
