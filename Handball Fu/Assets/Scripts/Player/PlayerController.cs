@@ -185,4 +185,9 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("Victory", true);
         state = State.DIE;
     }
+
+    void OnExit(InputValue value)
+    {
+        Application.Quit();
+    }
 }

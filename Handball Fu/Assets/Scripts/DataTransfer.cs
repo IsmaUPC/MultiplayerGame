@@ -42,6 +42,15 @@ public class DataTransfer : MonoBehaviour
         }
     }
 
+    void OnEnable()
+    {
+        UDPClient.OnStart += TransferData;
+    }
+    void OnDisable()
+    {
+        UDPClient.OnStart -= TransferData;
+    }
+
     public void SetCustomAvatar(CustomAvatar custom)
     {
         ca = custom;

@@ -5,10 +5,26 @@ using UnityEngine.SceneManagement;
 
 public class Home : MonoBehaviour
 {
+    private bool nextScene = false;
     public void OnStartClick()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
+
+    private void Update()
+    {
+        if (nextScene)
+        {
+            nextScene = false;
+            OnStartClick();
+        }
+    }
+
+    private void SetNextScene()
+    {
+        nextScene = true;
+    }
+
     public void OnBackClick()
     {
         // Provisional
@@ -24,5 +40,14 @@ public class Home : MonoBehaviour
     public void OnExitClick()
     {
         Application.Quit();
+    }
+
+    void OnEnable()
+    {
+        UDPClient.OnStart += SetNextScene;
+    }
+    void OnDisable()
+    {
+        UDPClient.OnStart -= SetNextScene;
     }
 }

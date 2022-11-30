@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.373118, g: 0.38073853, b: 0.35872814, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311816, g: 0.38073874, b: 0.35872835, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -457,7 +457,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1389409181}
   m_HandleRect: {fileID: 1389409180}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1107,17 +1107,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 394592654}
   m_CullTransparentMesh: 1
---- !u!114 &676724334 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1621745917867745515, guid: 8ade770fe513e4645903f2311fa45766, type: 3}
-  m_PrefabInstance: {fileID: 1621745917460192901}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91719e0d4ccb0ad49ac1ff1d7ea3c45c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &783731648
 GameObject:
   m_ObjectHideFlags: 0
@@ -2508,6 +2497,7 @@ GameObject:
   - component: {fileID: 2132473394}
   - component: {fileID: 2132473393}
   - component: {fileID: 2132473392}
+  - component: {fileID: 2132473395}
   m_Layer: 5
   m_Name: Start
   m_TagString: Untagged
@@ -2580,21 +2570,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 676724334}
-        m_TargetAssemblyTypeName: DataTransfer, AssemblyIS
-        m_MethodName: TransferData
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1625363155}
-        m_TargetAssemblyTypeName: Home, AssemblyIS
-        m_MethodName: OnStartClick
+      - m_Target: {fileID: 2132473395}
+        m_TargetAssemblyTypeName: ReadyToPlay, AssemblyIS
+        m_MethodName: Ready
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2642,6 +2620,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2132473390}
   m_CullTransparentMesh: 1
+--- !u!114 &2132473395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2132473390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b118e5a504022434a9b88bd7eea1a083, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonStart: {fileID: 2132473392}
 --- !u!1001 &1621745917460192901
 PrefabInstance:
   m_ObjectHideFlags: 0

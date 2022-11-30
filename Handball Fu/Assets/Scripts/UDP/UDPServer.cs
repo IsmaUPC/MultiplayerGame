@@ -38,6 +38,7 @@ public class UDPServer : MonoBehaviour
         EVENT_MESSAGE,          // A client sent a message                  [M]
         EVENT_UPDATE,           // A client sent an updated "transform"     [U]
         EVENT_SPAWN_PLAYER,     // A client sent own spawn                  [S]
+        EVENT_READY_TO_PLAY,    // A client si ready to play                [R]
     };
 
     // Events struct
@@ -54,6 +55,9 @@ public class UDPServer : MonoBehaviour
     private Queue<Event> sendQueue;
     private List<Event> playerData = new List<Event>();
 
+    // Counts
+    private int playerConnec = 0;
+
     // Accepting 6 clients a part of this
     private ArrayList clientSockets = new ArrayList();
 
@@ -63,6 +67,7 @@ public class UDPServer : MonoBehaviour
     {
         public string name;
         public bool reaching;
+        public bool ready;
         public IPEndPoint ipep;
         public byte id;
         public float lastContact;
@@ -100,6 +105,8 @@ public class UDPServer : MonoBehaviour
     IPAddress host;
 
     private Serialization serializer;
+    private bool ready = false;
+    private bool breakReady = false;
 
     // Start is called before the first frame update
     void Start()
@@ -146,6 +153,33 @@ public class UDPServer : MonoBehaviour
 
     private void Update()
     {
+        if (ready)
+        {
+            ready = false;
+
+            Event ev;
+            ev.ipep = new IPEndPoint(IPAddress.Any, 0);
+            ev.type = EVENT_TYPE.EVENT_MESSAGE;
+            ev.senderId = 0;
+
+            ev.data = serializer.SerializeChatMessage(0, "3");
+            StartCoroutine(EnqueueEventCoroutine(ev, 1));
+            ev.data = serializer.SerializeChatMessage(0, "2");
+            StartCoroutine(EnqueueEventCoroutine(ev, 2));
+            ev.data = serializer.SerializeChatMessage(0, "1");
+            StartCoroutine(EnqueueEventCoroutine(ev, 3));
+            ev.data = serializer.SerializeChatMessage(0, "GAME START!");
+            StartCoroutine(EnqueueEventCoroutine(ev, 3.5f));
+
+            ev.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
+            ev.data = serializer.SerializeReadyToPlay(true);
+            StartCoroutine(EnqueueEventCoroutine(ev, 4));
+        }
+        if (breakReady)
+        {
+            breakReady = false;
+            StopAllCoroutines();
+        }
 
         // Increment how much time has elapsed since last contact
         lock (clientsLock)
@@ -238,6 +272,9 @@ public class UDPServer : MonoBehaviour
                     case 'S': // Spawn [STILL NOT USED]
                         e.type = EVENT_TYPE.EVENT_SPAWN_PLAYER;
                         break;
+                    case 'R': // Spawn [STILL NOT USED]
+                        e.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
+                        break;
                     default:
                         break;
                 }
@@ -285,6 +322,9 @@ public class UDPServer : MonoBehaviour
                 {
                     // Process disconnection
                     case EVENT_TYPE.EVENT_DISCONNETION:
+                        playerConnec--;
+                        SetClientReady(clients, e, false);
+                        breakReady = true;
 
                         bool disconnected = false;
                         int playerIdx = -1;
@@ -295,8 +335,8 @@ public class UDPServer : MonoBehaviour
                         {
                             if (prts[i].remoteIP.Equals(e.ipep.Address))
                             {
-                                Debug.Log("e.senderId: " + e.senderId.ToString() + "playerData.senderId: " + playerData[i].senderId.ToString());
-                                playerData.RemoveAt(i);
+                                if(playerData.Count != 0)
+                                    playerData.RemoveAt(i);
                                 lock (portsLock)
                                 {
                                     ports[i].isUsed = false;
@@ -353,7 +393,7 @@ public class UDPServer : MonoBehaviour
                     case EVENT_TYPE.EVENT_CONNECTION:
                         bool canJoin = false;
                         int p = 0;
-
+                        playerConnec++;
                         // Check for a free port
                         for (int i = 0; i < prts.Length; ++i)
                         {
@@ -368,10 +408,7 @@ public class UDPServer : MonoBehaviour
                                     ports[i].remoteIP = e.ipep.Address;
 
                                 }
-                                lock (sendQueueLock)
-                                {
-                                    sendQueue.Enqueue(e);
-                                }
+                                EnqueueEvent(e);
                                 break;
                             }
                         }
@@ -402,10 +439,7 @@ public class UDPServer : MonoBehaviour
                             ev.type = EVENT_TYPE.EVENT_DENIEDCONNECT;
                             ev.data = e.data;
                             ev.ipep = e.ipep;
-                            lock (sendQueueLock)
-                            {
-                                sendQueue.Enqueue(ev);
-                            }
+                            EnqueueEvent(ev);
                         }
 
                         break;
@@ -421,10 +455,7 @@ public class UDPServer : MonoBehaviour
                                 ev.ipep = clients[i].ipep;
                                 ev.type = EVENT_TYPE.EVENT_MESSAGE;
                                 ev.senderId = e.senderId;
-                                lock (sendQueueLock)
-                                {
-                                    sendQueue.Enqueue(ev);
-                                }
+                                EnqueueEvent(ev);
 
                                 lock (clientsLock)
                                 {
@@ -457,13 +488,8 @@ public class UDPServer : MonoBehaviour
                                     {
                                         Event ev = playerData[j];
                                         ev.ipep = clients[i].ipep;
-                                        if(ev.senderId != e.senderId)
-                                        {
-                                            lock (sendQueueLock)
-                                            {
-                                                sendQueue.Enqueue(ev);
-                                            }
-                                        }                                        
+                                        if (ev.senderId != e.senderId)
+                                            EnqueueEvent(ev);
                                     }
 
                                 }
@@ -474,12 +500,51 @@ public class UDPServer : MonoBehaviour
                                     ev.ipep = clients[i].ipep;
                                     ev.type = EVENT_TYPE.EVENT_SPAWN_PLAYER;
                                     ev.senderId = e.senderId;
-                                    lock (sendQueueLock)
-                                    {
-                                        sendQueue.Enqueue(ev);
-                                    }
+                                    EnqueueEvent(ev);
                                 }
                             }
+                        }
+                        break;
+                    case EVENT_TYPE.EVENT_READY_TO_PLAY:
+                        {
+                            if (serializer.DeserializeReadyToPlay(e.data))
+                                SetClientReady(clients, e, true);
+                            else
+                            {
+                                SetClientReady(clients, e, false);
+                                breakReady = true;
+                            }
+                            int playerReadys = 0;
+                            for (int i = 0; i < clients.Length; i++)
+                            {
+                                if (clients[i].ipep != null && clients[i].ready)
+                                    playerReadys++;
+                            }
+
+                            String data = playerReadys.ToString() + " / " + playerConnec.ToString() + " players are ready";
+                            Event ev;
+                            ev.data = serializer.SerializeChatMessage(0, data);
+                            ev.ipep = new IPEndPoint(IPAddress.Any, 0);
+                            ev.type = EVENT_TYPE.EVENT_MESSAGE;
+                            ev.senderId = e.senderId;
+                            EnqueueEvent(ev);
+
+                            if (playerConnec == 1)
+                            {
+                                ev.data = serializer.SerializeChatMessage(0, "Minimum 2 players required");
+                                EnqueueEvent(ev);
+                            }
+                            // If all players are ready game begin
+                            if (playerReadys == playerConnec)
+                            {
+                                // Begin game event
+                                data = "All players are ready, the game begin in 3 seconds!";
+                                ev.data = serializer.SerializeChatMessage(0, data);
+                                sendQueue.Enqueue(ev);
+                                ready = true;
+                            }
+                            else
+                                Debug.Log("playerReadys: " + playerReadys.ToString() + "    playerConnec: " + playerConnec.ToString());
                         }
                         break;
                     default:
@@ -507,6 +572,37 @@ public class UDPServer : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+    private void SetClientReady(ClientData[] clients, Event e, bool ret)
+    {
+        for (int i = 0; i < clients.Length; i++)
+        {
+            if (clients[i].ipep.Equals(e.ipep))
+            {
+                lock (clientsLock)
+                {
+                    clientsData[i].ready = ret;
+                }
+            }
+            break;
+        }
+    }
+
+    private void EnqueueEvent(Event ev)
+    {
+        lock (sendQueueLock)
+        {
+            sendQueue.Enqueue(ev);
+        }
+    }
+    private IEnumerator EnqueueEventCoroutine(Event ev, float timer)
+    {
+        yield return new WaitForSeconds(timer);
+        lock (sendQueueLock)
+        {
+            sendQueue.Enqueue(ev);
         }
     }
 
@@ -577,10 +673,7 @@ public class UDPServer : MonoBehaviour
                                 ev.data = serializer.SerializeChatMessage(0, clients[i].name + " has connected!");
                                 ev.ipep = null;
                                 ev.senderId = 0;
-                                lock (sendQueueLock)
-                                {
-                                    sendQueue.Enqueue(ev);
-                                }
+                                EnqueueEvent(ev);
 
                                 break;
                             }
@@ -645,6 +738,19 @@ public class UDPServer : MonoBehaviour
                                         ((Socket)clientSockets[ind]).SendTo(e.data, clients[i].ipep);
                                     }
                                     break;
+                                }
+                            }
+                        }
+                        break;
+                    case EVENT_TYPE.EVENT_READY_TO_PLAY:
+                        for (int i = 0; i < clients.Length; ++i)
+                        {
+                            if (clients[i].id != 0 && !clients[i].ipep.Equals(e.ipep))
+                            {
+                                int ind = clients[i].port - initialPort;
+                                lock (socketsLock)
+                                {
+                                    ((Socket)clientSockets[ind]).SendTo(e.data, clients[i].ipep);
                                 }
                             }
                         }

@@ -18,7 +18,8 @@ public class UDPClient : MonoBehaviour
         EVENT_KEEPCONNECT,      // A client is still connected
         EVENT_MESSAGE,          // A client sent a message
         EVENT_UPDATE,           // A client sent an updated "transform"
-        EVENT_SPAWN_PLAYER,      // A client sent own spawn                 
+        EVENT_SPAWN_PLAYER,     // A client sent own spawn
+        EVENT_READY_TO_PLAY,    // A client si ready to play                [R]
     };
     enum CONNECTION_STATE
     {
@@ -71,6 +72,8 @@ public class UDPClient : MonoBehaviour
     private float timeOut;
 
     private bool isSocketAlive;
+
+    public static Action OnStart;
 
     int numCosmetis = 7;
     // Start is called before the first frame update
@@ -207,6 +210,9 @@ public class UDPClient : MonoBehaviour
                     case 'S':
                         e.type = EVENT_TYPE.EVENT_SPAWN_PLAYER;
                         break;
+                    case 'R':
+                        e.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
+                        break;
                     default:
                         break;
                 }
@@ -290,10 +296,14 @@ public class UDPClient : MonoBehaviour
 
                         break;
                     case EVENT_TYPE.EVENT_SPAWN_PLAYER:
-                        //TODO: Deserialize Info index cosmetics and spawnpoint player
+                        //Deserialize Info index cosmetics and spawnpoint player
                         (int[] indexs, int portId) info = serializer.DeserializeSpawnInfo(e.data, numCosmetis);
                         spawner.SpawnNetPlayer(info.indexs, info.portId);
 
+                        break;
+                    case EVENT_TYPE.EVENT_READY_TO_PLAY:
+                        if (OnStart != null)
+                            OnStart.Invoke();
                         break;
                     default:
                         break;
@@ -320,6 +330,16 @@ public class UDPClient : MonoBehaviour
     {
         byte[] data;
         data = serializer.SerializeChatMessage(myID, message);
+        lock (socketLock)
+        {
+            serverSocket.SendTo(data, SocketFlags.None, sep);
+        }
+    }
+
+    public void SendReadyToPlay(bool ready)
+    {
+        byte[] data;
+        data = serializer.SerializeReadyToPlay(ready);
         lock (socketLock)
         {
             serverSocket.SendTo(data, SocketFlags.None, sep);

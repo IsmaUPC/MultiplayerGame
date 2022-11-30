@@ -114,6 +114,24 @@ public class Serialization : MonoBehaviour
         return writeStream.ToArray();
     }
 
+    public byte[] SerializeReadyToPlay(bool ready)
+    {
+        InitializeWriter();
+
+        writer.Write(((byte)0));
+        writer.Write('R');
+        writer.Write(ready);
+
+        return writeStream.ToArray();
+    }
+
+    public bool DeserializeReadyToPlay(byte[] data)
+    {
+        InitializeReader(data, 2);
+
+        return reader.ReadBoolean();
+    }
+
     public string AuxiliarDeserializeMessage(byte[] m)
     {
         MemoryStream ms = new MemoryStream(m);
