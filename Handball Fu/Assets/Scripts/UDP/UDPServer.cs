@@ -153,6 +153,8 @@ public class UDPServer : MonoBehaviour
 
     private void Update()
     {
+        // This is necesary do in main thread 
+        // When all players are ready countdown is begin
         if (ready)
         {
             ready = false;
@@ -162,6 +164,7 @@ public class UDPServer : MonoBehaviour
             ev.type = EVENT_TYPE.EVENT_MESSAGE;
             ev.senderId = 0;
 
+            // Countdown
             ev.data = serializer.SerializeChatMessage(0, "3");
             StartCoroutine(EnqueueEventCoroutine(ev, 1));
             ev.data = serializer.SerializeChatMessage(0, "2");
@@ -171,10 +174,12 @@ public class UDPServer : MonoBehaviour
             ev.data = serializer.SerializeChatMessage(0, "GAME START!");
             StartCoroutine(EnqueueEventCoroutine(ev, 3.5f));
 
+            // Game begin
             ev.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
             ev.data = serializer.SerializeReadyToPlay(true);
             StartCoroutine(EnqueueEventCoroutine(ev, 4));
         }
+        // If the countdown was begin but a player press Cancel or disconnect break countdown
         if (breakReady)
         {
             breakReady = false;
@@ -266,13 +271,13 @@ public class UDPServer : MonoBehaviour
                     case 'M': // Message recieved
                         e.type = EVENT_TYPE.EVENT_MESSAGE;
                         break;
-                    case 'U': // Update [STILL NOT USED]8
+                    case 'U': // Update [STILL NOT USED]
                         e.type = EVENT_TYPE.EVENT_UPDATE;
                         break;
-                    case 'S': // Spawn [STILL NOT USED]
+                    case 'S': // Spawn player event
                         e.type = EVENT_TYPE.EVENT_SPAWN_PLAYER;
                         break;
-                    case 'R': // Spawn [STILL NOT USED]
+                    case 'R': // Player are ready to begin game
                         e.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
                         break;
                     default:
@@ -483,8 +488,8 @@ public class UDPServer : MonoBehaviour
                         }
                         break;
                     case EVENT_TYPE.EVENT_SPAWN_PLAYER:
+                        // Store player data for replicate it on other clients
                         playerData.Add(e);
-                        Debug.Log("Sender ID: " + e.senderId);
                         // TODO: Add event qeue
                         for (int i = 0; i < clients.Length; ++i)
                         {
@@ -497,6 +502,7 @@ public class UDPServer : MonoBehaviour
                                         clientsData[i].lastContact = 0.0F;
                                     }
 
+                                    // Add so many EVENT_SPAWN_PLAYER events so many players connected before you
                                     for (int j = 0; j < playerData.Count - 1; j++)
                                     {
                                         Event ev = playerData[j];
@@ -506,6 +512,7 @@ public class UDPServer : MonoBehaviour
                                     }
 
                                 }
+                                // Notify others clinets that you have entered the game
                                 else
                                 {
                                     Event ev;
@@ -520,15 +527,19 @@ public class UDPServer : MonoBehaviour
                         break;
                     case EVENT_TYPE.EVENT_READY_TO_PLAY:
                         {
+                            // playerReady = if client click "Start" playerReady = true
+                            // playerReady = if client click "Cancel" playerReady = false
                             bool playerReady = serializer.DeserializeReadyToPlay(e.data);
                             SetClientReady(clients, e, playerReady);
 
+                            // Get how many players are ready
                             int playerReadys = 0;
                             for (int i = 0; i < clients.Length; i++)
                             {
                                 if (clients[i].ipep != null && clients[i].ready)
                                     playerReadys++;
                             }
+                            // If there are less minimum players required(2) cancel countdown
                             if (playerReadys < 2 && !playerReady)
                                 breakReady = true;
 
@@ -580,7 +591,7 @@ public class UDPServer : MonoBehaviour
             }
         }
     }
-
+    // Update client struct (bool ready)
     private void SetClientReady(ClientData[] clients, Event e, bool ret)
     {
         for (int i = 0; i < clients.Length; i++)
@@ -749,6 +760,7 @@ public class UDPServer : MonoBehaviour
                         }
                         break;
                     case EVENT_TYPE.EVENT_READY_TO_PLAY:
+                        // Notify to all players connected
                         for (int i = 0; i < clients.Length; ++i)
                         {
                             if (clients[i].id != 0 && !clients[i].ipep.Equals(e.ipep))

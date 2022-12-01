@@ -15,12 +15,6 @@ public class ReadyToPlay : MonoBehaviour
         client = FindObjectOfType<UDPClient>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        //buttonStart.onClick.Invoke();
-    }
-
     public void Ready()
     {
         ready = !ready;

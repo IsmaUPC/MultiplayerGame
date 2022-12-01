@@ -315,6 +315,7 @@ public class UDPClient : MonoBehaviour
 
                         break;
                     case EVENT_TYPE.EVENT_READY_TO_PLAY:
+                        // Call all functions suscribe to OnStart
                         if (OnStart != null)
                             OnStart.Invoke();
                         break;
