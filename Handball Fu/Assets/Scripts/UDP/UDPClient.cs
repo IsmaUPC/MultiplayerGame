@@ -58,6 +58,7 @@ public class UDPClient : MonoBehaviour
     private object stateLock = new object();
     private object clientsLock = new object();
     private object messagesLock = new object();
+    private object clientWorldLock = new object();
 
     byte myID;
 
@@ -76,6 +77,8 @@ public class UDPClient : MonoBehaviour
     public static Action OnStart;
 
     int numCosmetis = 7;
+
+    private WorldUpdateClient clientWorld;
     // Start is called before the first frame update
     public void ClientStart()
     {
@@ -317,7 +320,15 @@ public class UDPClient : MonoBehaviour
                     case EVENT_TYPE.EVENT_READY_TO_PLAY:
                         // Call all functions suscribe to OnStart
                         if (OnStart != null)
+                        {
                             OnStart.Invoke();
+                            // TODO NET: Change below lines, this doesn't work! Error when adding the component and the assignment would crash as well
+                            lock (clientWorldLock)
+                            {
+                                clientWorld = gameObject.AddComponent<WorldUpdateClient>();
+                                clientWorld.AssignUDPClientReference(this);
+                            }
+                        }
                         break;
                     default:
                         break;

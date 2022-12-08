@@ -5,6 +5,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using UnityEditor.PackageManager;
 
 /*
  * This script component has and controls the server behaviour
@@ -107,6 +108,8 @@ public class UDPServer : MonoBehaviour
     private Serialization serializer;
     private bool ready = false;
     private bool breakReady = false;
+
+    private WorldUpdateServer serverWorld;
 
     // Start is called before the first frame update
     void Start()
@@ -340,7 +343,7 @@ public class UDPServer : MonoBehaviour
                         {
                             if (prts[i].remoteIP.Equals(e.ipep.Address))
                             {
-                                if(playerData.Count != 0)
+                                if (playerData.Count != 0)
                                     playerData.RemoveAt(i);
                                 lock (portsLock)
                                 {
@@ -479,7 +482,7 @@ public class UDPServer : MonoBehaviour
                             Vector3 rot;
                             Vector2 vel;
 
-                            (netId,pos, rot, vel) = serializer.DeserializeTransform(e.data);
+                            (netId, pos, rot, vel) = serializer.DeserializeTransform(e.data);
 
                             if (netId / 10 == 0) /*PlayerUpdate()*/;
                             if (netId / 10 == 1) /*BallUpdate()*/;
@@ -509,6 +512,10 @@ public class UDPServer : MonoBehaviour
                                         ev.ipep = clients[i].ipep;
                                         if (ev.senderId != e.senderId)
                                             EnqueueEvent(ev);
+                                        else
+                                        {
+                                            // TODO NET: Return netID to the client who created the new player
+                                        }
                                     }
 
                                 }
@@ -555,7 +562,8 @@ public class UDPServer : MonoBehaviour
                             EnqueueEvent(ev);
 
                             // If all players are ready game begin
-                            /*else*/if (playerReadys == playerConnec)
+                            /*else*/
+                            if (playerReadys == playerConnec)
                             {
                                 // Begin game event
                                 ev.data = serializer.SerializeChatMessage(0, "All players are ready, the game begin in 3 seconds!");
@@ -604,6 +612,28 @@ public class UDPServer : MonoBehaviour
                 }
             }
             break;
+        }
+    }
+
+    public void BroadcastInterpolation(byte netID, Transform transform)
+    {
+        ClientData[] clients;
+        lock (clientsLock)
+        {
+            clients = clientsData;
+        }
+        for (int i = 0; i < clients.Length; ++i)
+        {
+            if (clients[i].id != 0)
+            {
+                //int ind = clients[i].port - initialPort;
+                //byte[] data = serializer.SerializeTransform(0, netID, netID, ref transform, ref Vector3.zero); // TODO create custom serializer to send only transform
+                //lock (socketsLock)
+                //{
+                //    ((Socket)clientSockets[i + 1]).SendTo(data, clients[i].ipep);
+                //}
+
+            }
         }
     }
 
@@ -778,6 +808,11 @@ public class UDPServer : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void AssignServerWorld(WorldUpdateServer wus)
+    {
+        serverWorld = wus;
     }
 
     // Get local IP
