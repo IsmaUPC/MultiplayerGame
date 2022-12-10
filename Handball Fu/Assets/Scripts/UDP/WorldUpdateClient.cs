@@ -81,6 +81,36 @@ public class WorldUpdateClient : MonoBehaviour
         }
     }
 
+    public void DestroyAllObjects()
+    {
+        for (int i = worldObjects.Count - 1; i >= 0; --i)
+        {
+            if (worldObjects[i].obj != null)
+            {
+                Destroy(worldObjects[i].obj);
+            }
+            worldObjects.RemoveAt(i);
+        }
+        worldObjects.Clear();
+    }
+
+    public void DestroyWorldObject(byte netID)
+    {
+        for (int i = 0; i < worldObjects.Count; ++i)
+        {
+            if (worldObjects[i].netId == netID)
+            {
+                if (worldObjects[i].obj != null)
+                {
+                    Destroy(worldObjects[i].obj);
+                }
+                worldObjects.RemoveAt(i);
+                Debug.Log("Network object with ID " + netID.ToString() + " destroyed");
+                break;
+            }
+        }
+    }
+
     // Save a reference to call events from server
     public void AssignUDPClientReference(UDPClient udp)
     {

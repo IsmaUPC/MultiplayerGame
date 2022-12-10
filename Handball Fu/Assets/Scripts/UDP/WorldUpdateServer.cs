@@ -44,7 +44,7 @@ public class WorldUpdateServer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        for(int i = 0; i < worldObjects.Count; ++i)
+        for (int i = 0; i < worldObjects.Count; ++i)
         {
             worldObjects[i].deltaLastTime += Time.deltaTime;
 
@@ -77,7 +77,18 @@ public class WorldUpdateServer : MonoBehaviour
         return retID;
     }
 
-    // TODO NET: Add function to delete all objects
+    public void DestroyAllObjects()
+    {
+        for (int i = worldObjects.Count - 1; i >= 0; --i)
+        {
+            if (worldObjects[i].obj != null)
+            {
+                Destroy(worldObjects[i].obj);
+            }
+            worldObjects.RemoveAt(i);
+        }
+        worldObjects.Clear();
+    }
 
     public void DestroyWorldObject(byte netID)
     {
@@ -85,7 +96,10 @@ public class WorldUpdateServer : MonoBehaviour
         {
             if (worldObjects[i].netId == netID)
             {
-                Destroy(worldObjects[i].obj);
+                if (worldObjects[i].obj != null)
+                {
+                    Destroy(worldObjects[i].obj);
+                }
                 worldObjects.RemoveAt(i);
                 Debug.Log("Network object with ID " + netID.ToString() + " destroyed");
                 break;
@@ -95,12 +109,17 @@ public class WorldUpdateServer : MonoBehaviour
 
     public void UpdateWorldObject(byte netID, Transform tform, Vector3 velocity)
     {
-        for(int i = 0; i < worldObjects.Count; ++i)
+        for (int i = 0; i < worldObjects.Count; ++i)
         {
             if (worldObjects[i].netId == netID)
             {
-                // TODO NET: change transform and velocity
-                
+                worldObjects[i].obj.transform.position = tform.position;
+                worldObjects[i].obj.transform.rotation = tform.rotation;
+                Rigidbody auxRb = worldObjects[i].obj.GetComponent<Rigidbody>();
+                if(auxRb != null)
+                {
+                    auxRb.velocity = velocity;
+                }
 
                 // Line below used to send interpolation position in next iteration
                 worldObjects[i].deltaLastTime = interpolationTime;
