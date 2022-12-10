@@ -140,6 +140,9 @@ public class UDPServer : MonoBehaviour
 
         clientsData = new ClientData[6];
 
+        serverWorld = gameObject.AddComponent<WorldUpdateServer>();
+        serverWorld.AssignUDPServerReference(this);
+
         threadServerInBound = new Thread(ThreadServerInBound);
         threadServerProcess = new Thread(ThreadServerProcess);
         threadServerOutBound = new Thread(ThreadServerOutBound);
@@ -802,17 +805,13 @@ public class UDPServer : MonoBehaviour
                                 }
                             }
                         }
+                        // TODO NET: Load level scene
                         break;
                     default:
                         break;
                 }
             }
         }
-    }
-
-    public void AssignServerWorld(WorldUpdateServer wus)
-    {
-        serverWorld = wus;
     }
 
     // Get local IP

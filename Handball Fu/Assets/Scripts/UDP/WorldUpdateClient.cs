@@ -24,6 +24,8 @@ public class WorldUpdateClient : MonoBehaviour
 
         // Time since last update to clients
         public float deltaLastTime;
+
+        public bool atTargetTransform;
     }
 
     // World objects
@@ -39,8 +41,6 @@ public class WorldUpdateClient : MonoBehaviour
         // 50 ms
         interpolationTime = 0.050F;
 
-        client = GameObject.FindObjectOfType<UDPClient>();
-
         worldObjects = new List<WorldObject>();
 
     }
@@ -48,10 +48,39 @@ public class WorldUpdateClient : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // TODO NET: Interpolate between transform positions and rotations...
-        // Save all transform data or just position and rotation?
+        // Iterate world objects and get interpolated transform
+        for (int i = 0; i < worldObjects.Count; ++i)
+        {
+            worldObjects[i].deltaLastTime += Time.deltaTime;
+            if (worldObjects[i].deltaLastTime < interpolationTime && !worldObjects[i].atTargetTransform)
+            {
+                worldObjects[i].obj.transform.position = Vector3.Lerp(worldObjects[i].pastTransform.position, worldObjects[i].futureTransform.position, worldObjects[i].deltaLastTime / interpolationTime);
+                worldObjects[i].obj.transform.rotation = Quaternion.Lerp(worldObjects[i].pastTransform.rotation, worldObjects[i].futureTransform.rotation, worldObjects[i].deltaLastTime / interpolationTime);
+            }
+            if (!worldObjects[i].atTargetTransform && (Vector3.Distance(worldObjects[i].obj.transform.position, worldObjects[i].futureTransform.position) < 0.01F || worldObjects[i].deltaLastTime >= interpolationTime))
+            {
+                worldObjects[i].atTargetTransform = true;
+                worldObjects[i].obj.transform.position = worldObjects[i].futureTransform.position;
+                worldObjects[i].obj.transform.rotation = worldObjects[i].futureTransform.rotation;
+            }
+        }
     }
-    
+
+    public void UpdateFutureTransform(byte netID, Transform tform)
+    {
+        for (int i = 0; i < worldObjects.Count; ++i)
+        {
+            if (worldObjects[i].netId == netID)
+            {
+                worldObjects[i].pastTransform = worldObjects[i].futureTransform;
+                worldObjects[i].futureTransform = tform;
+                worldObjects[i].deltaLastTime = 0.0F;
+                worldObjects[i].atTargetTransform = false;
+                break;
+            }
+        }
+    }
+
     // Save a reference to call events from server
     public void AssignUDPClientReference(UDPClient udp)
     {

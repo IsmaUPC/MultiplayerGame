@@ -96,6 +96,9 @@ public class UDPClient : MonoBehaviour
 
         timeOut = 5.0F;
 
+        clientWorld = gameObject.AddComponent<WorldUpdateClient>();
+        clientWorld.AssignUDPClientReference(this);
+
         serializer = gameObject.AddComponent<Serialization>();
 
         threadProcess = new Thread(ThreadProcessData);
@@ -322,12 +325,6 @@ public class UDPClient : MonoBehaviour
                         if (OnStart != null)
                         {
                             OnStart.Invoke();
-                            // TODO NET: Change below lines, this doesn't work! Error when adding the component and the assignment would crash as well
-                            lock (clientWorldLock)
-                            {
-                                clientWorld = gameObject.AddComponent<WorldUpdateClient>();
-                                clientWorld.AssignUDPClientReference(this);
-                            }
                         }
                         break;
                     default:

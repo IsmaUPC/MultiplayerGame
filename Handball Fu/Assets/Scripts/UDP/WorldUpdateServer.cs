@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class WorldUpdateServer : MonoBehaviour
@@ -35,12 +36,9 @@ public class WorldUpdateServer : MonoBehaviour
         // 50 ms
         interpolationTime = 0.050F;
 
-        server = GameObject.FindObjectOfType<UDPServer>();
 
         worldObjects = new List<WorldObject>();
 
-        // Save a reference to call events from server
-        server.AssignServerWorld(this);
     }
 
     // Update is called once per frame
@@ -110,5 +108,10 @@ public class WorldUpdateServer : MonoBehaviour
                 break;
             }
         }
+    }
+
+    public void AssignUDPServerReference(UDPServer udp)
+    {
+        server = udp;
     }
 }
