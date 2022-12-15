@@ -35,6 +35,8 @@ public class WorldUpdateClient : MonoBehaviour
 
     private UDPClient client;
 
+    private GameObject ownPlayerRef;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -120,11 +122,40 @@ public class WorldUpdateClient : MonoBehaviour
     public void CreateWorldObject(byte netID, byte type, bool isMyObject, Transform tform)
     {
         WorldObject wo = new WorldObject();
-
         wo.netId = netID;
         wo.isMyObject = isMyObject;
-        // TODO NET: If structure, depending on type, create specific prefab with specific cosmetics and the specific given transform
+
+        wo.pastTransform = tform;
+        wo.atTargetTransform = true;
+        switch (type)
+        {
+            // Case 0 used for player game objects
+            case 0:
+                if (isMyObject)
+                {
+                    wo.obj = ownPlayerRef;
+                    wo.obj.transform.SetPositionAndRotation(tform.position, tform.rotation);
+                }
+
+                break;
+
+            // Case 1 used for projectile game objects
+            case 1:
+                //wo.obj = Instantiate(projectilePrefab, tform);
+                break;
+            default:
+                break;
+        }
+        wo.deltaLastTime = 0.0F;
+        worldObjects.Add(wo);
+
+        Debug.Log("Network object with ID " + netID.ToString() + " created");
 
         worldObjects.Add(wo);
+    }
+
+    public void SetPlayerReference(GameObject obj)
+    {
+        ownPlayerRef = obj;
     }
 }

@@ -14,6 +14,7 @@ public class PlayerSpawner : MonoBehaviour
     public bool isCustomAvatarScene = false;
 
     private DataTransfer data = null;
+    private WorldUpdateClient updateClientRef;
 
     struct PlayerSpawnInfo
     {
@@ -31,6 +32,7 @@ public class PlayerSpawner : MonoBehaviour
         if (client)
         {
             data = GameObject.FindGameObjectWithTag("Data").GetComponent<DataTransfer>();
+            updateClientRef = client.gameObject.GetComponent<WorldUpdateClient>();
             client.spawner = this;
 
             PlayerSpawnInfo p = new PlayerSpawnInfo();
@@ -42,6 +44,7 @@ public class PlayerSpawner : MonoBehaviour
             {
                 GameObject player = Instantiate(playerPrefab);
                 OnPlayerJoined(player.GetComponent<PlayerInput>());
+                updateClientRef.SetPlayerReference(player);?
             }
             playerPendingToSpawn.Clear();
         }

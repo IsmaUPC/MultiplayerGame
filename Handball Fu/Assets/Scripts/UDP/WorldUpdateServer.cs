@@ -20,6 +20,9 @@ public class WorldUpdateServer : MonoBehaviour
 
         // Time since last update to clients
         public float deltaLastTime;
+
+        // Player state
+        public byte state;
     }
 
     // All world objects to be updated in clients
@@ -30,14 +33,20 @@ public class WorldUpdateServer : MonoBehaviour
 
     private UDPServer server;
 
+    public GameObject playerPrefab;
+    public GameObject projectilePrefab;
+
+    private bool[] usedIDs;
+
     // Start is called before the first frame update
     void Start()
     {
         // 50 ms
         interpolationTime = 0.050F;
 
-
         worldObjects = new List<WorldObject>();
+
+        usedIDs = new bool[256];
 
     }
 
@@ -51,30 +60,60 @@ public class WorldUpdateServer : MonoBehaviour
             // If it's been more time than the interpolation time designed
             if (worldObjects[i].deltaLastTime > interpolationTime)
             {
-                server.BroadcastInterpolation(worldObjects[i].netId, worldObjects[i].obj.transform);
+                server.BroadcastInterpolation(worldObjects[i].netId, worldObjects[i].obj.transform, worldObjects[i].state);
                 worldObjects[i].deltaLastTime = 0.0F;
             }
         }
     }
 
-
-    // TODO: Is called to create an object in world, then returns the netID to be sent to the client ho has created it
-    // maybe, clients can wait for server confirmation and the server sends a "property bool" which tells if said client 
-    // has the ownership
-    public byte CreateWorldObject(byte type)
+    // Create world objects with determined netIDs
+    public byte CreateWorldObject(byte type, Transform tform, byte clientCreator)
     {
         byte retID = 0;
         WorldObject wo = new WorldObject();
-        //wo.obj = Instantiate();
-        // TODO: Depending on type assing a net id
-        // TODO: Create GameObject depending on cosmetics
+        wo.clientCreator = clientCreator;
+        switch (type)
+        {
+            // Case 0 used for player game objects
+            case 0:
+                retID = AssignNetId(1, 9);
+                wo.obj = Instantiate(playerPrefab, tform);
+                break;
 
+            // Case 1 used for projectile game objects
+            case 1:
+                retID = AssignNetId(10, 29);
+                wo.obj = Instantiate(projectilePrefab, tform);
+                break;
+            default:
+                break;
+        }
+        wo.netId = retID;
         wo.deltaLastTime = 0.0F;
         worldObjects.Add(wo);
 
         Debug.Log("Network object with ID " + retID.ToString() + " created");
 
         return retID;
+    }
+
+    /*
+     * Net IDs assigned as follows:
+     * 0 is undefined
+     * 1 to 9 are for player game objects
+     * 10 to 29 are for projectile game objects
+     */
+    private byte AssignNetId(byte minB, byte maxB)
+    {
+        for (byte i = minB; i <= maxB; ++i)
+        {
+            if (!usedIDs[i])
+            {
+                usedIDs[i] = true;
+                return i;
+            }
+        }
+        return 0;
     }
 
     public void DestroyAllObjects()
@@ -107,24 +146,16 @@ public class WorldUpdateServer : MonoBehaviour
         }
     }
 
-    public void UpdateWorldObject(byte netID, Transform tform, Vector3 velocity)
+    public void UpdateWorldObject(byte netID, Vector3 deltaPosition, Vector3 eulerAngles, byte state)
     {
         for (int i = 0; i < worldObjects.Count; ++i)
         {
             if (worldObjects[i].netId == netID)
             {
-                worldObjects[i].obj.transform.position = tform.position;
-                worldObjects[i].obj.transform.rotation = tform.rotation;
-                Rigidbody auxRb = worldObjects[i].obj.GetComponent<Rigidbody>();
-                if(auxRb != null)
-                {
-                    auxRb.velocity = velocity;
-                }
-
-                // Line below used to send interpolation position in next iteration
-                worldObjects[i].deltaLastTime = interpolationTime;
-                Debug.Log("Network object with ID " + netID.ToString() + " updated");
-                break;
+                CharacterController auxPlayerController = worldObjects[i].obj.GetComponent<CharacterController>();
+                auxPlayerController.Move(deltaPosition);
+                worldObjects[i].obj.transform.rotation = Quaternion.Euler(eulerAngles);
+                worldObjects[i].state = state;
             }
         }
     }

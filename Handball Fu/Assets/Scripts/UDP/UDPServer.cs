@@ -618,7 +618,7 @@ public class UDPServer : MonoBehaviour
         }
     }
 
-    public void BroadcastInterpolation(byte netID, Transform transform)
+    public void BroadcastInterpolation(byte netID, Transform transform, byte player state)
     {
         ClientData[] clients;
         lock (clientsLock)
@@ -630,7 +630,7 @@ public class UDPServer : MonoBehaviour
             if (clients[i].id != 0)
             {
                 //int ind = clients[i].port - initialPort;
-                //byte[] data = serializer.SerializeTransform(0, netID, netID, ref transform, ref Vector3.zero); // TODO create custom serializer to send only transform
+                //byte[] data = serializer.SerializeTransform(0, netID, netID, ref transform, ref Vector3.zero, state); // TODO create custom serializer to send only transform
                 //lock (socketsLock)
                 //{
                 //    ((Socket)clientSockets[i + 1]).SendTo(data, clients[i].ipep);
