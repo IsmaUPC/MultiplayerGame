@@ -618,7 +618,7 @@ public class UDPServer : MonoBehaviour
         }
     }
 
-    public void BroadcastInterpolation(byte netID, Transform transform, byte player state)
+    public void BroadcastInterpolation(byte netID, Transform transform, byte player)
     {
         ClientData[] clients;
         lock (clientsLock)

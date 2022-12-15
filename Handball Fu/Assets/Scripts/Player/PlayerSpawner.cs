@@ -44,7 +44,7 @@ public class PlayerSpawner : MonoBehaviour
             {
                 GameObject player = Instantiate(playerPrefab);
                 OnPlayerJoined(player.GetComponent<PlayerInput>());
-                updateClientRef.SetPlayerReference(player);?
+                updateClientRef.SetPlayerReference(player);
             }
             playerPendingToSpawn.Clear();
         }
