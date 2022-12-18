@@ -297,8 +297,6 @@ public class UDPClient : MonoBehaviour
                         }
                         break;
                     case EVENT_TYPE.EVENT_UPDATE:
-                        //TODO: Serialize position player
-                        //serializer.SerializeTransform(1,'U',1,transform);
                         if (e.id == 0)
                         {
                             byte netId;
@@ -308,9 +306,7 @@ public class UDPClient : MonoBehaviour
 
                             (netId, pos, rot, vel) = serializer.DeserializeTransform(e.data);
 
-                            if (netId / 10 == 0) /*PlayerUpdate()*/;
-                            if (netId / 10 == 1) /*BallUpdate()*/;
-                            if (netId / 10 == 3) /*PowerUpUpdate()*/;
+                            // TODO NET: send this data to UpdateFutureTransform(byte netID, Transform tform) in worldUpdateClient script
                         }
 
                         break;

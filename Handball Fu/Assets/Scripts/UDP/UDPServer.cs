@@ -496,7 +496,6 @@ public class UDPServer : MonoBehaviour
                     case EVENT_TYPE.EVENT_SPAWN_PLAYER:
                         // Store player data for replicate it on other clients
                         playerData.Add(e);
-                        // TODO: Add event qeue
                         for (int i = 0; i < clients.Length; ++i)
                         {
                             if (clients[i].ipep != null)
@@ -509,6 +508,7 @@ public class UDPServer : MonoBehaviour
                                     }
 
                                     // Add so many EVENT_SPAWN_PLAYER events so many players connected before you
+                                    // TODO NET: Do this sending the netID of those objects!!
                                     for (int j = 0; j < playerData.Count - 1; j++)
                                     {
                                         Event ev = playerData[j];
@@ -777,7 +777,7 @@ public class UDPServer : MonoBehaviour
                         break;
                     case EVENT_TYPE.EVENT_SPAWN_PLAYER:
                         {
-                            // TODO: Sent info to other players
+                            // TODO: Sent info to other players DONE???
                             for (int i = 0; i < clients.Length; ++i)
                             {
                                 if (clients[i].id != 0 && clients[i].ipep.Equals(e.ipep))
