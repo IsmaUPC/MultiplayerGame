@@ -20,6 +20,9 @@ public class PlayerSpawner : MonoBehaviour
     {
         public int[] cosmeticsIdxs;
         public int portId;
+
+        // Only used when is not an owned player
+        public byte netId;
     }
 
     private List<PlayerSpawnInfo> playerPendingToSpawn = new List<PlayerSpawnInfo>();
@@ -33,7 +36,6 @@ public class PlayerSpawner : MonoBehaviour
         {
             data = GameObject.FindGameObjectWithTag("Data").GetComponent<DataTransfer>();
             updateClientRef = client.gameObject.GetComponent<WorldUpdateClient>();
-            client.spawner = this;
 
             PlayerSpawnInfo p = new PlayerSpawnInfo();
             p.portId = (isCustomAvatarScene) ? 0 : data.portId;
@@ -43,8 +45,8 @@ public class PlayerSpawner : MonoBehaviour
             if (spawnPlayerManual)
             {
                 GameObject player = Instantiate(playerPrefab);
-                OnPlayerJoined(player.GetComponent<PlayerInput>());
                 updateClientRef.SetPlayerReference(player);
+                OnPlayerJoined(player.GetComponent<PlayerInput>());
             }
             playerPendingToSpawn.Clear();
         }
@@ -60,6 +62,7 @@ public class PlayerSpawner : MonoBehaviour
             PlayerInput pi = player.GetComponent<PlayerInput>();
             OnPlayerJoined(pi);
             pi.DeactivateInput();
+            updateClientRef.SetPlayerCreationReference(playerPendingToSpawn[0].netId, ref player);
             playerPendingToSpawn.RemoveAt(0);
         }
     }

@@ -37,6 +37,8 @@ public class WorldUpdateClient : MonoBehaviour
 
     private GameObject ownPlayerRef;
 
+    private PlayerSpawner ps;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -44,6 +46,8 @@ public class WorldUpdateClient : MonoBehaviour
         interpolationTime = 0.050F;
 
         worldObjects = new List<WorldObject>();
+
+        ps = FindObjectOfType<PlayerSpawner>();
 
     }
 
@@ -119,7 +123,7 @@ public class WorldUpdateClient : MonoBehaviour
         client = udp;
     }
 
-    public void CreateWorldObject(byte netID, byte type, bool isMyObject, Transform tform)
+    public void CreateWorldObject(byte netID, byte type, bool isMyObject, Transform tform = null, int[] idxs = null, int portID = 0)
     {
         WorldObject wo = new WorldObject();
         wo.netId = netID;
@@ -134,7 +138,11 @@ public class WorldUpdateClient : MonoBehaviour
                 if (isMyObject)
                 {
                     wo.obj = ownPlayerRef;
-                    wo.obj.transform.SetPositionAndRotation(tform.position, tform.rotation);
+                    wo.netId = (byte)portID;
+                }
+                else
+                {
+                    ps.SpawnNetPlayer(idxs, portID);
                 }
 
                 break;
@@ -152,6 +160,18 @@ public class WorldUpdateClient : MonoBehaviour
         Debug.Log("Network object with ID " + netID.ToString() + " created");
 
         worldObjects.Add(wo);
+    }
+
+    public void SetPlayerCreationReference(byte netID, ref GameObject obj)
+    {
+        for(int i = 0; i < worldObjects.Count; ++i)
+        {
+            if (worldObjects[i].netId == netID)
+            {
+                worldObjects[i].obj = obj;
+                break;
+            }
+        }
     }
 
     public void SetPlayerReference(GameObject obj)

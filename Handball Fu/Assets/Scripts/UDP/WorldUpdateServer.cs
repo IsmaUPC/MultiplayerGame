@@ -67,7 +67,7 @@ public class WorldUpdateServer : MonoBehaviour
     }
 
     // Create world objects with determined netIDs
-    public byte CreateWorldObject(byte type, Transform tform, byte clientCreator)
+    public byte CreateWorldObject(byte type, byte clientCreator, Transform tform = null, byte portIDCreator = 0)
     {
         byte retID = 0;
         WorldObject wo = new WorldObject();
@@ -76,13 +76,13 @@ public class WorldUpdateServer : MonoBehaviour
         {
             // Case 0 used for player game objects
             case 0:
-                retID = AssignNetId(1, 9);
+                retID = portIDCreator;
                 wo.obj = Instantiate(playerPrefab, tform);
                 break;
 
             // Case 1 used for projectile game objects
             case 1:
-                retID = AssignNetId(10, 29);
+                retID = AssignNetId(10, 60);
                 wo.obj = Instantiate(projectilePrefab, tform);
                 break;
             default:
@@ -116,6 +116,7 @@ public class WorldUpdateServer : MonoBehaviour
         return 0;
     }
 
+    // TODO: Net id clear when objects are destroyed [all of them at once or a single one]
     public void DestroyAllObjects()
     {
         for (int i = worldObjects.Count - 1; i >= 0; --i)

@@ -69,7 +69,6 @@ public class UDPClient : MonoBehaviour
 
     private Queue<string> chatMessages;
     private Serialization serializer;
-    [HideInInspector] public PlayerSpawner spawner;
     private float timeOut;
 
     private bool isSocketAlive;
@@ -312,9 +311,11 @@ public class UDPClient : MonoBehaviour
                         break;
                     case EVENT_TYPE.EVENT_SPAWN_PLAYER:
                         //Deserialize Info index cosmetics and spawnpoint player
-                        (int[] indexs, int portId) info = serializer.DeserializeSpawnInfo(e.data, numCosmetis);
-                        spawner.SpawnNetPlayer(info.indexs, info.portId);
-
+                        (byte objType, int[] indexs, int portId) info = serializer.DeserializeSpawnPlayerInfo(e.data, numCosmetis);
+                        lock(clientWorldLock)
+                        {
+                            clientWorld.CreateWorldObject((byte)info.portId, info.objType, info.portId == portIdx, null, info.indexs, info.portId);
+                        }
                         break;
                     case EVENT_TYPE.EVENT_READY_TO_PLAY:
                         // Call all functions suscribe to OnStart
@@ -377,7 +378,7 @@ public class UDPClient : MonoBehaviour
     public void SendInfoSpawnToServer(int[] indexs, int portId)
     {
         byte[] data;
-        data = serializer.SerializeSpawnInfo(myID, indexs, portId);
+        data = serializer.SerializeSpawnPlayerInfo(myID, indexs, portId);
         lock (socketLock)
         {
             serverSocket.SendTo(data, SocketFlags.None, sep);

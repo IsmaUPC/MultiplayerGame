@@ -49,13 +49,13 @@ public class Serialization : MonoBehaviour
 
         return writeStream.ToArray();
     }
-    public byte[] SerializeSpawnInfo(byte myId, int[] index, int portId)
+    public byte[] SerializeSpawnPlayerInfo(byte myId, int[] index, int portId, byte objType = 0)
     {
         InitializeWriter();
 
         writer.Write(myId);
         writer.Write('S');
-
+        writer.Write(objType);
         foreach (var i in index)
         {
             writer.Write(i);
@@ -65,15 +65,17 @@ public class Serialization : MonoBehaviour
 
         return writeStream.ToArray();
     }
-    public (int[],int) DeserializeSpawnInfo(byte[] data,int cosmeticLength)
+
+    public (byte, int[], int) DeserializeSpawnPlayerInfo(byte[] data, int cosmeticLength)
     {
-        InitializeReader(data,2);
+        InitializeReader(data, 2);
+        byte objType = reader.ReadByte();
         int[] newlist = new int[cosmeticLength];
         for (int i = 0; i < cosmeticLength; i++)
         {
-            newlist[i]= reader.ReadInt32();
+            newlist[i] = reader.ReadInt32();
         }
-        return (newlist,reader.ReadInt32());
+        return (objType, newlist, reader.ReadInt32());
     }
 
     public byte[] SerializeDeniedConnection()
@@ -109,7 +111,7 @@ public class Serialization : MonoBehaviour
 
         writer.Write(((byte)0));
         writer.Write('M');
-        writer.Write(color.ToString()+username+ AuxiliarDeserializeMessage(actualMessage));
+        writer.Write(color.ToString() + username + AuxiliarDeserializeMessage(actualMessage));
 
         return writeStream.ToArray();
     }
@@ -200,7 +202,7 @@ public class Serialization : MonoBehaviour
         double vx = velocity.x;
         double vz = velocity.z;
 
-        
+
 
         writer.Write(id);
         writer.Write(type);
@@ -220,7 +222,7 @@ public class Serialization : MonoBehaviour
     }
 
     // TODO Transform
-    public (byte, Vector2,Vector3,Vector2) DeserializeTransform(byte[] data)
+    public (byte, Vector2, Vector3, Vector2) DeserializeTransform(byte[] data)
     {
         InitializeReader(data, 2);
 
@@ -236,7 +238,7 @@ public class Serialization : MonoBehaviour
         float vx = (float)reader.ReadDouble();
         float vz = (float)reader.ReadDouble();
 
-        return (netId,new Vector2(x, z), new Vector3(rx, ry, rz), new Vector2(vx,vz));
+        return (netId, new Vector2(x, z), new Vector3(rx, ry, rz), new Vector2(vx, vz));
 
     }
 
