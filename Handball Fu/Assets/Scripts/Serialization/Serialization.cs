@@ -49,13 +49,13 @@ public class Serialization : MonoBehaviour
 
         return writeStream.ToArray();
     }
-    public byte[] SerializeSpawnPlayerInfo(byte myId, int[] index, int portId, byte objType = 0)
+    public byte[] SerializeSpawnPlayerInfo(byte myId, int[] index, int portId)
     {
         InitializeWriter();
 
         writer.Write(myId);
         writer.Write('S');
-        writer.Write(objType);
+        writer.Write((byte)0); // 0 = PLAYER TYPE
         foreach (var i in index)
         {
             writer.Write(i);
@@ -179,7 +179,7 @@ public class Serialization : MonoBehaviour
         return reader.ReadInt32();
     }
 
-    public byte[] SerializePlayerCreation(int id, char type, ref Transform t)
+    public byte[] SerializePlayerCreation(int id, byte type, ref Transform t)
     {
         byte[] bytes = new byte[2];
         bytes[0] = 4;
@@ -188,58 +188,56 @@ public class Serialization : MonoBehaviour
         return bytes;
     }
 
-    public byte[] SerializeTransform(int id, char type, int netId, ref Transform t, ref Vector3 velocity)
+    public byte[] SerializeDirection(int id, byte type, Vector2 dir)
     {
-
         InitializeWriter();
-        double x = t.position.x;
-        double z = t.position.z;
-
-        double rx = t.eulerAngles.x;
-        double ry = t.eulerAngles.y;
-        double rz = t.eulerAngles.z;
-
-        double vx = velocity.x;
-        double vz = velocity.z;
-
-
-
         writer.Write(id);
+        writer.Write('U');
         writer.Write(type);
+        writer.Write((double)dir.x);
+        writer.Write((double)dir.y);
+
+        return writeStream.ToArray();
+    }
+
+    public (byte, Vector2) DeserializeDirection(byte[] data)
+    {
+        InitializeReader(data, 2);
+        byte type = reader.ReadByte();
+        float x = (float)reader.ReadDouble();
+        float y = (float)reader.ReadDouble();
+
+        return (type, new Vector2(x, y));
+    }
+
+    public byte[] SerializeTransform(int id, int netId, Vector3 trans, int state)
+    {
+        InitializeWriter();
+        writer.Write(id);
+        writer.Write('U');
+
         writer.Write(netId);
-
-        writer.Write(x);
-        writer.Write(z);
-
-        writer.Write(rx);
-        writer.Write(ry);
-        writer.Write(rz);
-
-        writer.Write(vx);
-        writer.Write(vz);
+        writer.Write(trans.x);
+        writer.Write(trans.y);
+        writer.Write(trans.z);
+        writer.Write(state);
 
         return writeStream.ToArray();
     }
 
     // TODO Transform
-    public (byte, Vector2, Vector3, Vector2) DeserializeTransform(byte[] data)
+    public (byte, Vector3, int) DeserializeTransform(byte[] data)
     {
         InitializeReader(data, 2);
 
         byte netId = reader.ReadByte();
 
         float x = (float)reader.ReadDouble();
+        float pitch = (float)reader.ReadDouble();
         float z = (float)reader.ReadDouble();
+        int state = reader.ReadInt32();
 
-        float rx = (float)reader.ReadDouble();
-        float ry = (float)reader.ReadDouble();
-        float rz = (float)reader.ReadDouble();
-
-        float vx = (float)reader.ReadDouble();
-        float vz = (float)reader.ReadDouble();
-
-        return (netId, new Vector2(x, z), new Vector3(rx, ry, rz), new Vector2(vx, vz));
-
+        return (netId, new Vector3(x, pitch, z), state);
     }
 
     private void InitializeReader(byte[] data, int pos = 0)

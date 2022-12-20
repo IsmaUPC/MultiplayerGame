@@ -34,8 +34,12 @@ public class PlayerController : MonoBehaviour
     public Transform projectilePos;
 
     // States
-    enum State { AWAKE, MOVE, DASH, ATTACK, LOAD_ARM, DIE };
-    private State state = State.AWAKE;
+    public enum State { AWAKE, MOVE, DASH, ATTACK, LOAD_ARM, DIE };
+    public State state = State.AWAKE;
+
+    // Online
+    Vector2 dir = Vector2.zero;
+    UDPClient client;
 
     // Start is called before the first frame update
     void Start()
@@ -44,10 +48,12 @@ public class PlayerController : MonoBehaviour
         state = State.MOVE;
         initY = transform.position.y;
         shader = GetComponentInChildren<ActiveShader>();
+
+        client = FindObjectOfType<UDPClient>();
     }
 
     // Update is called once per frame
-    void Update()
+    public void UpdateMove()
     {
         switch (state)
         {
@@ -75,10 +81,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     void OnMove(InputValue value)
     {
         Vector2 dir = value.Get<Vector2>();
+        client.SendDirToServer(0, dir);
+    }
+
+    public void Move(Vector2 dir)
+    {
         movement = dir * velocity;
         if(dir.magnitude != 0)
             targetDirection = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.y), Vector3.up);

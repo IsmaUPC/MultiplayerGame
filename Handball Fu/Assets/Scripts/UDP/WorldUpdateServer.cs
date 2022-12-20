@@ -1,13 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class WorldUpdateServer : MonoBehaviour
 {
     // Server world object
-    class WorldObject
+    public class WorldObject
     {
         // This two together identify the world object
         public byte netId;
@@ -21,12 +19,12 @@ public class WorldUpdateServer : MonoBehaviour
         // Time since last update to clients
         public float deltaLastTime;
 
-        // Player state
-        public byte state;
+        // Player type
+        public byte type;
     }
 
     // All world objects to be updated in clients
-    private List<WorldObject> worldObjects;
+    public List<WorldObject> worldObjects;
 
     // Interpolation time - How often to deliver new positions
     private float interpolationTime;
@@ -56,14 +54,32 @@ public class WorldUpdateServer : MonoBehaviour
         for (int i = 0; i < worldObjects.Count; ++i)
         {
             worldObjects[i].deltaLastTime += Time.deltaTime;
+            switch (worldObjects[i].type)
+            {
+                case 0:
+                    worldObjects[i].obj.GetComponent<PlayerController>().UpdateMove();
+                    break;
+                default:
+                    break;
+            }
 
             // If it's been more time than the interpolation time designed
             if (worldObjects[i].deltaLastTime > interpolationTime)
             {
-                server.BroadcastInterpolation(worldObjects[i].netId, worldObjects[i].obj.transform, worldObjects[i].state);
-                worldObjects[i].deltaLastTime = 0.0F;
+                server.BroadcastInterpolation(worldObjects[i].netId, GetDataUpdateTransform(worldObjects[i].obj.transform), (int)worldObjects[i].obj.GetComponent<PlayerController>().state);
+                worldObjects[i].deltaLastTime = 0.0f;
             }
         }
+    }
+
+    private Vector3 GetDataUpdateTransform(Transform trans)
+    {
+        Vector3 posPitch;
+        posPitch.x = trans.position.x;
+        posPitch.y = trans.rotation.eulerAngles.y;
+        posPitch.z = trans.position.z;
+
+        return posPitch;
     }
 
     // Create world objects with determined netIDs
@@ -156,7 +172,7 @@ public class WorldUpdateServer : MonoBehaviour
                 CharacterController auxPlayerController = worldObjects[i].obj.GetComponent<CharacterController>();
                 auxPlayerController.Move(deltaPosition);
                 worldObjects[i].obj.transform.rotation = Quaternion.Euler(eulerAngles);
-                worldObjects[i].state = state;
+                //worldObjects[i].state = state;
             }
         }
     }

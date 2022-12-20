@@ -17,7 +17,8 @@ public class WorldUpdateClient : MonoBehaviour
         public Transform pastTransform;
 
         // Future transform
-        public Transform futureTransform;
+        public Vector3 futurePosition;
+        public Quaternion futureRotation;
 
         // Creator id
         public bool isMyObject;
@@ -43,7 +44,7 @@ public class WorldUpdateClient : MonoBehaviour
     void Start()
     {
         // 50 ms
-        interpolationTime = 0.050F;
+        interpolationTime = 0.05f;
 
         worldObjects = new List<WorldObject>();
 
@@ -54,33 +55,40 @@ public class WorldUpdateClient : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Interpolation();
+    }
+
+    private void Interpolation()
+    {
         // Iterate world objects and get interpolated transform
         for (int i = 0; i < worldObjects.Count; ++i)
         {
             worldObjects[i].deltaLastTime += Time.deltaTime;
             if (worldObjects[i].deltaLastTime < interpolationTime && !worldObjects[i].atTargetTransform)
             {
-                worldObjects[i].obj.transform.position = Vector3.Lerp(worldObjects[i].pastTransform.position, worldObjects[i].futureTransform.position, worldObjects[i].deltaLastTime / interpolationTime);
-                worldObjects[i].obj.transform.rotation = Quaternion.Lerp(worldObjects[i].pastTransform.rotation, worldObjects[i].futureTransform.rotation, worldObjects[i].deltaLastTime / interpolationTime);
+                worldObjects[i].obj.transform.position = Vector3.Lerp(worldObjects[i].pastTransform.position, worldObjects[i].futurePosition, worldObjects[i].deltaLastTime / interpolationTime);
+                worldObjects[i].obj.transform.rotation = Quaternion.Lerp(worldObjects[i].pastTransform.rotation, worldObjects[i].futureRotation, worldObjects[i].deltaLastTime / interpolationTime);
             }
-            if (!worldObjects[i].atTargetTransform && (Vector3.Distance(worldObjects[i].obj.transform.position, worldObjects[i].futureTransform.position) < 0.01F || worldObjects[i].deltaLastTime >= interpolationTime))
+            if (!worldObjects[i].atTargetTransform && (Vector3.Distance(worldObjects[i].obj.transform.position, worldObjects[i].futurePosition) < 0.01F || worldObjects[i].deltaLastTime >= interpolationTime))
             {
                 worldObjects[i].atTargetTransform = true;
-                worldObjects[i].obj.transform.position = worldObjects[i].futureTransform.position;
-                worldObjects[i].obj.transform.rotation = worldObjects[i].futureTransform.rotation;
+                worldObjects[i].obj.transform.position = worldObjects[i].futurePosition;
+                worldObjects[i].obj.transform.rotation = worldObjects[i].futureRotation;
             }
         }
     }
 
-    public void UpdateFutureTransform(byte netID, Transform tform)
+    public void UpdateFutureTransform(byte netID, Vector3 tform, int state)
     {
         for (int i = 0; i < worldObjects.Count; ++i)
         {
             if (worldObjects[i].netId == netID)
             {
-                worldObjects[i].pastTransform = worldObjects[i].futureTransform;
-                worldObjects[i].futureTransform = tform;
-                worldObjects[i].deltaLastTime = 0.0F;
+                worldObjects[i].pastTransform.position = worldObjects[i].futurePosition;
+                worldObjects[i].pastTransform.rotation = worldObjects[i].futureRotation;
+                worldObjects[i].futurePosition = new Vector3(tform.x, worldObjects[i].obj.transform.position.y, tform.z);
+                worldObjects[i].futureRotation = Quaternion.Euler(0, tform.y, 0);
+                worldObjects[i].deltaLastTime = 0.0f;
                 worldObjects[i].atTargetTransform = false;
                 break;
             }

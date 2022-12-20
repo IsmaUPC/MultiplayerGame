@@ -5,7 +5,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using UnityEditor.PackageManager;
+using UnityEngine.SceneManagement;
 
 /*
  * This script component has and controls the server behaviour
@@ -185,6 +185,7 @@ public class UDPServer : MonoBehaviour
             ev.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
             ev.data = serializer.SerializeReadyToPlay(true);
             StartCoroutine(EnqueueEventCoroutine(ev, 4));
+            StartCoroutine(NextScene(4));
         }
         // If the countdown was begin but a player press Cancel or disconnect break countdown
         if (breakReady)
@@ -206,6 +207,11 @@ public class UDPServer : MonoBehaviour
         }
     }
 
+    private IEnumerator NextScene(int timer)
+    {
+        yield return new WaitForSeconds(timer);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
     public void OnServerClose()
     {
         // Abort all threads so none of them is active in the background
@@ -477,61 +483,71 @@ public class UDPServer : MonoBehaviour
                                 break;
                             }
                         }
-
                         break;
                     case EVENT_TYPE.EVENT_UPDATE:
                         {
-                            byte netId;
-                            Vector2 pos;
-                            Vector3 rot;
-                            Vector2 vel;
-
-                            (netId, pos, rot, vel) = serializer.DeserializeTransform(e.data);
-
-                            if (netId / 10 == 0) /*PlayerUpdate()*/;
-                            if (netId / 10 == 1) /*BallUpdate()*/;
-                            if (netId / 10 == 3) /*PowerUpUpdate()*/;
-
-                        }
-                        break;
-                    case EVENT_TYPE.EVENT_SPAWN_PLAYER:
-                        // Store player data for replicate it on other clients
-                        playerData.Add(e);
-                        byte netid;
-                        lock (serverWorldLock)
-                        {
-                            netid = serverWorld.CreateWorldObject(0, e.senderId,null, (byte)(e.ipep.Port-initialPort));
-                        }
-                        for (int i = 0; i < clients.Length; ++i)
-                        {
-                            if (clients[i].ipep != null)
+                            (byte type, Vector2 dir) direction = serializer.DeserializeDirection(e.data);
+                            byte netid = (byte)(e.ipep.Port - initialPort);
+                            lock (serverWorldLock)
                             {
-                                if (clients[i].ipep.Equals(e.ipep))
+                                switch (direction.type)
                                 {
-                                    lock (clientsLock)
+                                    case 0:
+                                        for (int i = 0; i < serverWorld.worldObjects.Count; i++)
+                                        {
+                                            if (serverWorld.worldObjects[i].netId == netid)
+                                            {
+                                                serverWorld.worldObjects[i].type = direction.type;
+                                                serverWorld.worldObjects[i].obj.GetComponent<PlayerController>().Move(direction.dir);
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }                                
+                            }
+                            break;
+                        }
+                    case EVENT_TYPE.EVENT_SPAWN_PLAYER:
+                        {
+                            // Store player data for replicate it on other clients
+                            playerData.Add(e);
+                            byte netid;
+                            lock (serverWorldLock)
+                            {
+                                netid = serverWorld.CreateWorldObject(0, e.senderId, null, (byte)(e.ipep.Port - initialPort));
+                            }
+                            for (int i = 0; i < clients.Length; ++i)
+                            {
+                                if (clients[i].ipep != null)
+                                {
+                                    if (clients[i].ipep.Equals(e.ipep))
                                     {
-                                        clientsData[i].lastContact = 0.0F;
-                                    }
+                                        lock (clientsLock)
+                                        {
+                                            clientsData[i].lastContact = 0.0F;
+                                        }
 
-                                    // Add so many EVENT_SPAWN_PLAYER events so many players connected before you
-                                    for (int j = 0; j < playerData.Count - 1; j++)
+                                        // Add so many EVENT_SPAWN_PLAYER events so many players connected before you
+                                        for (int j = 0; j < playerData.Count; j++)
+                                        {
+                                            Event ev = playerData[j];
+                                            ev.ipep = clients[i].ipep;
+                                            if (ev.senderId != e.senderId)
+                                                EnqueueEvent(ev);
+                                        }
+
+                                    }
+                                    // Notify others clinets that you have entered the game
+                                    else
                                     {
-                                        Event ev = playerData[j];
+                                        Event ev;
+                                        ev.data = e.data;
                                         ev.ipep = clients[i].ipep;
-                                        if (ev.senderId != e.senderId)
-                                            EnqueueEvent(ev);
+                                        ev.type = EVENT_TYPE.EVENT_SPAWN_PLAYER;
+                                        ev.senderId = e.senderId;
+                                        EnqueueEvent(ev);
                                     }
-
-                                }
-                                // Notify others clinets that you have entered the game
-                                else
-                                {
-                                    Event ev;
-                                    ev.data = e.data;
-                                    ev.ipep = clients[i].ipep;
-                                    ev.type = EVENT_TYPE.EVENT_SPAWN_PLAYER;
-                                    ev.senderId = e.senderId;
-                                    EnqueueEvent(ev);
                                 }
                             }
                         }
@@ -551,7 +567,7 @@ public class UDPServer : MonoBehaviour
                                     playerReadys++;
                             }
                             // If there are less minimum players required(2) cancel countdown
-                            if (playerReadys < 2 && !playerReady)
+                            if (playerReadys < 1 && !playerReady)
                                 breakReady = true;
 
                             String data = playerReadys.ToString() + " / " + playerConnec.ToString() + " players are ready. ";
@@ -619,7 +635,7 @@ public class UDPServer : MonoBehaviour
         }
     }
 
-    public void BroadcastInterpolation(byte netID, Transform transform, byte player)
+    public void BroadcastInterpolation(byte netID, Vector3 transform, int state)
     {
         ClientData[] clients;
         lock (clientsLock)
@@ -630,13 +646,11 @@ public class UDPServer : MonoBehaviour
         {
             if (clients[i].id != 0)
             {
-                //int ind = clients[i].port - initialPort;
-                //byte[] data = serializer.SerializeTransform(0, netID, netID, ref transform, ref Vector3.zero, state); // TODO create custom serializer to send only transform
-                //lock (socketsLock)
-                //{
-                //    ((Socket)clientSockets[i + 1]).SendTo(data, clients[i].ipep);
-                //}
-
+                byte[] data = serializer.SerializeTransform(0, netID, transform, state);
+                lock (socketsLock)
+                {
+                    ((Socket)clientSockets[i + 1]).SendTo(data, clients[i].ipep);
+                }
             }
         }
     }
