@@ -178,6 +178,7 @@ public class WorldUpdateServer : MonoBehaviour
             if (worldObjects[i].obj != null)
             {
                 Destroy(worldObjects[i].obj);
+                usedIDs[worldObjects[i].netId] = false;
             }
             worldObjects.RemoveAt(i);
         }
@@ -193,6 +194,7 @@ public class WorldUpdateServer : MonoBehaviour
                 if (worldObjects[i].obj != null)
                 {
                     Destroy(worldObjects[i].obj);
+                    usedIDs[worldObjects[i].netId] = false;
                 }
                 worldObjects.RemoveAt(i);
                 Debug.Log("Network object with ID " + netID.ToString() + " destroyed");
