@@ -23,8 +23,24 @@ public class WorldUpdateServer : MonoBehaviour
         public byte type;
     }
 
+    public class WorldObjInfo
+    {
+        // Player type
+        public byte type;
+        // Creator id
+        public byte clientCreator;
+        // Trasnform //TODO: Change to posPitch
+        public Transform trans;
+        // This two together identify the world object
+        public byte netId;
+    }
+
     // All world objects to be updated in clients
     public List<WorldObject> worldObjects;
+
+    // All world objects to be swpawned in server,
+    // this list is necesary because Instantiate function only work on main thread
+    public List<WorldObjInfo> worldObjectsPendingSpawn;
 
     // Interpolation time - How often to deliver new positions
     private float interpolationTime;
@@ -43,14 +59,25 @@ public class WorldUpdateServer : MonoBehaviour
         interpolationTime = 0.050F;
 
         worldObjects = new List<WorldObject>();
+        worldObjectsPendingSpawn = new List<WorldObjInfo>();
 
         usedIDs = new bool[256];
-
+        //playerPrefab = Resources.Load("Prefabs/DefaultPlayer") as GameObject;
+        //projectilePrefab = Resources.Load("Prefabs/Projectile_R") as GameObject;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(worldObjectsPendingSpawn.Count > 0)
+        {
+            for (int i = 0; i < worldObjectsPendingSpawn.Count; i++)
+            {
+                CreateWorldObject(worldObjectsPendingSpawn[i]);
+            }
+            worldObjectsPendingSpawn.Clear();
+        }
+
         for (int i = 0; i < worldObjects.Count; ++i)
         {
             worldObjects[i].deltaLastTime += Time.deltaTime;
@@ -82,24 +109,35 @@ public class WorldUpdateServer : MonoBehaviour
         return posPitch;
     }
 
+    public void AddWorldObjectsPendingSpawn(byte type, byte clientCreator, Transform tform = null, byte portIDCreator = 0)
+    {
+        WorldObjInfo wops = new WorldObjInfo();
+        wops.type = type;
+        wops.clientCreator = clientCreator;
+        wops.trans = tform;
+        wops.netId = portIDCreator;
+
+        worldObjectsPendingSpawn.Add(wops);
+    }
+
     // Create world objects with determined netIDs
-    public byte CreateWorldObject(byte type, byte clientCreator, Transform tform = null, byte portIDCreator = 0)
+    public byte CreateWorldObject(WorldObjInfo wops)
     {
         byte retID = 0;
         WorldObject wo = new WorldObject();
-        wo.clientCreator = clientCreator;
-        switch (type)
+        wo.clientCreator = wops.clientCreator;
+        switch (wops.type)
         {
             // Case 0 used for player game objects
             case 0:
-                retID = portIDCreator;
-                wo.obj = Instantiate(playerPrefab, tform);
+                retID = wops.netId;
+                wo.obj = Instantiate(playerPrefab, wops.trans);
                 break;
 
             // Case 1 used for projectile game objects
             case 1:
                 retID = AssignNetId(10, 60);
-                wo.obj = Instantiate(projectilePrefab, tform);
+                wo.obj = Instantiate(projectilePrefab, wops.trans);
                 break;
             default:
                 break;

@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 2752
     height: 1108.8
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Console
   m_RootView: {fileID: 6}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -48,7 +48,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 90
+  controlID: 104
 --- !u!114 &3
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -224,7 +224,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 200}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 54
+  controlID: 45
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -1138,23 +1138,23 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/UDP
+    - Assets/Scenes
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts/UDP
+  - Assets/Scenes
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\Msi\Desktop\Universidad\4t Carrera\Xarxes\MultiplayerGame\Handball
     Fu
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 51.799927}
-    m_SelectedIDs: e2690000
-    m_LastClickedID: 27106
-    m_ExpandedIDs: 00000000ba690000
+    scrollPos: {x: 0, y: 79}
+    m_SelectedIDs: d2690000
+    m_LastClickedID: 27090
+    m_ExpandedIDs: 00000000be690000ce690000d469000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1182,7 +1182,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000ba690000
+    m_ExpandedIDs: 00000000be690000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1312,7 +1312,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 56f7ffffa6f7ffff58f9ffff7cf9ffff8ef9ffff96f9ffff2efbffff
+      m_ExpandedIDs: 0244fcff5244fcff0446fcff2846fcff3a46fcff4246fcff7accffff4eceffff9eceffff50d0ffff74d0ffff86d0ffff8ed0ffff50d1ffff92d2ffffa0d4ffff86d5fffff4d5ffffa4d8fffff4d8ffffa2daffffc6daffffd8daffffe0daffff2cdfffff7cdfffff2ee1ffff52e1ffff64e1ffff6ce1ffff94f7ffffe4f7ffff96f9ffffbaf9ffffccf9ffffd4f9ffff34fbfffff4fffffffe8d0000888e0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1369,8 +1369,8 @@ MonoBehaviour:
       floating: 0
       collapsed: 0
       displayed: 1
-      snapOffset: {x: 0, y: 0}
-      snapOffsetDelta: {x: -100, y: -25.599976}
+      snapOffset: {x: -100, y: -25.599976}
+      snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 3
       id: Tool Settings
       index: 0
@@ -1391,7 +1391,7 @@ MonoBehaviour:
       floating: 0
       collapsed: 0
       displayed: 1
-      snapOffset: {x: 0, y: 0}
+      snapOffset: {x: 0, y: 24.8}
       snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 0
       id: unity-scene-view-toolbar
@@ -1561,9 +1561,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -1.7767307, y: 0.3134201, z: -4.455821}
+    m_Target: {x: 0.12452624, y: 0.9541341, z: -8.773893}
     speed: 2
-    m_Value: {x: -1.7767307, y: 0.3134201, z: -4.455821}
+    m_Value: {x: 0.12452624, y: 0.9541341, z: -8.773893}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1610,9 +1610,9 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.0059993914, y: 0.0018053924, z: 0.00014720607, w: -0.999918}
+    m_Target: {x: 0.001503552, y: -0.026689343, z: 0.00010843047, w: -0.99958205}
     speed: 2
-    m_Value: {x: 0.005999766, y: 0.0018055051, z: 0.00014721525, w: -0.9999804}
+    m_Value: {x: 0.001503643, y: -0.02669096, z: 0.00010843704, w: -0.9996426}
   m_Size:
     m_Target: 0.75124234
     speed: 2

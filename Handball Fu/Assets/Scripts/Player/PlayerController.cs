@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour
 
     void OnMove(InputValue value)
     {
-        Vector2 dir = value.Get<Vector2>();
+        dir = value.Get<Vector2>();
         client.SendDirToServer(0, dir);
     }
 

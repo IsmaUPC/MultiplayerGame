@@ -141,7 +141,7 @@ public class UDPServer : MonoBehaviour
 
         clientsData = new ClientData[6];
 
-        serverWorld = gameObject.AddComponent<WorldUpdateServer>();
+        serverWorld = gameObject.GetComponent<WorldUpdateServer>();
         serverWorld.AssignUDPServerReference(this);
 
         threadServerInBound = new Thread(ThreadServerInBound);
@@ -512,10 +512,9 @@ public class UDPServer : MonoBehaviour
                         {
                             // Store player data for replicate it on other clients
                             playerData.Add(e);
-                            byte netid;
                             lock (serverWorldLock)
                             {
-                                netid = serverWorld.CreateWorldObject(0, e.senderId, null, (byte)(e.ipep.Port - initialPort));
+                                serverWorld.AddWorldObjectsPendingSpawn(0, e.senderId, null, (byte)(e.ipep.Port - initialPort));
                             }
                             for (int i = 0; i < clients.Length; ++i)
                             {
