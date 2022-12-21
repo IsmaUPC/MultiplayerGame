@@ -31,10 +31,10 @@ public class PlayerSpawner : MonoBehaviour
     private void Start()
     {
         client = GameObject.FindGameObjectWithTag("NetWork").GetComponent<UDPClient>();
+        data = GameObject.FindGameObjectWithTag("Data").GetComponent<DataTransfer>();
 
         if (client)
         {
-            data = GameObject.FindGameObjectWithTag("Data").GetComponent<DataTransfer>();
             updateClientRef = client.gameObject.GetComponent<WorldUpdateClient>();
 
             PlayerSpawnInfo p = new PlayerSpawnInfo();
@@ -57,15 +57,26 @@ public class PlayerSpawner : MonoBehaviour
     {
         if(playerPendingToSpawn.Count != 0)
         {
-            Debug.Log("Spawning player...");
-            GameObject player = Instantiate(playerPrefab);
-            PlayerInput pi = player.GetComponent<PlayerInput>();
-            OnPlayerJoined(pi);
-            pi.DeactivateInput();
-            updateClientRef.SetPlayerCreationReference(playerPendingToSpawn[0].netId, ref player);
-            playerPendingToSpawn.RemoveAt(0);
+            for (int i = 0; i < playerPendingToSpawn.Count; i++)
+            {
+                GameObject player = SpawnPlayer();
+                if (client)
+                    updateClientRef.SetPlayerCreationReference(playerPendingToSpawn[i].netId, ref player);
+            }
+            playerPendingToSpawn.Clear();
         }
     }
+
+    private GameObject SpawnPlayer()
+    {
+        Debug.Log("Spawning player...");
+        GameObject player = Instantiate(playerPrefab);
+        PlayerInput pi = player.GetComponent<PlayerInput>();
+        OnPlayerJoined(pi);
+        pi.DeactivateInput();
+        return player;
+    }
+
     void OnPlayerJoined(PlayerInput playerInput)
     {
         Debug.Log("PlayerInput ID: " + playerPendingToSpawn[0].portId + "  Name: " + playerInput.gameObject.name);
@@ -85,15 +96,17 @@ public class PlayerSpawner : MonoBehaviour
         // Create remote player
         if(!isCustomAvatarScene)
         {
-            if (playerPendingToSpawn[0].portId == data.portId)          
+            if (client && playerPendingToSpawn[0].portId == data.portId)
+            {
                 client.SendInfoSpawnToServer(playerPendingToSpawn[0].cosmeticsIdxs, playerPendingToSpawn[0].portId);
+            }
             else
                 playerInput.DeactivateInput();
         }
         
     }
 
-    public void SpawnNetPlayer(int[] cosmeticsIdxs, int portId)
+    public GameObject SpawnNetPlayer(int[] cosmeticsIdxs, int portId, bool spawnNow = false)
     {
         if(!isCustomAvatarScene)
         {
@@ -101,8 +114,19 @@ public class PlayerSpawner : MonoBehaviour
             PlayerSpawnInfo p = new PlayerSpawnInfo();
             p.portId = portId;
             p.cosmeticsIdxs = cosmeticsIdxs;
-            playerPendingToSpawn.Add(p);
+            if (spawnNow) 
+                playerPendingToSpawn.Insert(0,p);
+            else
+                playerPendingToSpawn.Add(p);
+
+            if (spawnNow)
+            {
+                GameObject player = SpawnPlayer();
+                playerPendingToSpawn.Remove(p);
+                return player;
+            }
         }
+        return null;
     }
 }
 

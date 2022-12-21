@@ -33,6 +33,10 @@ public class WorldUpdateServer : MonoBehaviour
         public Transform trans;
         // This two together identify the world object
         public byte netId;
+        // This two together identify the world object
+        public int portID;
+        // Cosmetics Indexs
+        public int[] cosmeticsIdxs;
     }
 
     // All world objects to be updated in clients
@@ -49,6 +53,7 @@ public class WorldUpdateServer : MonoBehaviour
 
     public GameObject playerPrefab;
     public GameObject projectilePrefab;
+    public PlayerSpawner ps;
 
     private bool[] usedIDs;
 
@@ -62,8 +67,8 @@ public class WorldUpdateServer : MonoBehaviour
         worldObjectsPendingSpawn = new List<WorldObjInfo>();
 
         usedIDs = new bool[256];
-        //playerPrefab = Resources.Load("Prefabs/DefaultPlayer") as GameObject;
-        //projectilePrefab = Resources.Load("Prefabs/Projectile_R") as GameObject;
+
+        ps = FindObjectOfType<PlayerSpawner>();
     }
 
     // Update is called once per frame
@@ -71,7 +76,7 @@ public class WorldUpdateServer : MonoBehaviour
     {
         if(worldObjectsPendingSpawn.Count > 0)
         {
-            for (int i = 0; i < worldObjectsPendingSpawn.Count; i++)
+            for (int i = 0; i < worldObjectsPendingSpawn.Count; ++i)
             {
                 CreateWorldObject(worldObjectsPendingSpawn[i]);
             }
@@ -109,13 +114,15 @@ public class WorldUpdateServer : MonoBehaviour
         return posPitch;
     }
 
-    public void AddWorldObjectsPendingSpawn(byte type, byte clientCreator, Transform tform = null, byte portIDCreator = 0)
+    public void AddWorldObjectsPendingSpawn(byte type, byte clientCreator, int[] cosmeticsIdxs, int portID, Transform tform = null, byte netID = 0)
     {
         WorldObjInfo wops = new WorldObjInfo();
         wops.type = type;
         wops.clientCreator = clientCreator;
         wops.trans = tform;
-        wops.netId = portIDCreator;
+        wops.netId = netID;
+        wops.portID = portID;
+        wops.cosmeticsIdxs = cosmeticsIdxs;
 
         worldObjectsPendingSpawn.Add(wops);
     }
@@ -131,7 +138,8 @@ public class WorldUpdateServer : MonoBehaviour
             // Case 0 used for player game objects
             case 0:
                 retID = wops.netId;
-                wo.obj = Instantiate(playerPrefab, wops.trans);
+                if(ps == null) ps = FindObjectOfType<PlayerSpawner>();
+                wo.obj = ps.SpawnNetPlayer(wops.cosmeticsIdxs, wops.portID, true);
                 break;
 
             // Case 1 used for projectile game objects
@@ -170,7 +178,6 @@ public class WorldUpdateServer : MonoBehaviour
         return 0;
     }
 
-    // TODO: Net id clear when objects are destroyed [all of them at once or a single one]
     public void DestroyAllObjects()
     {
         for (int i = worldObjects.Count - 1; i >= 0; --i)

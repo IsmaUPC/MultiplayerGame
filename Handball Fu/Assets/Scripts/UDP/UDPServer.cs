@@ -111,6 +111,7 @@ public class UDPServer : MonoBehaviour
     private bool breakReady = false;
 
     private WorldUpdateServer serverWorld;
+    int numCosmetis = 7;
 
     // Start is called before the first frame update
     void Start()
@@ -514,7 +515,9 @@ public class UDPServer : MonoBehaviour
                             playerData.Add(e);
                             lock (serverWorldLock)
                             {
-                                serverWorld.AddWorldObjectsPendingSpawn(0, e.senderId, null, (byte)(e.ipep.Port - initialPort));
+                                byte[] data = e.data;
+                                (byte objType, int[] indexs, int portId) info = serializer.DeserializeSpawnPlayerInfo(data, numCosmetis);
+                                serverWorld.AddWorldObjectsPendingSpawn(0, e.senderId, info.indexs, info.portId, null, (byte)(e.ipep.Port - initialPort));
                             }
                             for (int i = 0; i < clients.Length; ++i)
                             {
