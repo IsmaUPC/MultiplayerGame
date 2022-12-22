@@ -560,6 +560,10 @@ public class UDPServer : MonoBehaviour
                             // playerReady = if client click "Cancel" playerReady = false
                             bool playerReady = serializer.DeserializeReadyToPlay(e.data);
                             SetClientReady(clients, e, playerReady);
+                            lock (clientsLock)
+                            {
+                                clients = clientsData;
+                            }
 
                             // Get how many players are ready
                             int playerReadys = 0;
@@ -568,7 +572,8 @@ public class UDPServer : MonoBehaviour
                                 if (clients[i].ipep != null && clients[i].ready)
                                     playerReadys++;
                             }
-                            // If there are less minimum players required(2) cancel countdown
+
+                            // TODO: If there are less minimum players required(2) cancel countdown
                             if (playerReadys < 1 && !playerReady)
                                 breakReady = true;
 
@@ -632,8 +637,8 @@ public class UDPServer : MonoBehaviour
                 {
                     clientsData[i].ready = ret;
                 }
+                break;
             }
-            break;
         }
     }
 

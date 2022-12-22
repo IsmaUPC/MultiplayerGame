@@ -200,7 +200,7 @@ public class WorldUpdateClient : MonoBehaviour
                 }
                 else
                 {
-                    wo.obj = ps.SpawnNetPlayer(woi.idxs, woi.portID);
+                    wo.obj = ps.SpawnNetPlayer(woi.idxs, woi.portID, true);
                 }
                 wo.futurePosition = wo.obj.transform.position;
                 wo.futureRotation = wo.obj.transform.rotation;
