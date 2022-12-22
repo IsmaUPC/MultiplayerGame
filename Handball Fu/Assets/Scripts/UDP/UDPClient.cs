@@ -12,6 +12,7 @@ public class UDPClient : MonoBehaviour
 {
     enum EVENT_TYPE
     {
+        EVENT_NULL,
         EVENT_CONNECTION,       // A client wants to connect
         EVENT_DISCONNETION,     // A client wants to disconnect
         EVENT_DENIEDCONNECT,    // No more client free spaces
@@ -78,6 +79,8 @@ public class UDPClient : MonoBehaviour
     int numCosmetis = 7;
 
     private WorldUpdateClient clientWorld;
+
+    private bool connected;
     // Start is called before the first frame update
     public void ClientStart()
     {
@@ -97,6 +100,8 @@ public class UDPClient : MonoBehaviour
 
         clientWorld = gameObject.AddComponent<WorldUpdateClient>();
         clientWorld.AssignUDPClientReference(this);
+
+        connected = false;
 
         serializer = gameObject.AddComponent<Serialization>();
 
@@ -121,6 +126,7 @@ public class UDPClient : MonoBehaviour
                 lock (stateLock)
                 {
                     state = CONNECTION_STATE.FAILED;
+                    connected = false;
                 }
             }
         }
@@ -128,6 +134,7 @@ public class UDPClient : MonoBehaviour
 
     public bool ConnectToIp(string ip, string username)
     {
+        if (connected) return false;
         bool ret = false;
 
         IPAddress currentIP;
@@ -185,6 +192,10 @@ public class UDPClient : MonoBehaviour
                 recv = ((Socket)rr[i]).ReceiveFrom(d, ref remote);
                 byte[] data = new byte[recv];
                 Array.Copy(d, 0, data, 0, recv);
+                if (data.Length < 2)
+                {
+                    continue;
+                }
                 (byte id, char type) header = serializer.DeserializeHeader(data);
 
                 Event e = new Event();
@@ -247,7 +258,7 @@ public class UDPClient : MonoBehaviour
                 {
                     case EVENT_TYPE.EVENT_CONNECTION:
 
-                        if (e.id == 0)
+                        if (!connected && e.id == 0)
                         {
                             IPAddress ip = sep.Address;
                             int port = serializer.DeserializeConnectionPort(e.data);
@@ -257,6 +268,7 @@ public class UDPClient : MonoBehaviour
                             lock (stateLock)
                             {
                                 state = CONNECTION_STATE.CONNECTED;
+                                connected = true;
                             }
                         }
 
@@ -265,6 +277,7 @@ public class UDPClient : MonoBehaviour
                         lock (stateLock)
                         {
                             state = CONNECTION_STATE.DISCONNECTED;
+                            connected = false;
                         }
                         break;
                     case EVENT_TYPE.EVENT_KEEPCONNECT:
@@ -285,6 +298,7 @@ public class UDPClient : MonoBehaviour
                         lock (stateLock)
                         {
                             state = CONNECTION_STATE.FAILED;
+                            connected = false;
                         }
                         break;
 
@@ -314,7 +328,7 @@ public class UDPClient : MonoBehaviour
                     case EVENT_TYPE.EVENT_SPAWN_PLAYER:
                         //Deserialize Info index cosmetics and spawnpoint player
                         (byte objType, int[] indexs, int portId) info = serializer.DeserializeSpawnPlayerInfo(e.data, numCosmetis);
-                        lock(clientWorldLock)
+                        lock (clientWorldLock)
                         {
                             clientWorld.CreateWorldObject((byte)info.portId, info.objType, info.portId == portIdx, null, info.indexs, info.portId);
                         }

@@ -32,6 +32,7 @@ public class UDPServer : MonoBehaviour
     // Event types
     enum EVENT_TYPE
     {
+        EVENT_NULL,
         EVENT_CONNECTION,       // A client wants to connect                [C]
         EVENT_DISCONNETION,     // A client wants to disconnect             [D]
         EVENT_DENIEDCONNECT,    // No more client free spaces               [F]
@@ -412,7 +413,6 @@ public class UDPServer : MonoBehaviour
                     case EVENT_TYPE.EVENT_CONNECTION:
                         bool canJoin = false;
                         int p = 0;
-                        playerConnec++;
                         // Check for a free port
                         for (int i = 0; i < prts.Length; ++i)
                         {
@@ -447,6 +447,7 @@ public class UDPServer : MonoBehaviour
                                     clientsData[i].port = p;
                                     Debug.Log("User " + clients[i].name + " connected at port: " + clients[i].port);
                                 }
+                                playerConnec++;
                                 break;
                             }
                         }
@@ -505,7 +506,7 @@ public class UDPServer : MonoBehaviour
                                         break;
                                     default:
                                         break;
-                                }                                
+                                }
                             }
                             break;
                         }
