@@ -488,8 +488,8 @@ public class UDPServer : MonoBehaviour
                         break;
                     case EVENT_TYPE.EVENT_UPDATE:
                         {
-                            (byte type, Vector2 dir) direction = serializer.DeserializeDirection(e.data);
-                            byte netid = (byte)(e.ipep.Port - initialPort);
+                            (byte netId, byte type, Vector2 dir) direction = serializer.DeserializeDirection(e.data);
+                            byte netid = direction.netId;
                             lock (serverWorldLock)
                             {
                                 switch (direction.type)

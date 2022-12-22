@@ -180,11 +180,12 @@ public class Serialization : MonoBehaviour
     }
 
 
-    public byte[] SerializeDirection(byte id, byte type, Vector2 dir)
+    public byte[] SerializeDirection(byte id, byte netId, byte type, Vector2 dir)
     {
         InitializeWriter();
         writer.Write(id);
         writer.Write('U');
+        writer.Write(netId);
         writer.Write(type);
         writer.Write((double)dir.x);
         writer.Write((double)dir.y);
@@ -192,14 +193,15 @@ public class Serialization : MonoBehaviour
         return writeStream.ToArray();
     }
 
-    public (byte, Vector2) DeserializeDirection(byte[] data)
+    public (byte, byte, Vector2) DeserializeDirection(byte[] data)
     {
         InitializeReader(data, 2);
+        byte netID = reader.ReadByte();
         byte type = reader.ReadByte();
         float x = (float)reader.ReadDouble();
         float y = (float)reader.ReadDouble();
 
-        return (type, new Vector2(x, y));
+        return (netID, type, new Vector2(x, y));
     }
 
     public byte[] SerializeTransform(byte id, byte netId, Vector3 trans, int state)
