@@ -170,13 +170,6 @@ public class WorldUpdateClient : MonoBehaviour
 
     public void AddWorldObjectsPendingSpawn(byte netID, byte type, int[] cosmeticsIdxs, int portID, Transform tform = null)
     {
-        for(int i = 0; i < worldObjects.Count; ++i)
-        {
-            if (worldObjects[i].netId == netID)
-            {
-                return;
-            }
-        }
         WorldObjInfo wops = new WorldObjInfo();
         wops.type = type;
         wops.isMyObject = client.GetPortIdx() == portID;
@@ -185,6 +178,13 @@ public class WorldUpdateClient : MonoBehaviour
         wops.portID = portID;
         wops.idxs = cosmeticsIdxs;
 
+        for (int i = 0; i < worldObjects.Count; ++i)
+        {
+            if (worldObjects[i].netId == wops.netID)
+            {
+                return;
+            }
+        }
         worldObjQueue.Enqueue(wops);
     }
 
