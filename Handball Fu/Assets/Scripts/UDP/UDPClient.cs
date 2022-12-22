@@ -325,7 +325,7 @@ public class UDPClient : MonoBehaviour
                         (byte objType, int[] indexs, int portId) info = serializer.DeserializeSpawnPlayerInfo(e.data, numCosmetis);
                         lock (clientWorldLock)
                         {
-                            clientWorld.CreateWorldObject((byte)info.portId, info.objType, info.portId == portIdx, null, info.indexs, info.portId);
+                            clientWorld.AddWorldObjectsPendingSpawn((byte)info.portId, info.objType, info.indexs, info.portId, null);
                         }
                         break;
                     case EVENT_TYPE.EVENT_READY_TO_PLAY:
