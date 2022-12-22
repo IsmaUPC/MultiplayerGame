@@ -179,14 +179,15 @@ public class Serialization : MonoBehaviour
         return reader.ReadInt32();
     }
 
+
     public byte[] SerializeDirection(byte id, byte type, Vector2 dir)
     {
         InitializeWriter();
         writer.Write(id);
         writer.Write('U');
         writer.Write(type);
-        writer.Write(dir.x);
-        writer.Write(dir.y);
+        writer.Write((double)dir.x);
+        writer.Write((double)dir.y);
 
         return writeStream.ToArray();
     }
@@ -208,9 +209,9 @@ public class Serialization : MonoBehaviour
         writer.Write('U');
 
         writer.Write(netId);
-        writer.Write(trans.x);
-        writer.Write(trans.y);
-        writer.Write(trans.z);
+        writer.Write((double)trans.x);
+        writer.Write((double)trans.y);
+        writer.Write((double)trans.z);
         writer.Write(state);
 
         return writeStream.ToArray();
