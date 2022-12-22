@@ -200,6 +200,8 @@ public class WorldUpdateClient : MonoBehaviour
                 }
                 else
                 {
+                    if(ps == null)ps = FindObjectOfType<PlayerSpawner>();
+
                     wo.obj = ps.SpawnNetPlayer(woi.idxs, woi.portID, true);
                 }
                 wo.futurePosition = wo.obj.transform.position;
