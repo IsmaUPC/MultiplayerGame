@@ -60,6 +60,9 @@ public class WorldUpdateClient : MonoBehaviour
 
     private PlayerSpawner ps;
 
+    private object worldObjQueueLock = new object();
+    private object updateWorldObjQueueLock = new object();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -68,8 +71,14 @@ public class WorldUpdateClient : MonoBehaviour
 
         worldObjects = new List<WorldObject>();
 
-        worldObjQueue = new Queue<WorldObjInfo>();
-        updateWorldObjQueue = new Queue<TransformUpdate>();
+        lock (worldObjQueueLock)
+        {
+            worldObjQueue = new Queue<WorldObjInfo>();
+        }
+        lock (updateWorldObjQueueLock)
+        {
+            updateWorldObjQueue = new Queue<TransformUpdate>();
+        }
 
         ps = FindObjectOfType<PlayerSpawner>();
 
@@ -78,11 +87,17 @@ public class WorldUpdateClient : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        while (worldObjQueue.Count > 0)
-            CreateWorldObject(worldObjQueue.Dequeue());
+        lock (worldObjQueueLock)
+        {
+            while (worldObjQueue.Count > 0)
+                CreateWorldObject(worldObjQueue.Dequeue());
+        }
 
-        while (updateWorldObjQueue.Count > 0)
-            UpdateFutureTransform(updateWorldObjQueue.Dequeue());
+        lock (updateWorldObjQueueLock)
+        {
+            while (updateWorldObjQueue.Count > 0)
+                UpdateFutureTransform(updateWorldObjQueue.Dequeue());
+        }
 
         Interpolation();
     }
@@ -113,7 +128,10 @@ public class WorldUpdateClient : MonoBehaviour
         up.netID = netID;
         up.tform = tform;
         up.state = state;
-        updateWorldObjQueue.Enqueue(up);
+        lock (updateWorldObjQueueLock)
+        {
+            updateWorldObjQueue.Enqueue(up);
+        }
     }
     public void UpdateFutureTransform(TransformUpdate up)
     {
@@ -178,18 +196,31 @@ public class WorldUpdateClient : MonoBehaviour
         wops.portID = portID;
         wops.idxs = cosmeticsIdxs;
 
+        lock (worldObjQueueLock)
+        {
+            worldObjQueue.Enqueue(wops);
+        }
+    }
+
+    private bool DoesNetIDExist(byte netID)
+    {
         for (int i = 0; i < worldObjects.Count; ++i)
         {
-            if (worldObjects[i].netId == wops.netID)
+            if (worldObjects[i].netId == netID)
             {
-                return;
+                return true;
             }
         }
-        worldObjQueue.Enqueue(wops);
+        return false;
     }
 
     public void CreateWorldObject(WorldObjInfo woi)
     {
+        if (DoesNetIDExist(woi.netID))
+        {
+            Debug.Log("Network object with id " + woi.netID.ToString() + " already exists");
+            return;
+        }
         WorldObject wo = new WorldObject();
         wo.netId = woi.netID;
         wo.isMyObject = woi.isMyObject;
@@ -207,7 +238,7 @@ public class WorldUpdateClient : MonoBehaviour
                 }
                 else
                 {
-                    if(ps == null)ps = FindObjectOfType<PlayerSpawner>();
+                    if (ps == null) ps = FindObjectOfType<PlayerSpawner>();
 
                     wo.obj = ps.SpawnNetPlayer(woi.idxs, woi.portID, true);
                 }
