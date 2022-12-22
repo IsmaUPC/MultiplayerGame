@@ -315,7 +315,7 @@ public class UDPClient : MonoBehaviour
                             (byte netId, Vector3 posPitch, int state) transform = serializer.DeserializeTransform(e.data);
                             lock (clientWorldLock)
                             {
-                                clientWorld.UpdateFutureTransform(transform.netId, transform.posPitch, transform.state);
+                                clientWorld.AddUpdateFutureTransform(transform.netId, transform.posPitch, transform.state);
                             }
                         }
 

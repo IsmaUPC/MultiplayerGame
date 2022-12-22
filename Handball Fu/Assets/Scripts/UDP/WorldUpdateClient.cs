@@ -39,11 +39,18 @@ public class WorldUpdateClient : MonoBehaviour
         public int[] idxs;
         public int portID;
     }
+    public struct TransformUpdate
+    {
+        public byte netID;
+        public Vector3 tform;
+        public int state;
+    }
 
     // World objects
     private List<WorldObject> worldObjects = new List<WorldObject>();
 
     private Queue<WorldObjInfo> worldObjQueue;
+    private Queue<TransformUpdate> updateWorldObjQueue;
 
     private float interpolationTime;
 
@@ -62,6 +69,7 @@ public class WorldUpdateClient : MonoBehaviour
         worldObjects = new List<WorldObject>();
 
         worldObjQueue = new Queue<WorldObjInfo>();
+        updateWorldObjQueue = new Queue<TransformUpdate>();
 
         ps = FindObjectOfType<PlayerSpawner>();
 
@@ -71,9 +79,10 @@ public class WorldUpdateClient : MonoBehaviour
     void Update()
     {
         while (worldObjQueue.Count > 0)
-        {
             CreateWorldObject(worldObjQueue.Dequeue());
-        }
+
+        while (updateWorldObjQueue.Count > 0)
+            UpdateFutureTransform(updateWorldObjQueue.Dequeue());
 
         Interpolation();
     }
@@ -98,16 +107,24 @@ public class WorldUpdateClient : MonoBehaviour
         }
     }
 
-    public void UpdateFutureTransform(byte netID, Vector3 tform, int state)
+    public void AddUpdateFutureTransform(byte netID, Vector3 tform, int state)
+    {
+        TransformUpdate up = new TransformUpdate();
+        up.netID = netID;
+        up.tform = tform;
+        up.state = state;
+        updateWorldObjQueue.Enqueue(up);
+    }
+    public void UpdateFutureTransform(TransformUpdate up)
     {
         for (int i = 0; i < worldObjects.Count; ++i)
         {
-            if (worldObjects[i].netId == netID)
+            if (worldObjects[i].netId == up.netID)
             {
                 worldObjects[i].pastTransform.position = worldObjects[i].futurePosition;
                 worldObjects[i].pastTransform.rotation = worldObjects[i].futureRotation;
-                worldObjects[i].futurePosition = new Vector3(tform.x, worldObjects[i].obj.transform.position.y, tform.z);
-                worldObjects[i].futureRotation = Quaternion.Euler(0, tform.y, 0);
+                worldObjects[i].futurePosition = new Vector3(up.tform.x, worldObjects[i].obj.transform.position.y, up.tform.z);
+                worldObjects[i].futureRotation = Quaternion.Euler(0, up.tform.y, 0);
                 worldObjects[i].deltaLastTime = 0.0f;
                 worldObjects[i].atTargetTransform = false;
                 break;
