@@ -179,23 +179,14 @@ public class Serialization : MonoBehaviour
         return reader.ReadInt32();
     }
 
-    public byte[] SerializePlayerCreation(int id, byte type, ref Transform t)
-    {
-        byte[] bytes = new byte[2];
-        bytes[0] = 4;
-
-
-        return bytes;
-    }
-
-    public byte[] SerializeDirection(int id, byte type, Vector2 dir)
+    public byte[] SerializeDirection(byte id, byte type, Vector2 dir)
     {
         InitializeWriter();
         writer.Write(id);
         writer.Write('U');
         writer.Write(type);
-        writer.Write((double)dir.x);
-        writer.Write((double)dir.y);
+        writer.Write(dir.x);
+        writer.Write(dir.y);
 
         return writeStream.ToArray();
     }
@@ -210,7 +201,7 @@ public class Serialization : MonoBehaviour
         return (type, new Vector2(x, y));
     }
 
-    public byte[] SerializeTransform(int id, int netId, Vector3 trans, int state)
+    public byte[] SerializeTransform(byte id, int netId, Vector3 trans, int state)
     {
         InitializeWriter();
         writer.Write(id);
