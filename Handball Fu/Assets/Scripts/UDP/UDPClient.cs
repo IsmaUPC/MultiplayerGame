@@ -313,7 +313,6 @@ public class UDPClient : MonoBehaviour
                         if (e.id == 0)
                         {
                             (byte netId, Vector3 posPitch, int state) transform = serializer.DeserializeTransform(e.data);
-                            // TODO NET: send this data to UpdateFutureTransform(byte netID, Transform tform) in worldUpdateClient script
                             lock (clientWorldLock)
                             {
                                 clientWorld.UpdateFutureTransform(transform.netId, transform.posPitch, transform.state);

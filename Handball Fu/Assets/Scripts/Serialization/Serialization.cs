@@ -202,7 +202,7 @@ public class Serialization : MonoBehaviour
         return (type, new Vector2(x, y));
     }
 
-    public byte[] SerializeTransform(byte id, int netId, Vector3 trans, int state)
+    public byte[] SerializeTransform(byte id, byte netId, Vector3 trans, int state)
     {
         InitializeWriter();
         writer.Write(id);
