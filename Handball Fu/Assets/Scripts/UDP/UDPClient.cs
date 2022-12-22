@@ -312,15 +312,11 @@ public class UDPClient : MonoBehaviour
                     case EVENT_TYPE.EVENT_UPDATE:
                         if (e.id == 0)
                         {
-                            byte netId = 0;
-                            Vector3 posPitch = Vector3.zero;
-                            int state = 0;
-
-                            (netId, posPitch, state) = serializer.DeserializeTransform(e.data);
+                            (byte netId, Vector3 posPitch, int state) transform = serializer.DeserializeTransform(e.data);
                             // TODO NET: send this data to UpdateFutureTransform(byte netID, Transform tform) in worldUpdateClient script
                             lock (clientWorldLock)
                             {
-                                clientWorld.UpdateFutureTransform(netId, posPitch, state);
+                                clientWorld.UpdateFutureTransform(transform.netId, transform.posPitch, transform.state);
                             }
                         }
 
