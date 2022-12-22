@@ -57,6 +57,9 @@ public class WorldUpdateServer : MonoBehaviour
 
     private bool[] usedIDs;
 
+    private object worldObjectsPendingSpawnLock = new object();
+    private object updateDirectionLock = new object();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -64,8 +67,14 @@ public class WorldUpdateServer : MonoBehaviour
         interpolationTime = 0.050F;
 
         worldObjects = new List<WorldObject>();
-        worldObjectsPendingSpawn = new List<WorldObjInfo>();
-        updateDirection = new Queue<KeyValuePair<int, Vector2>>();
+        lock (worldObjectsPendingSpawnLock)
+        {
+            worldObjectsPendingSpawn = new List<WorldObjInfo>();
+        }
+        lock (updateDirectionLock)
+        {
+            updateDirection = new Queue<KeyValuePair<int, Vector2>>();
+        }
 
         usedIDs = new bool[256];
 
@@ -75,7 +84,8 @@ public class WorldUpdateServer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(worldObjectsPendingSpawn.Count > 0)
+
+        lock (worldObjectsPendingSpawnLock)
         {
             for (int i = 0; i < worldObjectsPendingSpawn.Count; ++i)
             {
@@ -84,10 +94,13 @@ public class WorldUpdateServer : MonoBehaviour
             worldObjectsPendingSpawn.Clear();
         }
 
-        while(updateDirection.Count > 0)
+        lock (updateDirectionLock)
         {
-            KeyValuePair<int, Vector2> aux = updateDirection.Dequeue();
-            worldObjects[aux.Key].obj.GetComponent<PlayerController>().Move(aux.Value);
+            while (updateDirection.Count > 0)
+            {
+                KeyValuePair<int, Vector2> aux = updateDirection.Dequeue();
+                worldObjects[aux.Key].obj.GetComponent<PlayerController>().Move(aux.Value);
+            }
         }
 
         for (int i = 0; i < worldObjects.Count; ++i)
@@ -130,7 +143,10 @@ public class WorldUpdateServer : MonoBehaviour
         wops.portID = portID;
         wops.cosmeticsIdxs = cosmeticsIdxs;
 
-        worldObjectsPendingSpawn.Add(wops);
+        lock (worldObjectsPendingSpawnLock)
+        {
+            worldObjectsPendingSpawn.Add(wops);
+        }
     }
 
     // Create world objects with determined netIDs
@@ -144,7 +160,7 @@ public class WorldUpdateServer : MonoBehaviour
             // Case 0 used for player game objects
             case 0:
                 retID = (byte)wops.portID;
-                if(ps == null) ps = FindObjectOfType<PlayerSpawner>();
+                if (ps == null) ps = FindObjectOfType<PlayerSpawner>();
                 wo.obj = ps.SpawnNetPlayer(wops.cosmeticsIdxs, wops.portID, true);
                 break;
 
@@ -218,7 +234,10 @@ public class WorldUpdateServer : MonoBehaviour
 
     public void UpdateWorldObject(int index, Vector2 dir)
     {
-        updateDirection.Enqueue(new KeyValuePair<int, Vector2>(index,dir));
+        lock (updateDirectionLock)
+        {
+            updateDirection.Enqueue(new KeyValuePair<int, Vector2>(index, dir));
+        }
     }
 
     public void AssignUDPServerReference(UDPServer udp)
