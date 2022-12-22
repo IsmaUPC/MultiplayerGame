@@ -500,7 +500,7 @@ public class UDPServer : MonoBehaviour
                                             if (serverWorld.worldObjects[i].netId == netid)
                                             {
                                                 serverWorld.worldObjects[i].type = direction.type;
-                                                serverWorld.worldObjects[i].obj.GetComponent<PlayerController>().Move(direction.dir);
+                                                serverWorld.UpdateWorldObject(i, direction.dir);
                                             }
                                         }
                                         break;

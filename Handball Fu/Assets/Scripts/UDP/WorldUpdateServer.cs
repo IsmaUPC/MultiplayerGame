@@ -45,6 +45,7 @@ public class WorldUpdateServer : MonoBehaviour
     // All world objects to be swpawned in server,
     // this list is necesary because Instantiate function only work on main thread
     public List<WorldObjInfo> worldObjectsPendingSpawn;
+    public Queue<KeyValuePair<int, Vector2>> updateDirection;
 
     // Interpolation time - How often to deliver new positions
     private float interpolationTime;
@@ -65,6 +66,7 @@ public class WorldUpdateServer : MonoBehaviour
 
         worldObjects = new List<WorldObject>();
         worldObjectsPendingSpawn = new List<WorldObjInfo>();
+        updateDirection = new Queue<KeyValuePair<int, Vector2>>();
 
         usedIDs = new bool[256];
 
@@ -81,6 +83,12 @@ public class WorldUpdateServer : MonoBehaviour
                 CreateWorldObject(worldObjectsPendingSpawn[i]);
             }
             worldObjectsPendingSpawn.Clear();
+        }
+
+        while(updateDirection.Count > 0)
+        {
+            KeyValuePair<int, Vector2> aux = updateDirection.Dequeue();
+            worldObjects[aux.Key].obj.GetComponent<PlayerController>().Move(aux.Value);
         }
 
         for (int i = 0; i < worldObjects.Count; ++i)
@@ -210,18 +218,9 @@ public class WorldUpdateServer : MonoBehaviour
         }
     }
 
-    public void UpdateWorldObject(byte netID, Vector3 deltaPosition, Vector3 eulerAngles, byte state)
+    public void UpdateWorldObject(int index, Vector2 dir)
     {
-        for (int i = 0; i < worldObjects.Count; ++i)
-        {
-            if (worldObjects[i].netId == netID)
-            {
-                CharacterController auxPlayerController = worldObjects[i].obj.GetComponent<CharacterController>();
-                auxPlayerController.Move(deltaPosition);
-                worldObjects[i].obj.transform.rotation = Quaternion.Euler(eulerAngles);
-                //worldObjects[i].state = state;
-            }
-        }
+        updateDirection.Enqueue(new KeyValuePair<int, Vector2>(index,dir));
     }
 
     public void AssignUDPServerReference(UDPServer udp)
