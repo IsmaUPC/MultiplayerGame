@@ -70,7 +70,7 @@ public class WorldUpdateClient : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        while(worldObjQueue.Count > 0)
+        while (worldObjQueue.Count > 0)
         {
             CreateWorldObject(worldObjQueue.Dequeue());
         }
@@ -180,15 +180,15 @@ public class WorldUpdateClient : MonoBehaviour
                 {
                     wo.obj = ownPlayerRef;
                     wo.netId = (byte)woi.portID;
-                    wo.futurePosition = ownPlayerRef.transform.position;
-                    wo.futureRotation = ownPlayerRef.transform.rotation;
                 }
                 else
                 {
                     wo.obj = ps.SpawnNetPlayer(woi.idxs, woi.portID);
-                    wo.futurePosition = wo.obj.transform.position;
-                    wo.futureRotation = wo.obj.transform.rotation;
                 }
+                wo.futurePosition = wo.obj.transform.position;
+                wo.futureRotation = wo.obj.transform.rotation;
+                if (woi.tform == null)
+                    wo.pastTransform = wo.obj.transform;
 
                 break;
 
@@ -208,7 +208,7 @@ public class WorldUpdateClient : MonoBehaviour
 
     public void SetPlayerCreationReference(byte netID, ref GameObject obj)
     {
-        for(int i = 0; i < worldObjects.Count; ++i)
+        for (int i = 0; i < worldObjects.Count; ++i)
         {
             if (worldObjects[i].netId == netID)
             {
