@@ -518,7 +518,7 @@ public class UDPServer : MonoBehaviour
                             {
                                 byte[] data = e.data;
                                 (byte objType, int[] indexs, int portId) info = serializer.DeserializeSpawnPlayerInfo(data, numCosmetis);
-                                serverWorld.AddWorldObjectsPendingSpawn(0, e.senderId, info.indexs, info.portId, null, (byte)(e.ipep.Port - initialPort));
+                                serverWorld.AddWorldObjectsPendingSpawn(0, e.senderId, info.indexs, info.portId, null);
                             }
                             for (int i = 0; i < clients.Length; ++i)
                             {
@@ -536,8 +536,7 @@ public class UDPServer : MonoBehaviour
                                         {
                                             Event ev = playerData[j];
                                             ev.ipep = clients[i].ipep;
-                                            if (ev.senderId != e.senderId)
-                                                EnqueueEvent(ev);
+                                            EnqueueEvent(ev);
                                         }
 
                                     }

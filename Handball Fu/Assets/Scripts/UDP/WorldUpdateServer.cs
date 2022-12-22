@@ -31,8 +31,7 @@ public class WorldUpdateServer : MonoBehaviour
         public byte clientCreator;
         // Trasnform //TODO: Change to posPitch
         public Transform trans;
-        // This two together identify the world object
-        public byte netId;
+
         // This two together identify the world object
         public int portID;
         // Cosmetics Indexs
@@ -122,13 +121,12 @@ public class WorldUpdateServer : MonoBehaviour
         return posPitch;
     }
 
-    public void AddWorldObjectsPendingSpawn(byte type, byte clientCreator, int[] cosmeticsIdxs, int portID, Transform tform = null, byte netID = 0)
+    public void AddWorldObjectsPendingSpawn(byte type, byte clientCreator, int[] cosmeticsIdxs, int portID, Transform tform = null)
     {
         WorldObjInfo wops = new WorldObjInfo();
         wops.type = type;
         wops.clientCreator = clientCreator;
         wops.trans = tform;
-        wops.netId = netID;
         wops.portID = portID;
         wops.cosmeticsIdxs = cosmeticsIdxs;
 
@@ -145,7 +143,7 @@ public class WorldUpdateServer : MonoBehaviour
         {
             // Case 0 used for player game objects
             case 0:
-                retID = wops.netId;
+                retID = (byte)wops.portID;
                 if(ps == null) ps = FindObjectOfType<PlayerSpawner>();
                 wo.obj = ps.SpawnNetPlayer(wops.cosmeticsIdxs, wops.portID, true);
                 break;
