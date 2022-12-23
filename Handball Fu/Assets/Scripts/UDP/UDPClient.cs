@@ -310,7 +310,7 @@ public class UDPClient : MonoBehaviour
                         }
                         break;
                     case EVENT_TYPE.EVENT_UPDATE:
-                        if (e.id == 0)
+                        if (e.id == 0 && e.data.Length >= 31)
                         {
                             (byte netId, Vector3 posPitch, int state) transform = serializer.DeserializeTransform(e.data);
                             lock (clientWorldLock)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -141,8 +142,14 @@ public class WorldUpdateClient : MonoBehaviour
             {
                 worldObjects[i].pastTransform.position = worldObjects[i].futurePosition;
                 worldObjects[i].pastTransform.rotation = worldObjects[i].futureRotation;
-                worldObjects[i].futurePosition = new Vector3(up.tform.x, worldObjects[i].obj.transform.position.y, up.tform.z);
+                if (float.IsFinite(up.tform.x) && float.IsFinite(up.tform.z))
+                {
+                    worldObjects[i].futurePosition = new Vector3(up.tform.x, worldObjects[i].obj.transform.position.y, up.tform.z);
+                }
+
+                Debug.Log("up.tform.y value is: " + up.tform.y.ToString());
                 worldObjects[i].futureRotation = Quaternion.Euler(0, up.tform.y, 0);
+
                 worldObjects[i].deltaLastTime = 0.0f;
                 worldObjects[i].atTargetTransform = false;
                 break;
