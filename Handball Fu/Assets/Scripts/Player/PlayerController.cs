@@ -63,9 +63,9 @@ public class PlayerController : MonoBehaviour
                     characterController.Move(new Vector3(movement.x * Time.deltaTime, 0, movement.y * Time.deltaTime));
                     transform.rotation = Quaternion.RotateTowards(transform.rotation, targetDirection, rotVelocity * Time.deltaTime);
                 }
-                else if (stillTime < propHunt.timeToConvert)
-                    stillTime += Time.deltaTime;
-                else propHunt.ChangeMesh();
+                //else if (stillTime < propHunt.timeToConvert)
+                //    stillTime += Time.deltaTime;
+                //else propHunt.ChangeMesh();
                 break;
 
             case State.DASH:
@@ -81,6 +81,26 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+   public void UpdateAnimation(int state, float magnitude)
+    {
+        switch ((State)state)
+        { case State.MOVE:
+                animator.SetFloat("Velocity", magnitude);
+                break;
+            case State.ATTACK:
+                animator.SetBool("Attack", true);
+                break;
+            case State.DASH:
+                animator.SetBool("Dash", true);
+                break;
+            case State.LOAD_ARM:
+                animator.SetBool("Shoot", true);
+                break;
+            default:
+                break;
+        }
+    }
+
     void OnMove(InputValue value)
     {
         dir = value.Get<Vector2>();
@@ -89,12 +109,13 @@ public class PlayerController : MonoBehaviour
 
     public void Move(Vector2 dir)
     {
+        this.dir = dir;
         movement = dir * velocity;
         if(dir.magnitude != 0)
             targetDirection = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.y), Vector3.up);
 
         animator.SetFloat("Velocity", dir.magnitude);
-        ResetPropHuntCount();
+        //ResetPropHuntCount();
 
         if (state != State.MOVE) 
             return;
@@ -108,7 +129,7 @@ public class PlayerController : MonoBehaviour
             return;
 
         animator.SetBool("Dash", true);
-        ResetPropHuntCount();
+        //ResetPropHuntCount();
 
         if (state != State.DASH)
             StartCoroutine(Dash());
@@ -134,7 +155,7 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("Attack", true);
         state = State.ATTACK;
 
-        ResetPropHuntCount();
+        //ResetPropHuntCount();
     }
 
     void OnShoot(InputValue value)
@@ -155,7 +176,7 @@ public class PlayerController : MonoBehaviour
             state = State.ATTACK;
         }
 
-        ResetPropHuntCount();
+        //ResetPropHuntCount();
     }
 
     public void SpawnProjectile()

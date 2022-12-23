@@ -84,7 +84,6 @@ public class WorldUpdateServer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         lock (worldObjectsPendingSpawnLock)
         {
             for (int i = 0; i < worldObjectsPendingSpawn.Count; ++i)
