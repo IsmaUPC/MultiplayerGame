@@ -62,6 +62,7 @@ public class UDPServer : MonoBehaviour
 
     // Accepting 6 clients a part of this
     private ArrayList clientSockets = new ArrayList();
+    bool gameStart = false;
 
     // This will save basic data of clients, as self-given username, an ip end point and id
     // id is the last 3 ip digits
@@ -180,14 +181,18 @@ public class UDPServer : MonoBehaviour
             StartCoroutine(EnqueueEventCoroutine(ev, 2));
             ev.data = serializer.SerializeChatMessage(0, "1");
             StartCoroutine(EnqueueEventCoroutine(ev, 3));
-            //ev.data = serializer.SerializeChatMessage(0, "GAME START!");
-            //StartCoroutine(EnqueueEventCoroutine(ev, 3.5f));
+            ev.data = serializer.SerializeChatMessage(0, "GAME START!");
+            StartCoroutine(EnqueueEventCoroutine(ev, 3.5f));
 
             // Game begin
             ev.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
             ev.data = serializer.SerializeReadyToPlay(true);
             StartCoroutine(EnqueueEventCoroutine(ev, 4));
-            StartCoroutine(NextScene(4));
+        }
+        if(gameStart)
+        {
+            gameStart = false;
+            NextScene();
         }
         // If the countdown was begin but a player press Cancel or disconnect break countdown
         if (breakReady)
@@ -209,9 +214,8 @@ public class UDPServer : MonoBehaviour
         }
     }
 
-    private IEnumerator NextScene(int timer)
+    private void NextScene()
     {
-        yield return new WaitForSeconds(timer);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
     public void OnServerClose()
@@ -828,6 +832,7 @@ public class UDPServer : MonoBehaviour
                             }
                         }
                         // TODO NET: Load level scene
+                        gameStart = true;
                         break;
                     default:
                         break;
