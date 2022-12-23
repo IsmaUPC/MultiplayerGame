@@ -20,6 +20,10 @@ public class Serialization : MonoBehaviour
 
     public (byte, char) DeserializeHeader(byte[] data)
     {
+        if (data.Length < 2)
+        {
+            return (0, '\0');
+        }
         InitializeReader(data);
 
         byte id = reader.ReadByte();
