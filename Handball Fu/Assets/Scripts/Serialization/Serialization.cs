@@ -27,7 +27,7 @@ public class Serialization : MonoBehaviour
         InitializeReader(data);
 
         byte id = reader.ReadByte();
-        char type = reader.ReadChar(); // TODO: Solve error in this line. Unity says we want to decode in utf-8
+        char type = Convert.ToChar(reader.ReadByte()); // TODO: Solve error in this line. Unity says we want to decode in utf-8
 
         return (id, type);
     }
