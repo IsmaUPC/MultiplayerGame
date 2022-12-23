@@ -86,6 +86,7 @@ public class PlayerController : MonoBehaviour
         switch ((State)state)
         { case State.MOVE:
                 animator.SetFloat("Velocity", magnitude);
+                //Mathf.Lerp(animator.GetFloat("Velocity"), magnitude, 0.2f);
                 break;
             case State.ATTACK:
                 animator.SetBool("Attack", true);
