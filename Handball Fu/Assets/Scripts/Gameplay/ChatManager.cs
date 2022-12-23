@@ -37,9 +37,13 @@ public class ChatManager : MonoBehaviour
             string tmp = client.GetLastMessage();
             if (tmp != "")
             {
-                int ind = int.Parse(tmp.Substring(0, 1));
-                string[] d = tmp.Substring(1).Split(';');
-                SendMessageToChat(ind, d[0], d[1]);
+                string aux = tmp.Substring(0, 1);
+                if ('0' <= aux.ToCharArray()[0] && aux.ToCharArray()[0] <= '9')
+                {
+                    int ind = int.Parse(aux);
+                    string[] d = tmp.Substring(1).Split(';');
+                    SendMessageToChat(ind, d[0], d[1]);
+                }
             }
         }
     }

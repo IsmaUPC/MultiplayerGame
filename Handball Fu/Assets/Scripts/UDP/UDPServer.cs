@@ -180,8 +180,8 @@ public class UDPServer : MonoBehaviour
             StartCoroutine(EnqueueEventCoroutine(ev, 2));
             ev.data = serializer.SerializeChatMessage(0, "1");
             StartCoroutine(EnqueueEventCoroutine(ev, 3));
-            ev.data = serializer.SerializeChatMessage(0, "GAME START!");
-            StartCoroutine(EnqueueEventCoroutine(ev, 3.5f));
+            //ev.data = serializer.SerializeChatMessage(0, "GAME START!");
+            //StartCoroutine(EnqueueEventCoroutine(ev, 3.5f));
 
             // Game begin
             ev.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
