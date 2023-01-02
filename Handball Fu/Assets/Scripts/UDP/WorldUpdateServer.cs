@@ -45,6 +45,7 @@ public class WorldUpdateServer : MonoBehaviour
     // this list is necesary because Instantiate function only work on main thread
     public List<WorldObjInfo> worldObjectsPendingSpawn;
     public Queue<KeyValuePair<int, Vector2>> updateDirection;
+    public Queue<int> updateDash;
 
     // Interpolation time - How often to deliver new positions
     private float interpolationTime;
@@ -59,6 +60,7 @@ public class WorldUpdateServer : MonoBehaviour
 
     private object worldObjectsPendingSpawnLock = new object();
     private object updateDirectionLock = new object();
+    private object updateDashLock = new object();
 
     // Start is called before the first frame update
     void Start()
@@ -74,6 +76,10 @@ public class WorldUpdateServer : MonoBehaviour
         lock (updateDirectionLock)
         {
             updateDirection = new Queue<KeyValuePair<int, Vector2>>();
+        }
+        lock(updateDashLock)
+        {
+            updateDash = new Queue<int>();
         }
 
         usedIDs = new bool[256];
@@ -99,6 +105,15 @@ public class WorldUpdateServer : MonoBehaviour
             {
                 KeyValuePair<int, Vector2> aux = updateDirection.Dequeue();
                 worldObjects[aux.Key].obj.GetComponent<PlayerController>().Move(aux.Value);
+            }
+        }
+
+        lock(updateDashLock)
+        {
+            while (updateDash.Count > 0)
+            {
+                int aux = updateDash.Dequeue();
+                worldObjects[aux].obj.GetComponent<PlayerController>().ActiveDash();
             }
         }
 
@@ -231,11 +246,24 @@ public class WorldUpdateServer : MonoBehaviour
         }
     }
 
-    public void UpdateWorldObject(int index, Vector2 dir)
+    public void UpdateWorldObject(int index, int state, Vector2 dir)
     {
-        lock (updateDirectionLock)
+        switch (state)
         {
-            updateDirection.Enqueue(new KeyValuePair<int, Vector2>(index, dir));
+            case 0:
+                lock (updateDirectionLock)
+                {
+                    updateDirection.Enqueue(new KeyValuePair<int, Vector2>(index, dir));
+                }
+                break;
+            case 1:
+                lock (updateDashLock)
+                {
+                    updateDash.Enqueue(index);
+                }
+                break;
+            default:
+                break;
         }
     }
 

@@ -155,7 +155,8 @@ public class WorldUpdateClient : MonoBehaviour
                 worldObjects[i].deltaLastTime = 0.0f;
                 worldObjects[i].atTargetTransform = false;
 
-                worldObjects[i].obj.GetComponent<PlayerController>().UpdateAnimation(up.state, (worldObjects[i].futurePosition == worldObjects[i].pastTransform.position)? 0 : 1);
+                int isStill = (worldObjects[i].futurePosition == worldObjects[i].pastTransform.position) ? 0 : 1;
+                worldObjects[i].obj.GetComponent<PlayerController>().UpdateAnimation(up.state, isStill);
                 break;
             }
         }

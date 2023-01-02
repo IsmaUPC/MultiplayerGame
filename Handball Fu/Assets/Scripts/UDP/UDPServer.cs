@@ -492,7 +492,7 @@ public class UDPServer : MonoBehaviour
                         break;
                     case EVENT_TYPE.EVENT_UPDATE:
                         {
-                            (byte netId, byte type, Vector2 dir) direction = serializer.DeserializeDirection(e.data);
+                            (byte netId, byte type, int state, Vector2 dir, bool dash) direction = serializer.DeserializeDirection(e.data);
                             byte netid = direction.netId;
                             lock (serverWorldLock)
                             {
@@ -503,8 +503,9 @@ public class UDPServer : MonoBehaviour
                                         {
                                             if (serverWorld.worldObjects[i].netId == netid)
                                             {
+                                                Debug.Log("RECIEVEEEE INPUT, STATE:" + direction.state.ToString());
                                                 serverWorld.worldObjects[i].type = direction.type;
-                                                serverWorld.UpdateWorldObject(i, direction.dir);
+                                                serverWorld.UpdateWorldObject(i, direction.state, direction.dir);
                                             }
                                         }
                                         break;

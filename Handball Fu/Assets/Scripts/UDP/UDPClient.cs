@@ -375,11 +375,12 @@ public class UDPClient : MonoBehaviour
             serverSocket.SendTo(data, SocketFlags.None, sep);
         }
     }
-    public void SendDirToServer(byte netID, byte type, Vector2 dir)
+
+    public void SendControllerToServer(byte netID, byte type, int state, Vector2 dir, bool dash = false)
     {
         // TODO move to world script
         byte[] data;
-        data = serializer.SerializeDirection(myID, netID,type, dir);
+        data = serializer.SerializeDirection(myID, netID,type, state, dir, dash);
         lock (socketLock)
         {
             serverSocket.SendTo(data, SocketFlags.None, sep);

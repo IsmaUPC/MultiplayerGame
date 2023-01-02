@@ -184,28 +184,52 @@ public class Serialization : MonoBehaviour
     }
 
 
-    public byte[] SerializeDirection(byte id, byte netId, byte type, Vector2 dir)
+    public byte[] SerializeDirection(byte id, byte netId, byte type, int state, Vector2 dir, bool dash)
     {
         InitializeWriter();
         writer.Write(id);
         writer.Write('U');
         writer.Write(netId);
         writer.Write(type);
-        writer.Write((double)dir.x);
-        writer.Write((double)dir.y);
+        writer.Write(state);
+        switch (state)
+        {
+            case 0:
+                writer.Write((double)dir.x);
+                writer.Write((double)dir.y);
+                break;
+            case 1:
+                writer.Write(dash);
+                break;
+            default:
+                break;
+        }
 
         return writeStream.ToArray();
     }
 
-    public (byte, byte, Vector2) DeserializeDirection(byte[] data)
+    public (byte, byte, int, Vector2, bool) DeserializeDirection(byte[] data)
     {
         InitializeReader(data, 2);
         byte netID = reader.ReadByte();
         byte type = reader.ReadByte();
-        float x = (float)reader.ReadDouble();
-        float y = (float)reader.ReadDouble();
+        int state = reader.ReadInt32();
+        float x = 0.0f, y = 0.0f;
+        bool dash = false;
+        switch (state)
+        {
+            case 0:
+                x = (float)reader.ReadDouble();
+                y = (float)reader.ReadDouble();
+                break;
+            case 1:
+                dash = reader.ReadBoolean();
+                break;
+            default:
+                break;
+        }
 
-        return (netID, type, new Vector2(x, y));
+        return (netID, type, state, new Vector2(x, y), dash);
     }
 
     public byte[] SerializeTransform(byte id, byte netId, Vector3 trans, int state)

@@ -73,6 +73,7 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case State.DASH:
+                Debug.Log("Character Controller Dassssssh");
                 characterController.Move(transform.forward * dashSpeed * Time.deltaTime);
                 break;
 
@@ -96,7 +97,7 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("Attack", true);
                 break;
             case State.DASH:
-                animator.SetBool("Dash", true);
+                ActiveDash();
                 break;
             case State.LOAD_ARM:
                 animator.SetBool("Shoot", true);
@@ -109,7 +110,7 @@ public class PlayerController : MonoBehaviour
     void OnMove(InputValue value)
     {
         dir = value.Get<Vector2>();
-        client.SendDirToServer(netID,0, dir);
+        client.SendControllerToServer(netID,0, 0, dir);
     }
 
     public void Move(Vector2 dir)
@@ -133,9 +134,12 @@ public class PlayerController : MonoBehaviour
         if (state != State.MOVE) 
             return;
 
-        animator.SetBool("Dash", true);
-        //ResetPropHuntCount();
+        client.SendControllerToServer(netID, 0, 1, dir, true);
+    }
 
+    public void ActiveDash()
+    {
+        //ResetPropHuntCount();
         if (state != State.DASH)
             StartCoroutine(Dash());
     }
@@ -144,6 +148,7 @@ public class PlayerController : MonoBehaviour
     {
         state = State.DASH;
         trail.emitting = true;
+        animator.SetBool("Dash", true);
 
         yield return new WaitForSeconds(dashTime);
 
