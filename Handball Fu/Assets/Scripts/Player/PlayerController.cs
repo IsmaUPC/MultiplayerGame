@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private CharacterController characterController;
     [SerializeField] private Animator animator;
     private float initY;
+    private byte netID;
 
     // Movement
     private Vector2 movement = Vector2.zero;
@@ -48,8 +49,10 @@ public class PlayerController : MonoBehaviour
         state = State.MOVE;
         initY = transform.position.y;
         shader = GetComponentInChildren<ActiveShader>();
+        dir = new Vector2(transform.forward.x, transform.forward.z);
 
         client = FindObjectOfType<UDPClient>();
+        netID = (byte)client.GetPortIdx();
     }
 
     // Update is called once per frame
@@ -105,7 +108,7 @@ public class PlayerController : MonoBehaviour
     void OnMove(InputValue value)
     {
         dir = value.Get<Vector2>();
-        client.SendDirToServer((byte)client.GetPortIdx(),0, dir);
+        client.SendDirToServer(netID,0, dir);
     }
 
     public void Move(Vector2 dir)
