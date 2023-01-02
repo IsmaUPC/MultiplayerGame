@@ -191,7 +191,7 @@ public class PlayerController : MonoBehaviour
 
     public void SpawnProjectile()
     {
-        if(!shoot)
+        if(!shoot && client == null)
         {
             GameObject proj = Instantiate(projectile, projectilePos.position, transform.rotation);
             proj.GetComponent<MeshFilter>().mesh = projectileMesh;
@@ -199,8 +199,6 @@ public class PlayerController : MonoBehaviour
             shader.MakeTransparent();
             shoot = true;
         }        
-
-        // TODO: Call shader mask to hide right punch
     }
 
     private void ResetPropHuntCount()

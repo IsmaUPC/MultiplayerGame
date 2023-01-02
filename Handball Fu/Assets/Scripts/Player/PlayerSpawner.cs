@@ -98,7 +98,7 @@ public class PlayerSpawner : MonoBehaviour
         {
             if (client && playerPendingToSpawn[0].portId == data.portId)
             {
-                client.SendInfoSpawnToServer(playerPendingToSpawn[0].cosmeticsIdxs, playerPendingToSpawn[0].portId);
+                client.SendInfoSpawnToServer(0, playerPendingToSpawn[0].portId, playerPendingToSpawn[0].cosmeticsIdxs);
             }
             else
                 playerInput.DeactivateInput();

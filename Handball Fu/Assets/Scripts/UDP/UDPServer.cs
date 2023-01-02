@@ -523,7 +523,7 @@ public class UDPServer : MonoBehaviour
                             {
                                 byte[] data = e.data;
                                 (byte objType, int[] indexs, int portId) info = serializer.DeserializeSpawnPlayerInfo(data, numCosmetis);
-                                serverWorld.AddWorldObjectsPendingSpawn(0, e.senderId, info.indexs, info.portId, null);
+                                serverWorld.AddWorldObjectsPendingSpawn(info.objType, e.senderId, info.indexs, info.portId, null);
                             }
                             for (int i = 0; i < clients.Length; ++i)
                             {

@@ -387,10 +387,10 @@ public class UDPClient : MonoBehaviour
         }
     }
 
-    public void SendInfoSpawnToServer(int[] indexs, int portId)
+    public void SendInfoSpawnToServer(byte type, int portId, int[] indexs = null )
     {
         byte[] data;
-        data = serializer.SerializeSpawnPlayerInfo(myID, indexs, portId);
+        data = serializer.SerializeSpawnPlayerInfo(myID, type, portId, indexs);
         lock (socketLock)
         {
             serverSocket.SendTo(data, SocketFlags.None, sep);

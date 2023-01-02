@@ -53,13 +53,13 @@ public class Serialization : MonoBehaviour
 
         return writeStream.ToArray();
     }
-    public byte[] SerializeSpawnPlayerInfo(byte myId, int[] index, int portId)
+    public byte[] SerializeSpawnPlayerInfo(byte myId, byte type, int portId, int[] index = null)
     {
         InitializeWriter();
 
         writer.Write(myId);
         writer.Write('S');
-        writer.Write((byte)0); // 0 = PLAYER TYPE
+        writer.Write(type); // 0 = PLAYER TYPE  1 = FIST
         foreach (var i in index)
         {
             writer.Write(i);
