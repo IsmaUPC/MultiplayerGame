@@ -52,7 +52,8 @@ public class PlayerController : MonoBehaviour
         dir = new Vector2(transform.forward.x, transform.forward.z);
 
         client = FindObjectOfType<UDPClient>();
-        netID = (byte)client.GetPortIdx();
+        if(client != null)
+            netID = (byte)client.GetPortIdx();
     }
 
     // Update is called once per frame

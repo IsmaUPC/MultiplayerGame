@@ -136,6 +136,9 @@ public class WorldUpdateClient : MonoBehaviour
     }
     public void UpdateFutureTransform(TransformUpdate up)
     {
+        if (float.IsInfinity(up.tform.y))
+            return;
+
         for (int i = 0; i < worldObjects.Count; ++i)
         {
             if (worldObjects[i].netId == up.netID)
@@ -147,7 +150,6 @@ public class WorldUpdateClient : MonoBehaviour
                     worldObjects[i].futurePosition = new Vector3(up.tform.x, worldObjects[i].obj.transform.position.y, up.tform.z);
                 }
 
-                //Debug.Log("up.tform.y value is: " + up.tform.y.ToString());
                 worldObjects[i].futureRotation = Quaternion.Euler(0, up.tform.y, 0);
 
                 worldObjects[i].deltaLastTime = 0.0f;
