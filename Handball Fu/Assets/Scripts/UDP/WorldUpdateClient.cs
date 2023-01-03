@@ -169,7 +169,8 @@ public class WorldUpdateClient : MonoBehaviour
     }
     public void UpdateFutureTransform(TransformUpdate up)
     {
-        if (float.IsInfinity(up.tform.y))
+        // Is valid solution?
+        if (float.IsInfinity(up.tform.y) || up.tform.x > 5000 || up.tform.z > 5000  || !float.IsFinite(up.tform.x) ||!float.IsFinite(up.tform.z))
             return;
 
         for (int i = 0; i < worldObjects.Count; ++i)
@@ -178,11 +179,8 @@ public class WorldUpdateClient : MonoBehaviour
             {
                 worldObjects[i].pastTransform.position = worldObjects[i].futurePosition;
                 worldObjects[i].pastTransform.rotation = worldObjects[i].futureRotation;
-                if (float.IsFinite(up.tform.x) && float.IsFinite(up.tform.z))
-                {
-                    worldObjects[i].futurePosition = new Vector3(up.tform.x, worldObjects[i].obj.transform.position.y, up.tform.z);
-                }
 
+                worldObjects[i].futurePosition = new Vector3(up.tform.x, worldObjects[i].obj.transform.position.y, up.tform.z);
                 worldObjects[i].futureRotation = Quaternion.Euler(0, up.tform.y, 0);
 
                 worldObjects[i].deltaLastTime = 0.0f;

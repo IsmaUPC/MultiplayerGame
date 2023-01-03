@@ -837,7 +837,6 @@ public class UDPServer : MonoBehaviour
                                     {
                                         ((Socket)clientSockets[ind]).SendTo(e.data, clients[i].ipep);
                                     }
-                                    break;
                                 }
                             }
                         }
