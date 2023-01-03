@@ -170,7 +170,7 @@ public class WorldUpdateClient : MonoBehaviour
     public void UpdateFutureTransform(TransformUpdate up)
     {
         // Is valid solution?
-        if (float.IsInfinity(up.tform.y) || up.tform.x > 5000 || up.tform.z > 5000  || !float.IsFinite(up.tform.x) ||!float.IsFinite(up.tform.z))
+        if (float.IsInfinity(up.tform.y) || up.tform.x > 5000 || up.tform.z > 5000 || !float.IsFinite(up.tform.x) || !float.IsFinite(up.tform.z))
             return;
 
         for (int i = 0; i < worldObjects.Count; ++i)
@@ -191,10 +191,16 @@ public class WorldUpdateClient : MonoBehaviour
                     int isStill = (worldObjects[i].futurePosition == worldObjects[i].pastTransform.position) ? 0 : 1;
                     worldObjects[i].obj.GetComponent<PlayerController>().UpdateAnimation(up.state, isStill);
                 }
-                if(worldObjects[i].netId > 9 && worldObjects[i].netId <= 60)
+                if (worldObjects[i].netId > 9 && worldObjects[i].netId <= 60)
                 {
-                    if (worldObjects[i].obj.GetComponent<Rigidbody>().useGravity == true)
-                        worldObjects[i].futurePosition.y = 0;
+                    Rigidbody rigidbody = worldObjects[i].obj.GetComponent<Rigidbody>();
+                    if (rigidbody.useGravity == true)
+                    {
+                        worldObjects[i].futurePosition.y = 0.25f;
+                        rigidbody = worldObjects[i].obj.GetComponent<Rigidbody>();
+                        rigidbody.velocity = Vector3.zero;
+                        rigidbody.angularVelocity = Vector3.zero;
+                    }
                 }
 
                 break;
