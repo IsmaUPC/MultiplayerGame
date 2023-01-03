@@ -53,6 +53,7 @@ public class WorldUpdateClient : MonoBehaviour
 
     private Queue<WorldObjInfo> worldObjQueue;
     private Queue<TransformUpdate> updateWorldObjQueue;
+    private Queue<KeyValuePair<byte, byte>> notifyWorldObjQueue;
 
     private float interpolationTime;
 
@@ -64,6 +65,7 @@ public class WorldUpdateClient : MonoBehaviour
 
     private object worldObjQueueLock = new object();
     private object updateWorldObjQueueLock = new object();
+    private object notifyWorldObjQueueLock = new object();
 
     // Start is called before the first frame update
     void Start()
@@ -80,6 +82,10 @@ public class WorldUpdateClient : MonoBehaviour
         lock (updateWorldObjQueueLock)
         {
             updateWorldObjQueue = new Queue<TransformUpdate>();
+        }
+        lock (notifyWorldObjQueueLock)
+        {
+            notifyWorldObjQueue = new Queue<KeyValuePair<byte, byte>>();
         }
 
         ps = FindObjectOfType<PlayerSpawner>();
@@ -99,6 +105,11 @@ public class WorldUpdateClient : MonoBehaviour
         {
             while (updateWorldObjQueue.Count > 0)
                 UpdateFutureTransform(updateWorldObjQueue.Dequeue());
+        }
+        lock (notifyWorldObjQueueLock)
+        {
+            while (notifyWorldObjQueue.Count > 0)
+                ProcessNotification(notifyWorldObjQueue.Dequeue());
         }
 
         Interpolation();
@@ -124,6 +135,15 @@ public class WorldUpdateClient : MonoBehaviour
         }
     }
 
+    public void AddNotify(byte notifyType, byte netID)
+    {
+        KeyValuePair<byte, byte> up = new KeyValuePair<byte, byte>(notifyType, netID);
+        lock (notifyWorldObjQueueLock)
+        {
+            notifyWorldObjQueue.Enqueue(up);
+        }
+    }
+
     public void AddUpdateFutureTransform(byte netID, Vector3 tform, int state)
     {
         TransformUpdate up = new TransformUpdate();
@@ -133,6 +153,18 @@ public class WorldUpdateClient : MonoBehaviour
         lock (updateWorldObjQueueLock)
         {
             updateWorldObjQueue.Enqueue(up);
+        }
+    }
+
+    private void ProcessNotification(KeyValuePair<byte, byte> notify)
+    {
+        switch (notify.Key)
+        {
+            case 0:
+                GetObjectWithNetID(notify.Value).GetComponent<Rigidbody>().useGravity = true;
+                break;
+            default:
+                break;
         }
     }
     public void UpdateFutureTransform(TransformUpdate up)
@@ -160,6 +192,11 @@ public class WorldUpdateClient : MonoBehaviour
                 {
                     int isStill = (worldObjects[i].futurePosition == worldObjects[i].pastTransform.position) ? 0 : 1;
                     worldObjects[i].obj.GetComponent<PlayerController>().UpdateAnimation(up.state, isStill);
+                }
+                if(worldObjects[i].netId > 9 && worldObjects[i].netId <= 60)
+                {
+                    if (worldObjects[i].obj.GetComponent<Rigidbody>().useGravity == true)
+                        worldObjects[i].futurePosition.y = 0;
                 }
 
                 break;
@@ -296,11 +333,11 @@ public class WorldUpdateClient : MonoBehaviour
         ownPlayerRef = obj;
     }
 
-    GameObject GetObjectWithNetID(byte NetId)
+    private GameObject GetObjectWithNetID(byte NetId)
     {
         for (int i = 0; i < worldObjects.Count; ++i)
         {
-            if(worldObjects[i].netId == NetId)
+            if (worldObjects[i].netId == NetId)
                 return worldObjects[i].obj;
         }
         return null;

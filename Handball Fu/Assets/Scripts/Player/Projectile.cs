@@ -34,7 +34,12 @@ public class Projectile : MonoBehaviour
         {
             currentBounce++;
             if (currentBounce >= maxBounce)
+            {
                 GetComponent<Rigidbody>().useGravity = true;
+                WorldUpdateServer worldServer = FindObjectOfType<WorldUpdateServer>();
+                if (worldServer)
+                    worldServer.ActiveGravityPunch(gameObject);
+            }
 
             if (collision.gameObject.tag == "Floor")
             {

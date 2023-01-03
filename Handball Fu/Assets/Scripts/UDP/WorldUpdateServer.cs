@@ -307,7 +307,19 @@ public class WorldUpdateServer : MonoBehaviour
             {
                 byte netId = CreateWorldObject(new WorldObjInfo(1, worldObjects[i].clientCreator, worldObjects[i].netId, obRef));
                 byte[] data = server.serializer.SerializeSpawnObjectInfo(worldObjects[i].clientCreator, 1, netId, null, worldObjects[i].netId);
-                server.AddFistEnqueueEvent(data);
+                server.AddNotifyEnqueueEvent(data);
+                break;
+            }
+        }
+    }
+    public void ActiveGravityPunch(GameObject obRef)
+    {
+        for (int i = 0; i < worldObjects.Count; ++i)
+        {
+            if (worldObjects[i].obj == obRef)
+            {
+                byte[] data = server.serializer.SerializeNotify(worldObjects[i].clientCreator, 0, worldObjects[i].netId);
+                server.AddNotifyEnqueueEvent(data);
                 break;
             }
         }

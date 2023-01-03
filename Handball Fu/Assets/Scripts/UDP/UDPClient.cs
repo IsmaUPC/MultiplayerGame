@@ -13,14 +13,15 @@ public class UDPClient : MonoBehaviour
     enum EVENT_TYPE
     {
         EVENT_NULL,
-        EVENT_CONNECTION,       // A client wants to connect
-        EVENT_DISCONNETION,     // A client wants to disconnect
-        EVENT_DENIEDCONNECT,    // No more client free spaces
-        EVENT_KEEPCONNECT,      // A client is still connected
-        EVENT_MESSAGE,          // A client sent a message
-        EVENT_UPDATE,           // A client sent an updated "transform"
-        EVENT_SPAWN_PLAYER,     // A client sent own spawn
-        EVENT_READY_TO_PLAY,    // A client si ready to play                [R]
+        EVENT_CONNECTION,           // A client wants to connect
+        EVENT_DISCONNETION,         // A client wants to disconnect
+        EVENT_DENIEDCONNECT,        // No more client free spaces
+        EVENT_KEEPCONNECT,          // A client is still connected
+        EVENT_MESSAGE,              // A client sent a message
+        EVENT_UPDATE,               // A client sent an updated "transform"
+        EVENT_SPAWN_PLAYER,         // A client sent own spawn
+        EVENT_READY_TO_PLAY,        // A client si ready to play                [R]
+        EVENT_NOTIFY_ALL_CLIENTS,   // A client receive notify
     };
     enum CONNECTION_STATE
     {
@@ -229,6 +230,9 @@ public class UDPClient : MonoBehaviour
                     case 'R':
                         e.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
                         break;
+                    case 'N':
+                        e.type = EVENT_TYPE.EVENT_NOTIFY_ALL_CLIENTS;
+                        break;
                     default:
                         break;
                 }
@@ -324,7 +328,6 @@ public class UDPClient : MonoBehaviour
                     case EVENT_TYPE.EVENT_SPAWN_PLAYER:
                         //Deserialize Info index cosmetics and spawnpoint player
                         (byte objType, int[] indexs, byte idParent, int portId) info = serializer.DeserializeSpawnObjectInfo(e.data, numCosmetis);
-                        Debug.Log("EVENT_SPAWN_PLAYER TYPEEEEEEEEEEE: " + info.objType.ToString());
                         lock (clientWorldLock)
                         {
                             clientWorld.AddWorldObjectsPendingSpawn((byte)info.portId, info.objType, info.indexs, info.portId, info.idParent);
@@ -336,6 +339,10 @@ public class UDPClient : MonoBehaviour
                         {
                             OnStart.Invoke();
                         }
+                        break;
+                    case EVENT_TYPE.EVENT_NOTIFY_ALL_CLIENTS:
+                        (byte notifyType, byte portId) notify = serializer.DeserializeNotify(e.data);
+                        clientWorld.AddNotify(notify.notifyType, notify.portId);
                         break;
                     default:
                         break;

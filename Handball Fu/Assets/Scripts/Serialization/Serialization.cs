@@ -94,6 +94,26 @@ public class Serialization : MonoBehaviour
         return (objType, newlist, idParent, reader.ReadInt32());
     }
 
+    public byte[] SerializeNotify(byte myId, byte type, byte portId)
+    {
+        InitializeWriter();
+
+        writer.Write(myId);
+        writer.Write('N');
+        writer.Write(type); // 0 = ACTIVE PUNCH GRAVITY
+        writer.Write(portId);
+
+        return writeStream.ToArray();
+    }
+    public (byte, byte) DeserializeNotify(byte[] data)
+    {
+        InitializeReader(data, 2);
+        byte notifyType = reader.ReadByte();
+        byte netID = reader.ReadByte();
+
+        return (notifyType, netID);
+    }
+
     public byte[] SerializeDeniedConnection()
     {
         InitializeWriter();

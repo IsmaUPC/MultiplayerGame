@@ -33,15 +33,15 @@ public class UDPServer : MonoBehaviour
     enum EVENT_TYPE
     {
         EVENT_NULL,
-        EVENT_CONNECTION,       // A client wants to connect                [C]
-        EVENT_DISCONNETION,     // A client wants to disconnect             [D]
-        EVENT_DENIEDCONNECT,    // No more client free spaces               [F]
-        EVENT_KEEPCONNECT,      // A client is still connected              [K]
-        EVENT_MESSAGE,          // A client sent a message                  [M]
-        EVENT_UPDATE,           // A client sent an updated "transform"     [U]
-        EVENT_SPAWN_PLAYER,     // A client sent own spawn                  [S]
-        EVENT_SPAWN_FIST,       // A SERVER sent spawn fist                 [ ]
-        EVENT_READY_TO_PLAY,    // A client si ready to play                [R]
+        EVENT_CONNECTION,           // A client wants to connect                [C]
+        EVENT_DISCONNETION,         // A client wants to disconnect             [D]
+        EVENT_DENIEDCONNECT,        // No more client free spaces               [F]
+        EVENT_KEEPCONNECT,          // A client is still connected              [K]
+        EVENT_MESSAGE,              // A client sent a message                  [M]
+        EVENT_UPDATE,               // A client sent an updated "transform"     [U]
+        EVENT_SPAWN_PLAYER,         // A client sent own spawn                  [S]
+        EVENT_NOTIFY_ALL_CLIENTS,   // A SERVER sent spawn fist                 [N]
+        EVENT_READY_TO_PLAY,        // A client si ready to play                [R]
     };
 
     // Events struct
@@ -667,12 +667,12 @@ public class UDPServer : MonoBehaviour
         }
     }
 
-    public void AddFistEnqueueEvent(byte[] data)
+    public void AddNotifyEnqueueEvent(byte[] data)
     {
         Debug.Log("AddFistEnqueueEvent");
         Event ev = new Event();
         ev.data = data;
-        ev.type = EVENT_TYPE.EVENT_SPAWN_FIST;
+        ev.type = EVENT_TYPE.EVENT_NOTIFY_ALL_CLIENTS;
         EnqueueEvent(ev);
     }
     private void EnqueueEvent(Event ev)
@@ -828,7 +828,7 @@ public class UDPServer : MonoBehaviour
                             }
                         }
                         break;
-                    case EVENT_TYPE.EVENT_SPAWN_FIST:
+                    case EVENT_TYPE.EVENT_NOTIFY_ALL_CLIENTS:
                         {
                             for (int i = 0; i < clients.Length; ++i)
                             {
