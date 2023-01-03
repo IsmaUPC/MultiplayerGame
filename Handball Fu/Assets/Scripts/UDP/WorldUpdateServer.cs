@@ -25,6 +25,15 @@ public class WorldUpdateServer : MonoBehaviour
 
     public class WorldObjInfo
     {
+        public WorldObjInfo() { }
+        public WorldObjInfo(byte t, byte c, int id, GameObject p)
+        {
+            type = t;
+            clientCreator = c;
+            portID = id;
+            parent = p;
+        }
+
         // Player type
         public byte type;
         // Creator id
@@ -36,6 +45,9 @@ public class WorldUpdateServer : MonoBehaviour
         public int portID;
         // Cosmetics Indexs
         public int[] cosmeticsIdxs;
+
+        // Gameobject reference
+        public GameObject parent;
     }
 
     // All world objects to be updated in clients
@@ -45,7 +57,7 @@ public class WorldUpdateServer : MonoBehaviour
     // this list is necesary because Instantiate function only work on main thread
     public List<WorldObjInfo> worldObjectsPendingSpawn;
     public Queue<KeyValuePair<int, Vector2>> updateDirection;
-    public Queue<int> updateDash;
+    public Queue<KeyValuePair<int, int>> updateState;
 
     // Interpolation time - How often to deliver new positions
     private float interpolationTime;
@@ -60,7 +72,7 @@ public class WorldUpdateServer : MonoBehaviour
 
     private object worldObjectsPendingSpawnLock = new object();
     private object updateDirectionLock = new object();
-    private object updateDashLock = new object();
+    private object updateStateLock = new object();
 
     // Start is called before the first frame update
     void Start()
@@ -77,9 +89,9 @@ public class WorldUpdateServer : MonoBehaviour
         {
             updateDirection = new Queue<KeyValuePair<int, Vector2>>();
         }
-        lock(updateDashLock)
+        lock(updateStateLock)
         {
-            updateDash = new Queue<int>();
+            updateState = new Queue<KeyValuePair<int, int>>();
         }
 
         usedIDs = new bool[256];
@@ -108,12 +120,22 @@ public class WorldUpdateServer : MonoBehaviour
             }
         }
 
-        lock(updateDashLock)
+        lock(updateStateLock)
         {
-            while (updateDash.Count > 0)
+            while (updateState.Count > 0)
             {
-                int aux = updateDash.Dequeue();
-                worldObjects[aux].obj.GetComponent<PlayerController>().ActiveDash();
+                KeyValuePair<int, int> aux = updateState.Dequeue();
+                switch (aux.Value)
+                {
+                    case 1:
+                        worldObjects[aux.Key].obj.GetComponent<PlayerController>().ActiveDash();
+                        break;
+                    case 2:
+                        worldObjects[aux.Key].obj.GetComponent<PlayerController>().Cut();
+                        break;
+                    default:
+                        break;
+                }                
             }
         }
 
@@ -125,6 +147,9 @@ public class WorldUpdateServer : MonoBehaviour
                 case 0:
                     worldObjects[i].obj.GetComponent<PlayerController>().UpdateMove();
                     break;
+                case 1:
+                    worldObjects[i].obj.GetComponent<Projectile>().UpdateTransform();
+                    break;
                 default:
                     break;
             }
@@ -132,7 +157,8 @@ public class WorldUpdateServer : MonoBehaviour
             // If it's been more time than the interpolation time designed
             if (worldObjects[i].deltaLastTime > interpolationTime)
             {
-                server.BroadcastInterpolation(worldObjects[i].netId, GetDataUpdateTransform(worldObjects[i].obj.transform), (int)worldObjects[i].obj.GetComponent<PlayerController>().state);
+                int state = (worldObjects[i].type == 0)? (int)worldObjects[i].obj.GetComponent<PlayerController>().state : 0;
+                server.BroadcastInterpolation(worldObjects[i].netId, GetDataUpdateTransform(worldObjects[i].obj.transform), state);
                 worldObjects[i].deltaLastTime = 0.0f;
             }
         }
@@ -148,12 +174,11 @@ public class WorldUpdateServer : MonoBehaviour
         return posPitch;
     }
 
-    public void AddWorldObjectsPendingSpawn(byte type, byte clientCreator, int[] cosmeticsIdxs, int portID, Transform tform = null)
+    public void AddWorldObjectsPendingSpawn(byte type, byte clientCreator, int portID, int[] cosmeticsIdxs = null)
     {
         WorldObjInfo wops = new WorldObjInfo();
         wops.type = type;
         wops.clientCreator = clientCreator;
-        wops.trans = tform;
         wops.portID = portID;
         wops.cosmeticsIdxs = cosmeticsIdxs;
 
@@ -181,7 +206,8 @@ public class WorldUpdateServer : MonoBehaviour
             // Case 1 used for projectile game objects
             case 1:
                 retID = AssignNetId(10, 60);
-                wo.obj = Instantiate(projectilePrefab, wops.trans);
+                wo.type = 1;
+                wo.obj = wops.parent.GetComponent<PlayerController>().SpawnProjectile();
                 break;
             default:
                 break;
@@ -257,9 +283,10 @@ public class WorldUpdateServer : MonoBehaviour
                 }
                 break;
             case 1:
-                lock (updateDashLock)
+            case 2:
+                lock (updateStateLock)
                 {
-                    updateDash.Enqueue(index);
+                    updateState.Enqueue(new KeyValuePair<int, int>(index, state));
                 }
                 break;
             default:
@@ -270,5 +297,19 @@ public class WorldUpdateServer : MonoBehaviour
     public void AssignUDPServerReference(UDPServer udp)
     {
         server = udp;
+    }
+
+    public void AddSpawnPunch(GameObject obRef)
+    {
+        for (int i = 0; i < worldObjects.Count; ++i)
+        {
+            if(worldObjects[i].obj == obRef)
+            {
+                byte netId = CreateWorldObject(new WorldObjInfo(1, worldObjects[i].clientCreator, worldObjects[i].netId, obRef));
+                byte[] data = server.serializer.SerializeSpawnObjectInfo(worldObjects[i].clientCreator, 1, netId, null, worldObjects[i].netId);
+                server.AddFistEnqueueEvent(data);
+                break;
+            }
+        }
     }
 }

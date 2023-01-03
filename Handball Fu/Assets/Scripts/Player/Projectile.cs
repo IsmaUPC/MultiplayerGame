@@ -7,18 +7,18 @@ public class Projectile : MonoBehaviour
     public float velocity = 10;
     public int maxBounce = 4;
     private int currentBounce = 0;
-    private float initY = 0;
     private bool isRecover = false;
+    [HideInInspector] public float initY = 0;
     [HideInInspector] public PlayerController parent;
 
     // Start is called before the first frame update
     void Start()
     {
-        initY = transform.position.y;
+
     }
 
     // Update is called once per frame
-    void Update()
+    public void UpdateTransform()
     {
         if(!isRecover)
             transform.position += transform.forward * velocity * Time.deltaTime;

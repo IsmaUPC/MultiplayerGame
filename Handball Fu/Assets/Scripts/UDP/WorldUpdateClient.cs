@@ -37,6 +37,7 @@ public class WorldUpdateClient : MonoBehaviour
         public byte type;
         public bool isMyObject;
         public Transform tform;
+        public GameObject parent;
         public int[] idxs;
         public int portID;
     }
@@ -155,8 +156,12 @@ public class WorldUpdateClient : MonoBehaviour
                 worldObjects[i].deltaLastTime = 0.0f;
                 worldObjects[i].atTargetTransform = false;
 
-                int isStill = (worldObjects[i].futurePosition == worldObjects[i].pastTransform.position) ? 0 : 1;
-                worldObjects[i].obj.GetComponent<PlayerController>().UpdateAnimation(up.state, isStill);
+                if (worldObjects[i].netId < 9) // Minus 9 mean type = PLAYER
+                {
+                    int isStill = (worldObjects[i].futurePosition == worldObjects[i].pastTransform.position) ? 0 : 1;
+                    worldObjects[i].obj.GetComponent<PlayerController>().UpdateAnimation(up.state, isStill);
+                }
+
                 break;
             }
         }
@@ -198,15 +203,16 @@ public class WorldUpdateClient : MonoBehaviour
         client = udp;
     }
 
-    public void AddWorldObjectsPendingSpawn(byte netID, byte type, int[] cosmeticsIdxs, int portID, Transform tform = null)
+    public void AddWorldObjectsPendingSpawn(byte netID, byte type, int[] cosmeticsIdxs, int portID, byte idParent = 0)
     {
         WorldObjInfo wops = new WorldObjInfo();
         wops.type = type;
         wops.isMyObject = client.GetPortIdx() == portID;
         wops.netID = (netID == 0) ? (byte)portID : netID;
-        wops.tform = tform;
         wops.portID = portID;
         wops.idxs = cosmeticsIdxs;
+        if (netID > 9)
+            wops.parent = GetObjectWithNetID(idParent);
 
         lock (worldObjQueueLock)
         {
@@ -251,28 +257,26 @@ public class WorldUpdateClient : MonoBehaviour
                 else
                 {
                     if (ps == null) ps = FindObjectOfType<PlayerSpawner>();
-
                     wo.obj = ps.SpawnNetPlayer(woi.idxs, woi.portID, true);
                 }
-                wo.futurePosition = wo.obj.transform.position;
-                wo.futureRotation = wo.obj.transform.rotation;
-                if (woi.tform == null)
-                    wo.pastTransform = wo.obj.transform;
-
                 break;
 
             // Case 1 used for projectile game objects
             case 1:
-                //wo.obj = Instantiate(projectilePrefab, tform);
+                wo.obj = woi.parent.GetComponent<PlayerController>().SpawnProjectile();
                 break;
             default:
                 break;
         }
+        wo.futurePosition = wo.obj.transform.position;
+        wo.futureRotation = wo.obj.transform.rotation;
+        if (woi.tform == null)
+            wo.pastTransform = wo.obj.transform;
+
         wo.deltaLastTime = 0.0F;
         worldObjects.Add(wo);
 
         Debug.Log("Network object with ID " + woi.netID.ToString() + " created");
-
     }
 
     public void SetPlayerCreationReference(byte netID, ref GameObject obj)
@@ -290,5 +294,15 @@ public class WorldUpdateClient : MonoBehaviour
     public void SetPlayerReference(GameObject obj)
     {
         ownPlayerRef = obj;
+    }
+
+    GameObject GetObjectWithNetID(byte NetId)
+    {
+        for (int i = 0; i < worldObjects.Count; ++i)
+        {
+            if(worldObjects[i].netId == NetId)
+                return worldObjects[i].obj;
+        }
+        return null;
     }
 }

@@ -53,33 +53,45 @@ public class Serialization : MonoBehaviour
 
         return writeStream.ToArray();
     }
-    public byte[] SerializeSpawnPlayerInfo(byte myId, byte type, int portId, int[] index = null)
+    public byte[] SerializeSpawnObjectInfo(byte myId, byte type, int portId, int[] index = null, byte netIDParent = 0)
     {
         InitializeWriter();
 
         writer.Write(myId);
         writer.Write('S');
         writer.Write(type); // 0 = PLAYER TYPE  1 = FIST
-        foreach (var i in index)
+        if(type == 0)
         {
-            writer.Write(i);
+            foreach (var i in index)
+            {
+                writer.Write(i);
+            }
         }
+        if(type == 1)
+            writer.Write(netIDParent);
 
         writer.Write(portId);
 
         return writeStream.ToArray();
     }
 
-    public (byte, int[], int) DeserializeSpawnPlayerInfo(byte[] data, int cosmeticLength)
+    public (byte, int[], byte, int) DeserializeSpawnObjectInfo(byte[] data, int cosmeticLength)
     {
         InitializeReader(data, 2);
         byte objType = reader.ReadByte();
         int[] newlist = new int[cosmeticLength];
-        for (int i = 0; i < cosmeticLength; i++)
+        if(objType == 0)
         {
-            newlist[i] = reader.ReadInt32();
+            for (int i = 0; i < cosmeticLength; i++)
+            {
+                newlist[i] = reader.ReadInt32();
+            }
         }
-        return (objType, newlist, reader.ReadInt32());
+        byte idParent = 0;
+        if(objType == 1)
+            idParent = reader.ReadByte();
+
+        return (objType, newlist, idParent, reader.ReadInt32());
     }
 
     public byte[] SerializeDeniedConnection()
@@ -184,7 +196,7 @@ public class Serialization : MonoBehaviour
     }
 
 
-    public byte[] SerializeDirection(byte id, byte netId, byte type, int state, Vector2 dir, bool dash)
+    public byte[] SerializeDirection(byte id, byte netId, byte type, int state, Vector2 dir)
     {
         InitializeWriter();
         writer.Write(id);
@@ -198,9 +210,6 @@ public class Serialization : MonoBehaviour
                 writer.Write((double)dir.x);
                 writer.Write((double)dir.y);
                 break;
-            case 1:
-                writer.Write(dash);
-                break;
             default:
                 break;
         }
@@ -208,28 +217,24 @@ public class Serialization : MonoBehaviour
         return writeStream.ToArray();
     }
 
-    public (byte, byte, int, Vector2, bool) DeserializeDirection(byte[] data)
+    public (byte, byte, int, Vector2) DeserializeDirection(byte[] data)
     {
         InitializeReader(data, 2);
         byte netID = reader.ReadByte();
         byte type = reader.ReadByte();
         int state = reader.ReadInt32();
         float x = 0.0f, y = 0.0f;
-        bool dash = false;
         switch (state)
         {
             case 0:
                 x = (float)reader.ReadDouble();
                 y = (float)reader.ReadDouble();
                 break;
-            case 1:
-                dash = reader.ReadBoolean();
-                break;
             default:
                 break;
         }
 
-        return (netID, type, state, new Vector2(x, y), dash);
+        return (netID, type, state, new Vector2(x, y));
     }
 
     public byte[] SerializeTransform(byte id, byte netId, Vector3 trans, int state)

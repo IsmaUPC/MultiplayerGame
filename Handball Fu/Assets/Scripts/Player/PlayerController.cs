@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviour
     // Online
     Vector2 dir = Vector2.zero;
     UDPClient client;
+    WorldUpdateServer worldServer;
 
     // Start is called before the first frame update
     void Start()
@@ -51,8 +52,9 @@ public class PlayerController : MonoBehaviour
         shader = GetComponentInChildren<ActiveShader>();
         dir = new Vector2(transform.forward.x, transform.forward.z);
 
+        worldServer = FindObjectOfType<WorldUpdateServer>();
         client = FindObjectOfType<UDPClient>();
-        if(client != null)
+        if (client != null)
             netID = (byte)client.GetPortIdx();
     }
 
@@ -73,7 +75,6 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case State.DASH:
-                Debug.Log("Character Controller Dassssssh");
                 characterController.Move(transform.forward * dashSpeed * Time.deltaTime);
                 break;
 
@@ -86,15 +87,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-   public void UpdateAnimation(int state, float magnitude)
+    public void UpdateAnimation(int state, float magnitude)
     {
         switch ((State)state)
-        { case State.MOVE:
+        {
+            case State.MOVE:
                 animator.SetFloat("Velocity", magnitude);
                 //Mathf.Lerp(animator.GetFloat("Velocity"), magnitude, 0.2f);
                 break;
             case State.ATTACK:
                 animator.SetBool("Attack", true);
+                //if(!shoot) SpawnProjectile(); // TODO: Delete this line!!!
                 break;
             case State.DASH:
                 ActiveDash();
@@ -110,20 +113,20 @@ public class PlayerController : MonoBehaviour
     void OnMove(InputValue value)
     {
         dir = value.Get<Vector2>();
-        client.SendControllerToServer(netID,0, 0, dir);
+        client.SendControllerToServer(netID, 0, 0, dir);
     }
 
     public void Move(Vector2 dir)
     {
         this.dir = dir;
         movement = dir * velocity;
-        if(dir.magnitude != 0)
+        if (dir.magnitude != 0)
             targetDirection = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.y), Vector3.up);
 
         animator.SetFloat("Velocity", dir.magnitude);
         //ResetPropHuntCount();
 
-        if (state != State.MOVE) 
+        if (state != State.MOVE)
             return;
         state = State.MOVE;
     }
@@ -131,10 +134,10 @@ public class PlayerController : MonoBehaviour
     void OnDash()
     {
         // If player is doing other action -> return
-        if (state != State.MOVE) 
+        if (state != State.MOVE)
             return;
 
-        client.SendControllerToServer(netID, 0, 1, dir, true);
+        client.SendControllerToServer(netID, 0, 1, dir);
     }
 
     public void ActiveDash()
@@ -159,18 +162,21 @@ public class PlayerController : MonoBehaviour
 
     void OnCut()
     {
-        if (state != State.MOVE) 
+        if (state != State.MOVE)
             return;
 
-        animator.SetBool("Attack", true);
-        state = State.ATTACK;
-
+        client.SendControllerToServer(netID, 0, 2, dir);
         //ResetPropHuntCount();
+    }
+    public void Cut()
+    {
+        state = State.ATTACK;
+        animator.SetBool("Attack", true);
     }
 
     void OnShoot(InputValue value)
     {
-        if (state != State.MOVE && value.Get<float>() == 1) 
+        if (state != State.MOVE && value.Get<float>() == 1)
             return;
 
         // Key DOWN
@@ -189,16 +195,25 @@ public class PlayerController : MonoBehaviour
         //ResetPropHuntCount();
     }
 
-    public void SpawnProjectile()
+    public void SpawnProjectileAlertToServer()
     {
-        if(!shoot && client == null)
+        if (worldServer != null && !shoot)
         {
-            GameObject proj = Instantiate(projectile, projectilePos.position, transform.rotation);
-            proj.GetComponent<MeshFilter>().mesh = projectileMesh;
-            proj.GetComponent<Projectile>().parent = this;
-            shader.MakeTransparent();
             shoot = true;
-        }        
+            worldServer.AddSpawnPunch(gameObject);
+        }
+    }
+
+    public GameObject SpawnProjectile()
+    {
+        GameObject proj = Instantiate(projectile, projectilePos.position, transform.rotation);
+        proj.GetComponent<MeshFilter>().mesh = projectileMesh;
+        proj.GetComponent<Projectile>().parent = this;
+        proj.GetComponent<Projectile>().initY = projectilePos.position.y;
+        shader.MakeTransparent();
+        shoot = true;
+
+        return proj;
     }
 
     private void ResetPropHuntCount()

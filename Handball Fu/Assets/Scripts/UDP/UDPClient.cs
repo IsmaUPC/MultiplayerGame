@@ -320,12 +320,14 @@ public class UDPClient : MonoBehaviour
                         }
 
                         break;
+                    //case EVENT_TYPE.EVENT_SPAWN_FIST:
                     case EVENT_TYPE.EVENT_SPAWN_PLAYER:
                         //Deserialize Info index cosmetics and spawnpoint player
-                        (byte objType, int[] indexs, int portId) info = serializer.DeserializeSpawnPlayerInfo(e.data, numCosmetis);
+                        (byte objType, int[] indexs, byte idParent, int portId) info = serializer.DeserializeSpawnObjectInfo(e.data, numCosmetis);
+                        Debug.Log("EVENT_SPAWN_PLAYER TYPEEEEEEEEEEE: " + info.objType.ToString());
                         lock (clientWorldLock)
                         {
-                            clientWorld.AddWorldObjectsPendingSpawn((byte)info.portId, info.objType, info.indexs, info.portId, null);
+                            clientWorld.AddWorldObjectsPendingSpawn((byte)info.portId, info.objType, info.indexs, info.portId, info.idParent);
                         }
                         break;
                     case EVENT_TYPE.EVENT_READY_TO_PLAY:
@@ -376,11 +378,11 @@ public class UDPClient : MonoBehaviour
         }
     }
 
-    public void SendControllerToServer(byte netID, byte type, int state, Vector2 dir, bool dash = false)
+    public void SendControllerToServer(byte netID, byte type, int state, Vector2 dir)
     {
         // TODO move to world script
         byte[] data;
-        data = serializer.SerializeDirection(myID, netID,type, state, dir, dash);
+        data = serializer.SerializeDirection(myID, netID, type, state, dir);
         lock (socketLock)
         {
             serverSocket.SendTo(data, SocketFlags.None, sep);
@@ -390,7 +392,7 @@ public class UDPClient : MonoBehaviour
     public void SendInfoSpawnToServer(byte type, int portId, int[] indexs = null )
     {
         byte[] data;
-        data = serializer.SerializeSpawnPlayerInfo(myID, type, portId, indexs);
+        data = serializer.SerializeSpawnObjectInfo(myID, type, portId, indexs);
         lock (socketLock)
         {
             serverSocket.SendTo(data, SocketFlags.None, sep);

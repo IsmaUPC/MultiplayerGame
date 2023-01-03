@@ -40,6 +40,7 @@ public class UDPServer : MonoBehaviour
         EVENT_MESSAGE,          // A client sent a message                  [M]
         EVENT_UPDATE,           // A client sent an updated "transform"     [U]
         EVENT_SPAWN_PLAYER,     // A client sent own spawn                  [S]
+        EVENT_SPAWN_FIST,       // A SERVER sent spawn fist                 [ ]
         EVENT_READY_TO_PLAY,    // A client si ready to play                [R]
     };
 
@@ -108,7 +109,7 @@ public class UDPServer : MonoBehaviour
     // Host address
     IPAddress host;
 
-    private Serialization serializer;
+    [HideInInspector] public Serialization serializer;
     private bool ready = false;
     private bool breakReady = false;
 
@@ -492,7 +493,7 @@ public class UDPServer : MonoBehaviour
                         break;
                     case EVENT_TYPE.EVENT_UPDATE:
                         {
-                            (byte netId, byte type, int state, Vector2 dir, bool dash) direction = serializer.DeserializeDirection(e.data);
+                            (byte netId, byte type, int state, Vector2 dir) direction = serializer.DeserializeDirection(e.data);
                             byte netid = direction.netId;
                             lock (serverWorldLock)
                             {
@@ -503,7 +504,6 @@ public class UDPServer : MonoBehaviour
                                         {
                                             if (serverWorld.worldObjects[i].netId == netid)
                                             {
-                                                Debug.Log("RECIEVEEEE INPUT, STATE:" + direction.state.ToString());
                                                 serverWorld.worldObjects[i].type = direction.type;
                                                 serverWorld.UpdateWorldObject(i, direction.state, direction.dir);
                                             }
@@ -522,8 +522,8 @@ public class UDPServer : MonoBehaviour
                             lock (serverWorldLock)
                             {
                                 byte[] data = e.data;
-                                (byte objType, int[] indexs, int portId) info = serializer.DeserializeSpawnPlayerInfo(data, numCosmetis);
-                                serverWorld.AddWorldObjectsPendingSpawn(info.objType, e.senderId, info.indexs, info.portId, null);
+                                (byte objType, int[] indexs,byte idParent, int portId) info = serializer.DeserializeSpawnObjectInfo(data, numCosmetis);
+                                serverWorld.AddWorldObjectsPendingSpawn(info.objType, e.senderId, info.portId, info.indexs);
                             }
                             for (int i = 0; i < clients.Length; ++i)
                             {
@@ -667,8 +667,17 @@ public class UDPServer : MonoBehaviour
         }
     }
 
+    public void AddFistEnqueueEvent(byte[] data)
+    {
+        Debug.Log("AddFistEnqueueEvent");
+        Event ev = new Event();
+        ev.data = data;
+        ev.type = EVENT_TYPE.EVENT_SPAWN_FIST;
+        EnqueueEvent(ev);
+    }
     private void EnqueueEvent(Event ev)
     {
+        Debug.Log("EnqueueEvent");
         lock (sendQueueLock)
         {
             sendQueue.Enqueue(ev);
@@ -808,6 +817,22 @@ public class UDPServer : MonoBehaviour
                             for (int i = 0; i < clients.Length; ++i)
                             {
                                 if (clients[i].id != 0 && clients[i].ipep.Equals(e.ipep))
+                                {
+                                    int ind = clients[i].port - initialPort;
+                                    lock (socketsLock)
+                                    {
+                                        ((Socket)clientSockets[ind]).SendTo(e.data, clients[i].ipep);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    case EVENT_TYPE.EVENT_SPAWN_FIST:
+                        {
+                            for (int i = 0; i < clients.Length; ++i)
+                            {
+                                if (clients[i].id != 0)
                                 {
                                     int ind = clients[i].port - initialPort;
                                     lock (socketsLock)
