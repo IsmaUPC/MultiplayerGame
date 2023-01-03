@@ -100,7 +100,7 @@ public class Serialization : MonoBehaviour
 
         writer.Write(myId);
         writer.Write('N');
-        writer.Write(type); // 0 = ACTIVE PUNCH GRAVITY
+        writer.Write(type); // 0 = ACTIVE PUNCH GRAVITY || 1 = DESTROY OBJECT
         writer.Write(portId);
 
         return writeStream.ToArray();

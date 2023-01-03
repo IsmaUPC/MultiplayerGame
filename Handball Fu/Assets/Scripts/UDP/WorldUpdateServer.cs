@@ -341,7 +341,24 @@ public class WorldUpdateServer : MonoBehaviour
             }
         }
     }
+
+    /// <NOTIFY>
+    /// /////////////////////////////////////////////
+    
+    // TYPE = 0
     public void ActiveGravityPunch(GameObject obRef)
+    {
+        SendNotify(obRef, 0);
+    }
+
+    // TYPE = 1
+    public void DestroyObjectNotify(GameObject obRef)
+    {
+        SendNotify(obRef, 1);
+        DestroyWorldObjectByGameObject(obRef);
+    }
+
+    public void SendNotify(GameObject obRef, byte notifyType)
     {
         for (int i = 0; i < worldObjects.Count; ++i)
         {
@@ -350,7 +367,7 @@ public class WorldUpdateServer : MonoBehaviour
                 byte[] data;
                 lock (server.serializerLock)
                 {
-                    data = server.serializer.SerializeNotify(worldObjects[i].clientCreator, 0, worldObjects[i].netId);
+                    data = server.serializer.SerializeNotify(worldObjects[i].clientCreator, notifyType, worldObjects[i].netId);
                 }
                 server.AddNotifyEnqueueEvent(data);
                 break;

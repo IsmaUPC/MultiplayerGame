@@ -155,8 +155,15 @@ public class WorldUpdateClient : MonoBehaviour
     {
         switch (notify.Key)
         {
-            case 0:
+            case 0: // ACTIVE GRAVIRY PUNCH
                 GetObjectWithNetID(notify.Value).GetComponent<Rigidbody>().useGravity = true;
+                break;
+            case 1: // DESTROY GAME OBJECT
+                // If is punch(fist)
+                if (notify.Value > 9 && notify.Value <= 60)
+                    GetObjectWithNetID(notify.Value).GetComponent<Projectile>().ReStartShoot();
+
+                DestroyWorldObject(notify.Value);
                 break;
             default:
                 break;

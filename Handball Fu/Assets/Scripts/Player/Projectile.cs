@@ -11,13 +11,11 @@ public class Projectile : MonoBehaviour
     [HideInInspector] public float initY = 0;
     [HideInInspector] public PlayerController parent;
     private WorldUpdateServer worldServer;
-    private WorldUpdateClient worldClient;
 
     // Start is called before the first frame update
     void Start()
     {
         worldServer = FindObjectOfType<WorldUpdateServer>();
-        worldClient = FindObjectOfType<WorldUpdateClient>();
     }
 
     // Update is called once per frame
@@ -31,16 +29,24 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.gameObject.name);
         // Check no collision with his owner
         if (collision.gameObject != parent.gameObject)
         {
+            if (collision.gameObject.GetComponent<PlayerController>())
+            {
+                currentBounce = maxBounce;
+                if (worldServer != null)
+                    worldServer.DestroyObjectNotify(collision.gameObject);
+            }
+
             currentBounce++;
             if (currentBounce >= maxBounce)
             {
-                GetComponent<Rigidbody>().useGravity = true;                
-                if (worldServer)
+                if (worldServer != null)
+                {
+                    GetComponent<Rigidbody>().useGravity = true;
                     worldServer.ActiveGravityPunch(gameObject);
+                }                
             }
 
             if (collision.gameObject.tag == "Floor")
@@ -61,18 +67,18 @@ public class Projectile : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject == parent.gameObject)
+        if (worldServer && other.gameObject == parent.gameObject)
             DestroyProjectile();
     }
 
     private void DestroyProjectile()
     {
+        ReStartShoot();
+        worldServer.DestroyObjectNotify(gameObject);
+    }
+    public void ReStartShoot()
+    {
         parent.shader.UndoTransparent();
         parent.shoot = false;
-
-        if (worldServer)
-            worldServer.DestroyWorldObjectByGameObject(gameObject);
-        else if (worldClient)
-            worldClient.DestroyWorldObjectByGameObject(gameObject);
     }
 }
