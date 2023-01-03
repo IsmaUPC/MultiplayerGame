@@ -105,6 +105,7 @@ public class UDPServer : MonoBehaviour
     private object eventQueueLock = new object();
     private object sendQueueLock = new object();
     private object serverWorldLock = new object();
+    public object serializerLock = new object();
 
     // Host address
     IPAddress host;
@@ -176,18 +177,21 @@ public class UDPServer : MonoBehaviour
             ev.senderId = 0;
 
             // Countdown
-            ev.data = serializer.SerializeChatMessage(0, "3");
-            StartCoroutine(EnqueueEventCoroutine(ev, 1));
-            ev.data = serializer.SerializeChatMessage(0, "2");
-            StartCoroutine(EnqueueEventCoroutine(ev, 2));
-            ev.data = serializer.SerializeChatMessage(0, "1");
-            StartCoroutine(EnqueueEventCoroutine(ev, 3));
-            ev.data = serializer.SerializeChatMessage(0, "GAME START!");
-            StartCoroutine(EnqueueEventCoroutine(ev, 3.5f));
+            lock (serializerLock)
+            {
+                ev.data = serializer.SerializeChatMessage(0, "3");
+                StartCoroutine(EnqueueEventCoroutine(ev, 1));
+                ev.data = serializer.SerializeChatMessage(0, "2");
+                StartCoroutine(EnqueueEventCoroutine(ev, 2));
+                ev.data = serializer.SerializeChatMessage(0, "1");
+                StartCoroutine(EnqueueEventCoroutine(ev, 3));
+                ev.data = serializer.SerializeChatMessage(0, "GAME START!");
+                StartCoroutine(EnqueueEventCoroutine(ev, 3.5f));
 
-            // Game begin
-            ev.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
-            ev.data = serializer.SerializeReadyToPlay(true);
+                // Game begin
+                ev.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
+                ev.data = serializer.SerializeReadyToPlay(true);
+            }
             StartCoroutine(EnqueueEventCoroutine(ev, 4));
         }
         if(gameStart)
@@ -269,11 +273,18 @@ public class UDPServer : MonoBehaviour
                 byte[] data = new byte[recv];
                 Array.Copy(d, 0, data, 0, recv);
 
-                (byte id, char type) header = serializer.DeserializeHeader(data);
+                (byte id, char type) header;
+                lock (serializerLock)
+                {
+                    header = serializer.DeserializeHeader(data);
+                }
 
                 Event e = new Event();
                 e.ipep = remote as IPEndPoint;
-                e.data = serializer.GetReaderStreamBytes();
+                lock (serializerLock)
+                {
+                    e.data = serializer.GetReaderStreamBytes();
+                }
                 e.senderId = header.id;
 
                 // Check what event type it is and save it to process
@@ -385,7 +396,10 @@ public class UDPServer : MonoBehaviour
 
                             Event ev;
                             ev.type = EVENT_TYPE.EVENT_MESSAGE;
-                            ev.data = serializer.SerializeChatMessage(0, name + " has disconnected!");
+                            lock (serializerLock)
+                            {
+                                ev.data = serializer.SerializeChatMessage(0, name + " has disconnected!");
+                            }
                             ev.ipep = e.ipep;
                             ev.senderId = e.senderId;
                             lock (eventQueueLock)
@@ -448,7 +462,10 @@ public class UDPServer : MonoBehaviour
                                     clientsData[i].lastContact = 0.0F;
                                     clientsData[i].ipep = e.ipep;
                                     clientsData[i].id = e.senderId;
-                                    clientsData[i].name = serializer.DeserializeUsername(e.data);
+                                    lock (serializerLock)
+                                    {
+                                        clientsData[i].name = serializer.DeserializeUsername(e.data);
+                                    }
                                     clientsData[i].port = p;
                                     Debug.Log("User " + clients[i].name + " connected at port: " + clients[i].port);
                                 }
@@ -493,7 +510,11 @@ public class UDPServer : MonoBehaviour
                         break;
                     case EVENT_TYPE.EVENT_UPDATE:
                         {
-                            (byte netId, byte type, int state, Vector2 dir) direction = serializer.DeserializeDirection(e.data);
+                            (byte netId, byte type, int state, Vector2 dir) direction;
+                            lock (serializerLock)
+                            {
+                                direction = serializer.DeserializeDirection(e.data);
+                            }
                             byte netid = direction.netId;
                             lock (serverWorldLock)
                             {
@@ -504,7 +525,6 @@ public class UDPServer : MonoBehaviour
                                         {
                                             if (serverWorld.worldObjects[i].netId == netid)
                                             {
-                                                serverWorld.worldObjects[i].type = direction.type;
                                                 serverWorld.UpdateWorldObject(i, direction.state, direction.dir);
                                             }
                                         }
@@ -522,7 +542,11 @@ public class UDPServer : MonoBehaviour
                             lock (serverWorldLock)
                             {
                                 byte[] data = e.data;
-                                (byte objType, int[] indexs,byte idParent, int portId) info = serializer.DeserializeSpawnObjectInfo(data, numCosmetis);
+                                (byte objType, int[] indexs, byte idParent, int portId) info;
+                                lock (serializerLock)
+                                {
+                                    info = serializer.DeserializeSpawnObjectInfo(data, numCosmetis);
+                                }
                                 serverWorld.AddWorldObjectsPendingSpawn(info.objType, e.senderId, info.portId, info.indexs);
                             }
                             for (int i = 0; i < clients.Length; ++i)
@@ -563,7 +587,11 @@ public class UDPServer : MonoBehaviour
                         {
                             // playerReady = if client click "Start" playerReady = true
                             // playerReady = if client click "Cancel" playerReady = false
-                            bool playerReady = serializer.DeserializeReadyToPlay(e.data);
+                            bool playerReady;
+                            lock (serializerLock)
+                            {
+                                playerReady = serializer.DeserializeReadyToPlay(e.data);
+                            }
                             SetClientReady(clients, e, playerReady);
                             lock (clientsLock)
                             {
@@ -587,7 +615,10 @@ public class UDPServer : MonoBehaviour
                                 data += "<br><color=red>MINIMUM 2 PLAYERS ARE REQUIRED</color=red>";
 
                             Event ev;
-                            ev.data = serializer.SerializeChatMessage(0, data);
+                            lock (serializerLock)
+                            {
+                                ev.data = serializer.SerializeChatMessage(0, data);
+                            }
                             ev.ipep = new IPEndPoint(IPAddress.Any, 0);
                             ev.type = EVENT_TYPE.EVENT_MESSAGE;
                             ev.senderId = e.senderId;
@@ -598,7 +629,10 @@ public class UDPServer : MonoBehaviour
                             if (playerReadys == playerConnec)
                             {
                                 // Begin game event
-                                ev.data = serializer.SerializeChatMessage(0, "All players are ready, the game begin in 3 seconds!");
+                                lock (serializerLock)
+                                {
+                                    ev.data = serializer.SerializeChatMessage(0, "All players are ready, the game begin in 3 seconds!");
+                                }
                                 EnqueueEvent(ev);
                                 ready = true;
                             }
@@ -621,7 +655,11 @@ public class UDPServer : MonoBehaviour
                         {
                             clients[i].reaching = true;
                         }
-                        byte[] data = serializer.SerializeKeepConnect(0);
+                        byte[] data;
+                        lock (serializerLock)
+                        {
+                            data = serializer.SerializeKeepConnect(0);
+                        }
                         lock (socketsLock)
                         {
                             ((Socket)clientSockets[i + 1]).SendTo(data, clients[i].ipep);
@@ -658,7 +696,11 @@ public class UDPServer : MonoBehaviour
         {
             if (clients[i].id != 0)
             {
-                byte[] data = serializer.SerializeTransform(0, netID, transform, state);
+                byte[] data;
+                lock (serializerLock)
+                {
+                    data = serializer.SerializeTransform(0, netID, transform, state);
+                }
                 lock (socketsLock)
                 {
                     ((Socket)clientSockets[i + 1]).SendTo(data, clients[i].ipep);
@@ -744,7 +786,11 @@ public class UDPServer : MonoBehaviour
                                         break;
                                     }
                                 }
-                                byte[] data = serializer.SerializeConnection(0, p);
+                                byte[] data;
+                                lock (serializerLock)
+                                {
+                                    data = serializer.SerializeConnection(0, p);
+                                }
 
                                 lock (socketsLock)
                                 {
@@ -754,7 +800,10 @@ public class UDPServer : MonoBehaviour
                                 // Send to evey client that a new user has joined!
                                 Event ev;
                                 ev.type = EVENT_TYPE.EVENT_MESSAGE;
-                                ev.data = serializer.SerializeChatMessage(0, clients[i].name + " has connected!");
+                                lock (serializerLock)
+                                {
+                                    ev.data = serializer.SerializeChatMessage(0, clients[i].name + " has connected!");
+                                }
                                 ev.ipep = null;
                                 ev.senderId = 0;
                                 EnqueueEvent(ev);
@@ -768,7 +817,11 @@ public class UDPServer : MonoBehaviour
                     // Send failed connection message to said client
                     case EVENT_TYPE.EVENT_DENIEDCONNECT:
                         {
-                            byte[] data = serializer.SerializeDeniedConnection();
+                            byte[] data;
+                            lock (serializerLock)
+                            {
+                                data = serializer.SerializeDeniedConnection();
+                            }
 
                             lock (socketsLock)
                             {
@@ -797,7 +850,11 @@ public class UDPServer : MonoBehaviour
                                 if (clients[i].id != 0)
                                 {
                                     int ind = clients[i].port - initialPort;
-                                    byte[] data = serializer.SerializeChatMessage(colorIdx, n + ";", e.data);
+                                    byte[] data;
+                                    lock (serializerLock)
+                                    {
+                                        data = serializer.SerializeChatMessage(colorIdx, n + ";", e.data);
+                                    }
                                     lock (socketsLock)
                                     {
                                         ((Socket)clientSockets[ind]).SendTo(data, clients[i].ipep);

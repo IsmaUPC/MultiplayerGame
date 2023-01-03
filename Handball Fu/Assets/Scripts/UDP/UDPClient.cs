@@ -60,7 +60,8 @@ public class UDPClient : MonoBehaviour
     private object stateLock = new object();
     private object clientsLock = new object();
     private object messagesLock = new object();
-    private object clientWorldLock = new object();
+    public object clientWorldLock = new object();
+    private object serializerLock = new object();
 
     byte myID;
 
@@ -197,10 +198,18 @@ public class UDPClient : MonoBehaviour
                 {
                     continue;
                 }
-                (byte id, char type) header = serializer.DeserializeHeader(data);
+
+                (byte id, char type) header;
+                lock (serializerLock)
+                {
+                    header = serializer.DeserializeHeader(data);
+                }
 
                 Event e = new Event();
-                e.data = serializer.GetReaderStreamBytes();
+                lock (serializerLock)
+                {
+                    e.data = serializer.GetReaderStreamBytes();
+                }
                 e.id = header.id;
 
                 // Check what event type it is and save it to process
@@ -265,7 +274,11 @@ public class UDPClient : MonoBehaviour
                         if (!connected && e.id == 0)
                         {
                             IPAddress ip = sep.Address;
-                            int port = serializer.DeserializeConnectionPort(e.data);
+                            int port;
+                            lock (serializerLock)
+                            {
+                                port = serializer.DeserializeConnectionPort(e.data);
+                            }
                             sep = new IPEndPoint(ip, port);
                             portIdx = sep.Port - 7401;
                             Debug.Log("New endpoint connection:" + sep.ToString());
@@ -289,7 +302,10 @@ public class UDPClient : MonoBehaviour
                         if (e.id == 0)
                         {
                             byte[] data;
-                            data = serializer.SerializeKeepConnect(myID);
+                            lock (serializerLock)
+                            {
+                                data = serializer.SerializeKeepConnect(myID);
+                            }
                             lock (socketLock)
                             {
                                 serverSocket.SendTo(data, SocketFlags.None, sep);
@@ -309,14 +325,20 @@ public class UDPClient : MonoBehaviour
                     case EVENT_TYPE.EVENT_MESSAGE:
                         lock (messagesLock)
                         {
-                            chatMessages.Enqueue(serializer.DeserializeChatMessage(e.data));
-
+                            lock (serializerLock)
+                            {
+                                chatMessages.Enqueue(serializer.DeserializeChatMessage(e.data));
+                            }
                         }
                         break;
                     case EVENT_TYPE.EVENT_UPDATE:
                         if (e.id == 0 && e.data.Length >= 31)
                         {
-                            (byte netId, Vector3 posPitch, int state) transform = serializer.DeserializeTransform(e.data);
+                            (byte netId, Vector3 posPitch, int state) transform;
+                            lock (serializerLock)
+                            {
+                                transform = serializer.DeserializeTransform(e.data);
+                            }
                             lock (clientWorldLock)
                             {
                                 clientWorld.AddUpdateFutureTransform(transform.netId, transform.posPitch, transform.state);
@@ -327,7 +349,11 @@ public class UDPClient : MonoBehaviour
                     //case EVENT_TYPE.EVENT_SPAWN_FIST:
                     case EVENT_TYPE.EVENT_SPAWN_PLAYER:
                         //Deserialize Info index cosmetics and spawnpoint player
-                        (byte objType, int[] indexs, byte idParent, int portId) info = serializer.DeserializeSpawnObjectInfo(e.data, numCosmetis);
+                        (byte objType, int[] indexs, byte idParent, int portId) info;
+                        lock (serializerLock)
+                        {
+                            info = serializer.DeserializeSpawnObjectInfo(e.data, numCosmetis);
+                        }
                         lock (clientWorldLock)
                         {
                             clientWorld.AddWorldObjectsPendingSpawn((byte)info.portId, info.objType, info.indexs, info.portId, info.idParent);
@@ -341,7 +367,11 @@ public class UDPClient : MonoBehaviour
                         }
                         break;
                     case EVENT_TYPE.EVENT_NOTIFY_ALL_CLIENTS:
-                        (byte notifyType, byte portId) notify = serializer.DeserializeNotify(e.data);
+                        (byte notifyType, byte portId) notify;
+                        lock (serializerLock)
+                        {
+                            notify = serializer.DeserializeNotify(e.data);
+                        }
                         clientWorld.AddNotify(notify.notifyType, notify.portId);
                         break;
                     default:
@@ -368,7 +398,10 @@ public class UDPClient : MonoBehaviour
     public void SendMessageToServer(string message)
     {
         byte[] data;
-        data = serializer.SerializeChatMessage(myID, message);
+        lock (serializerLock)
+        {
+            data = serializer.SerializeChatMessage(myID, message);
+        }
         lock (socketLock)
         {
             serverSocket.SendTo(data, SocketFlags.None, sep);
@@ -378,7 +411,10 @@ public class UDPClient : MonoBehaviour
     public void SendReadyToPlay(bool ready)
     {
         byte[] data;
-        data = serializer.SerializeReadyToPlay(ready);
+        lock (serializerLock)
+        {
+            data = serializer.SerializeReadyToPlay(ready);
+        }
         lock (socketLock)
         {
             serverSocket.SendTo(data, SocketFlags.None, sep);
@@ -389,17 +425,23 @@ public class UDPClient : MonoBehaviour
     {
         // TODO move to world script
         byte[] data;
-        data = serializer.SerializeDirection(myID, netID, type, state, dir);
+        lock (serializerLock)
+        {
+            data = serializer.SerializeDirection(myID, netID, type, state, dir);
+        }
         lock (socketLock)
         {
             serverSocket.SendTo(data, SocketFlags.None, sep);
         }
     }
 
-    public void SendInfoSpawnToServer(byte type, int portId, int[] indexs = null )
+    public void SendInfoSpawnToServer(byte type, int portId, int[] indexs = null)
     {
         byte[] data;
-        data = serializer.SerializeSpawnObjectInfo(myID, type, portId, indexs);
+        lock (serializerLock)
+        {
+            data = serializer.SerializeSpawnObjectInfo(myID, type, portId, indexs);
+        }
         lock (socketLock)
         {
             serverSocket.SendTo(data, SocketFlags.None, sep);
@@ -409,7 +451,10 @@ public class UDPClient : MonoBehaviour
     public void DisconnectFromServer()
     {
         byte[] data;
-        data = serializer.SerializeDisconnection(myID);
+        lock (serializerLock)
+        {
+            data = serializer.SerializeDisconnection(myID);
+        }
         if (isSocketAlive)
         {
             lock (socketLock)

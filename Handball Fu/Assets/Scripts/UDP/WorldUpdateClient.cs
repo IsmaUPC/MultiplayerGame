@@ -63,8 +63,6 @@ public class WorldUpdateClient : MonoBehaviour
 
     private PlayerSpawner ps;
 
-    private object worldObjQueueLock = new object();
-    private object updateWorldObjQueueLock = new object();
     private object notifyWorldObjQueueLock = new object();
 
     // Start is called before the first frame update
@@ -75,11 +73,11 @@ public class WorldUpdateClient : MonoBehaviour
 
         worldObjects = new List<WorldObject>();
 
-        lock (worldObjQueueLock)
+        lock (client.clientWorldLock)
         {
             worldObjQueue = new Queue<WorldObjInfo>();
         }
-        lock (updateWorldObjQueueLock)
+        lock (client.clientWorldLock)
         {
             updateWorldObjQueue = new Queue<TransformUpdate>();
         }
@@ -95,13 +93,13 @@ public class WorldUpdateClient : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        lock (worldObjQueueLock)
+        lock (client.clientWorldLock)
         {
             while (worldObjQueue.Count > 0)
                 CreateWorldObject(worldObjQueue.Dequeue());
         }
 
-        lock (updateWorldObjQueueLock)
+        lock (client.clientWorldLock)
         {
             while (updateWorldObjQueue.Count > 0)
                 UpdateFutureTransform(updateWorldObjQueue.Dequeue());
@@ -150,10 +148,8 @@ public class WorldUpdateClient : MonoBehaviour
         up.netID = netID;
         up.tform = tform;
         up.state = state;
-        lock (updateWorldObjQueueLock)
-        {
-            updateWorldObjQueue.Enqueue(up);
-        }
+        updateWorldObjQueue.Enqueue(up);
+
     }
 
     private void ProcessNotification(KeyValuePair<byte, byte> notify)
@@ -186,7 +182,7 @@ public class WorldUpdateClient : MonoBehaviour
                 worldObjects[i].deltaLastTime = 0.0f;
                 worldObjects[i].atTargetTransform = false;
 
-                if (worldObjects[i].netId < 9) // Minus 9 mean type = PLAYER
+                if (worldObjects[i].netId < 10) // Minus 10 mean type = PLAYER
                 {
                     int isStill = (worldObjects[i].futurePosition == worldObjects[i].pastTransform.position) ? 0 : 1;
                     worldObjects[i].obj.GetComponent<PlayerController>().UpdateAnimation(up.state, isStill);
@@ -270,10 +266,8 @@ public class WorldUpdateClient : MonoBehaviour
         if (netID > 9)
             wops.parent = GetObjectWithNetID(idParent);
 
-        lock (worldObjQueueLock)
-        {
-            worldObjQueue.Enqueue(wops);
-        }
+        worldObjQueue.Enqueue(wops);
+
     }
 
     private bool DoesNetIDExist(byte netID)

@@ -198,6 +198,7 @@ public class WorldUpdateServer : MonoBehaviour
         {
             // Case 0 used for player game objects
             case 0:
+                wo.type = 0;
                 retID = (byte)wops.portID;
                 if (ps == null) ps = FindObjectOfType<PlayerSpawner>();
                 wo.obj = ps.SpawnNetPlayer(wops.cosmeticsIdxs, wops.portID, true);
@@ -322,7 +323,11 @@ public class WorldUpdateServer : MonoBehaviour
             if(worldObjects[i].obj == obRef)
             {
                 byte netId = CreateWorldObject(new WorldObjInfo(1, worldObjects[i].clientCreator, worldObjects[i].netId, obRef));
-                byte[] data = server.serializer.SerializeSpawnObjectInfo(worldObjects[i].clientCreator, 1, netId, null, worldObjects[i].netId);
+                byte[] data;
+                lock (server.serializerLock)
+                {
+                    data = server.serializer.SerializeSpawnObjectInfo(worldObjects[i].clientCreator, 1, netId, null, worldObjects[i].netId);
+                }
                 server.AddNotifyEnqueueEvent(data);
                 break;
             }
@@ -334,7 +339,11 @@ public class WorldUpdateServer : MonoBehaviour
         {
             if (worldObjects[i].obj == obRef)
             {
-                byte[] data = server.serializer.SerializeNotify(worldObjects[i].clientCreator, 0, worldObjects[i].netId);
+                byte[] data;
+                lock (server.serializerLock)
+                {
+                    data = server.serializer.SerializeNotify(worldObjects[i].clientCreator, 0, worldObjects[i].netId);
+                }
                 server.AddNotifyEnqueueEvent(data);
                 break;
             }
