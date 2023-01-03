@@ -69,6 +69,7 @@ public class WorldUpdateServer : MonoBehaviour
     public PlayerSpawner ps;
 
     private bool[] usedIDs;
+    private int playerDeads = 0;
 
     private object worldObjectsPendingSpawnLock = new object();
     private object updateDirectionLock = new object();
@@ -89,7 +90,7 @@ public class WorldUpdateServer : MonoBehaviour
         {
             updateDirection = new Queue<KeyValuePair<int, Vector2>>();
         }
-        lock(updateStateLock)
+        lock (updateStateLock)
         {
             updateState = new Queue<KeyValuePair<int, int>>();
         }
@@ -120,7 +121,7 @@ public class WorldUpdateServer : MonoBehaviour
             }
         }
 
-        lock(updateStateLock)
+        lock (updateStateLock)
         {
             while (updateState.Count > 0)
             {
@@ -141,7 +142,7 @@ public class WorldUpdateServer : MonoBehaviour
                         break;
                     default:
                         break;
-                }                
+                }
             }
         }
 
@@ -163,7 +164,7 @@ public class WorldUpdateServer : MonoBehaviour
             // If it's been more time than the interpolation time designed
             if (worldObjects[i].deltaLastTime > interpolationTime)
             {
-                int state = (worldObjects[i].type == 0)? (int)worldObjects[i].obj.GetComponent<PlayerController>().state : 0;
+                int state = (worldObjects[i].type == 0) ? (int)worldObjects[i].obj.GetComponent<PlayerController>().state : 0;
                 server.BroadcastInterpolation(worldObjects[i].netId, GetDataUpdateTransform(worldObjects[i].obj.transform), state);
                 worldObjects[i].deltaLastTime = 0.0f;
             }
@@ -328,7 +329,7 @@ public class WorldUpdateServer : MonoBehaviour
     {
         for (int i = 0; i < worldObjects.Count; ++i)
         {
-            if(worldObjects[i].obj == obRef)
+            if (worldObjects[i].obj == obRef)
             {
                 byte netId = CreateWorldObject(new WorldObjInfo(1, worldObjects[i].clientCreator, worldObjects[i].netId, obRef));
                 byte[] data;
@@ -342,9 +343,14 @@ public class WorldUpdateServer : MonoBehaviour
         }
     }
 
+    private int GetPlayerAlive()
+    {
+        return server.GetPlayerConnec() - playerDeads;
+    }
+
     /// <NOTIFY>
     /// /////////////////////////////////////////////
-    
+
     // TYPE = 0
     public void ActiveGravityPunch(GameObject obRef)
     {
@@ -356,6 +362,15 @@ public class WorldUpdateServer : MonoBehaviour
     {
         SendNotify(obRef, 1);
         DestroyWorldObjectByGameObject(obRef);
+    }
+    public void PlayerDied(GameObject playerDead, GameObject playerWin)
+    {
+        playerDeads++;
+        SendNotify(playerDead, 2);
+
+        // Win Condition
+        if (GetPlayerAlive() == 1)
+            SendNotify(playerWin, 3);
     }
 
     public void SendNotify(GameObject obRef, byte notifyType)

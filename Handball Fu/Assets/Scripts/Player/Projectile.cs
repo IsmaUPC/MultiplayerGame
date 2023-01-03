@@ -36,7 +36,7 @@ public class Projectile : MonoBehaviour
             {
                 currentBounce = maxBounce;
                 if (worldServer != null)
-                    worldServer.DestroyObjectNotify(collision.gameObject);
+                    worldServer.PlayerDied(collision.gameObject, parent.gameObject);
             }
 
             currentBounce++;

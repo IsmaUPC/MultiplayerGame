@@ -234,13 +234,13 @@ public class PlayerController : MonoBehaviour
         state = State.MOVE;
     }
 
-    void Die()
+    public void Die()
     {
         animator.SetBool("Die", true);
         state = State.DIE;
     }
 
-    void Victory()
+    public void Victory()
     {
         animator.SetBool("Victory", true);
         state = State.DIE;

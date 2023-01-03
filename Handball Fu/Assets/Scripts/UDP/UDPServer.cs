@@ -60,6 +60,7 @@ public class UDPServer : MonoBehaviour
 
     // Counts
     private int playerConnec = 0;
+    public int GetPlayerConnec() { return playerConnec; }
 
     // Accepting 6 clients a part of this
     private ArrayList clientSockets = new ArrayList();

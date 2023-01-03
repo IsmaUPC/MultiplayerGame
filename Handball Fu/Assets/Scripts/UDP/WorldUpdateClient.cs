@@ -159,11 +159,21 @@ public class WorldUpdateClient : MonoBehaviour
                 GetObjectWithNetID(notify.Value).GetComponent<Rigidbody>().useGravity = true;
                 break;
             case 1: // DESTROY GAME OBJECT
-                // If is punch(fist)
-                if (notify.Value > 9 && notify.Value <= 60)
+                if (notify.Value > 9 && notify.Value <= 60) // If is punch(fist) 
+                {
                     GetObjectWithNetID(notify.Value).GetComponent<Projectile>().ReStartShoot();
-
-                DestroyWorldObject(notify.Value);
+                    DestroyWorldObject(notify.Value);
+                }
+                else // If is player
+                {
+                    DestroyWorldObject(notify.Value);
+                }
+                break;
+            case 2:
+                GetObjectWithNetID(notify.Value).GetComponent<PlayerController>().Die();
+                break;
+            case 3:
+                GetObjectWithNetID(notify.Value).GetComponent<PlayerController>().Victory();
                 break;
             default:
                 break;
