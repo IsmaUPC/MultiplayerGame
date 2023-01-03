@@ -669,7 +669,6 @@ public class UDPServer : MonoBehaviour
 
     public void AddNotifyEnqueueEvent(byte[] data)
     {
-        Debug.Log("AddFistEnqueueEvent");
         Event ev = new Event();
         ev.data = data;
         ev.type = EVENT_TYPE.EVENT_NOTIFY_ALL_CLIENTS;
@@ -677,7 +676,6 @@ public class UDPServer : MonoBehaviour
     }
     private void EnqueueEvent(Event ev)
     {
-        Debug.Log("EnqueueEvent");
         lock (sendQueueLock)
         {
             sendQueue.Enqueue(ev);

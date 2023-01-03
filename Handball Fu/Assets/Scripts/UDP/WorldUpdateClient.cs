@@ -233,6 +233,21 @@ public class WorldUpdateClient : MonoBehaviour
             }
         }
     }
+    public void DestroyWorldObjectByGameObject(GameObject obj)
+    {
+        for (int i = 0; i < worldObjects.Count; ++i)
+        {
+            if (worldObjects[i].obj == obj)
+            {
+                if (worldObjects[i].obj != null)
+                {
+                    Destroy(worldObjects[i].obj);
+                }
+                worldObjects.RemoveAt(i);
+                break;
+            }
+        }
+    }
 
     // Save a reference to call events from server
     public void AssignUDPClientReference(UDPClient udp)

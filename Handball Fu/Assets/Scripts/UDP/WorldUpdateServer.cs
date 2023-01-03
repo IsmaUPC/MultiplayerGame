@@ -271,6 +271,22 @@ public class WorldUpdateServer : MonoBehaviour
             }
         }
     }
+    public void DestroyWorldObjectByGameObject(GameObject obj)
+    {
+        for (int i = 0; i < worldObjects.Count; ++i)
+        {
+            if (worldObjects[i].obj == obj)
+            {
+                if (worldObjects[i].obj != null)
+                {
+                    Destroy(worldObjects[i].obj);
+                    usedIDs[worldObjects[i].netId] = false;
+                }
+                worldObjects.RemoveAt(i);
+                break;
+            }
+        }
+    }
 
     public void UpdateWorldObject(int index, int state, Vector2 dir)
     {

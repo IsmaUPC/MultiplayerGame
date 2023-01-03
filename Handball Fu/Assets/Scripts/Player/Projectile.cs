@@ -10,11 +10,14 @@ public class Projectile : MonoBehaviour
     private bool isRecover = false;
     [HideInInspector] public float initY = 0;
     [HideInInspector] public PlayerController parent;
+    private WorldUpdateServer worldServer;
+    private WorldUpdateClient worldClient;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        worldServer = FindObjectOfType<WorldUpdateServer>();
+        worldClient = FindObjectOfType<WorldUpdateClient>();
     }
 
     // Update is called once per frame
@@ -35,8 +38,7 @@ public class Projectile : MonoBehaviour
             currentBounce++;
             if (currentBounce >= maxBounce)
             {
-                GetComponent<Rigidbody>().useGravity = true;
-                WorldUpdateServer worldServer = FindObjectOfType<WorldUpdateServer>();
+                GetComponent<Rigidbody>().useGravity = true;                
                 if (worldServer)
                     worldServer.ActiveGravityPunch(gameObject);
             }
@@ -67,6 +69,10 @@ public class Projectile : MonoBehaviour
     {
         parent.shader.UndoTransparent();
         parent.shoot = false;
-        Destroy(gameObject);
+
+        if (worldServer)
+            worldServer.DestroyWorldObjectByGameObject(gameObject);
+        else if (worldClient)
+            worldClient.DestroyWorldObjectByGameObject(gameObject);
     }
 }
