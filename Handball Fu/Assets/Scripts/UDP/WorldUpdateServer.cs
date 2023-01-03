@@ -133,6 +133,12 @@ public class WorldUpdateServer : MonoBehaviour
                     case 2:
                         worldObjects[aux.Key].obj.GetComponent<PlayerController>().Cut();
                         break;
+                    case 3:
+                        worldObjects[aux.Key].obj.GetComponent<PlayerController>().ShootUpload();
+                        break;
+                    case 4:
+                        worldObjects[aux.Key].obj.GetComponent<PlayerController>().ShootDownload();
+                        break;
                     default:
                         break;
                 }                
@@ -301,6 +307,8 @@ public class WorldUpdateServer : MonoBehaviour
                 break;
             case 1:
             case 2:
+            case 3:
+            case 4:
                 lock (updateStateLock)
                 {
                     updateState.Enqueue(new KeyValuePair<int, int>(index, state));

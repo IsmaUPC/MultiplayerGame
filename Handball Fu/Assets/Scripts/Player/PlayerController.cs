@@ -96,8 +96,8 @@ public class PlayerController : MonoBehaviour
                 //Mathf.Lerp(animator.GetFloat("Velocity"), magnitude, 0.2f);
                 break;
             case State.ATTACK:
+                animator.SetBool("Shoot", false);
                 animator.SetBool("Attack", true);
-                //if(!shoot) SpawnProjectile(); // TODO: Delete this line!!!
                 break;
             case State.DASH:
                 ActiveDash();
@@ -179,18 +179,24 @@ public class PlayerController : MonoBehaviour
         if (state != State.MOVE && value.Get<float>() == 1)
             return;
 
-        // Key DOWN
         if (value.Get<float>() == 1)
-        {
-            animator.SetBool("Shoot", true);
-            state = State.LOAD_ARM;
-        }
+            client.SendControllerToServer(netID, 0, 3, dir);
+        else if (value.Get<float>() == 0)
+            client.SendControllerToServer(netID, 0, 4, dir);
+    }
+    public void ShootUpload()
+    {
+        // Key DOWN
+        animator.SetBool("Shoot", true);
+        state = State.LOAD_ARM;
+
+        //ResetPropHuntCount();
+    }
+    public void ShootDownload()
+    {
         // Key UP
-        else if (state == State.LOAD_ARM)
-        {
-            animator.SetBool("Shoot", false);
-            state = State.ATTACK;
-        }
+        animator.SetBool("Shoot", false);
+        state = State.ATTACK;
 
         //ResetPropHuntCount();
     }

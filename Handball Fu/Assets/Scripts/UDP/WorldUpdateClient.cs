@@ -149,7 +149,6 @@ public class WorldUpdateClient : MonoBehaviour
         up.tform = tform;
         up.state = state;
         updateWorldObjQueue.Enqueue(up);
-
     }
 
     private void ProcessNotification(KeyValuePair<byte, byte> notify)
