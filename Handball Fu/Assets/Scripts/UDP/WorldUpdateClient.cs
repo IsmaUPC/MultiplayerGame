@@ -54,12 +54,14 @@ public class WorldUpdateClient : MonoBehaviour
     private Queue<WorldObjInfo> worldObjQueue;
     private Queue<TransformUpdate> updateWorldObjQueue;
     private Queue<KeyValuePair<byte, byte>> notifyWorldObjQueue;
+    private string winInfo = "";
 
     private float interpolationTime;
 
     private UDPClient client;
 
     private GameObject ownPlayerRef;
+    public GameObject canvaRoundResults;
 
     private PlayerSpawner ps;
 
@@ -109,8 +111,37 @@ public class WorldUpdateClient : MonoBehaviour
             while (notifyWorldObjQueue.Count > 0)
                 ProcessNotification(notifyWorldObjQueue.Dequeue());
         }
+        if (winInfo != "")
+            WinEvent();
 
         Interpolation();
+    }
+    private void WinEvent()
+    {
+        string[] players = winInfo.Split("=");
+        string[] names = players[0].Split(";");
+        string[] victories = players[1].Split(";");
+
+        int[] vic = new int[victories.Length];
+        for (int i = 0; i < victories.Length; ++i)
+        {
+            vic[i] = int.Parse(victories[i]);
+        }
+        List<KeyValuePair<string, int>> playersInfo = new List<KeyValuePair<string, int>>();
+        for (int i = 0; i < names.Length; i++)
+        {
+            playersInfo.Add(new KeyValuePair<string, int>(names[i], vic[i]));
+        }
+
+        RoundResult canva = Instantiate(canvaRoundResults).GetComponent<RoundResult>();
+        canva.players = playersInfo;
+        canva.ShowResults();
+
+        winInfo = "";
+    }
+    public void SetWinInfo(string info)
+    {
+        winInfo = info;
     }
 
     private void Interpolation()

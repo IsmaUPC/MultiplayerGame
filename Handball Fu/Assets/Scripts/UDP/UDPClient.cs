@@ -22,6 +22,7 @@ public class UDPClient : MonoBehaviour
         EVENT_SPAWN_PLAYER,         // A client sent own spawn
         EVENT_READY_TO_PLAY,        // A client si ready to play                [R]
         EVENT_NOTIFY_ALL_CLIENTS,   // A client receive notify
+        EVENT_NOTIFY_WIN,   // A client receive notify
     };
     enum CONNECTION_STATE
     {
@@ -100,7 +101,7 @@ public class UDPClient : MonoBehaviour
 
         timeOut = 5.0F;
 
-        clientWorld = gameObject.AddComponent<WorldUpdateClient>();
+        clientWorld = gameObject.GetComponent<WorldUpdateClient>();
         clientWorld.AssignUDPClientReference(this);
 
         connected = false;
@@ -242,6 +243,9 @@ public class UDPClient : MonoBehaviour
                     case 'N':
                         e.type = EVENT_TYPE.EVENT_NOTIFY_ALL_CLIENTS;
                         break;
+                    case 'W':
+                        e.type = EVENT_TYPE.EVENT_NOTIFY_WIN;
+                        break;
                     default:
                         break;
                 }
@@ -373,6 +377,14 @@ public class UDPClient : MonoBehaviour
                             notify = serializer.DeserializeNotify(e.data);
                         }
                         clientWorld.AddNotify(notify.notifyType, notify.portId);
+                        break;
+                    case EVENT_TYPE.EVENT_NOTIFY_WIN:
+                        (string names, string victories) notifyWin;
+                        lock (serializerLock)
+                        {
+                            notifyWin = serializer.DeserializeVictory(e.data);
+                        }
+                        clientWorld.SetWinInfo(notifyWin.names + "=" + notifyWin.victories);
                         break;
                     default:
                         break;

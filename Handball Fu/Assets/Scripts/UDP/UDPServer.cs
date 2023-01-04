@@ -77,6 +77,8 @@ public class UDPServer : MonoBehaviour
         public byte id;
         public float lastContact;
         public int port;
+
+        public int victories;
     }
 
     private ClientData[] clientsData;
@@ -195,7 +197,7 @@ public class UDPServer : MonoBehaviour
             }
             StartCoroutine(EnqueueEventCoroutine(ev, 4));
         }
-        if(gameStart)
+        if (gameStart)
         {
             gameStart = false;
             NextScene();
@@ -934,6 +936,34 @@ public class UDPServer : MonoBehaviour
                 break;
             }
         }
+    }
+
+    public void AddVictory(int netID)
+    {
+        lock (clientsLock)
+        {
+            for (int i = 0; i < clientsData.Length; ++i)
+            {
+                if (clientsData[i].port - initialPort == netID)
+                {
+                    clientsData[i].victories++;
+                    break;
+                }
+            }
+        }
+    }
+    public List<KeyValuePair<string, int>> GetPlayersVictories()
+    {
+        List<KeyValuePair<string, int>> players = new List<KeyValuePair<string, int>>();
+        lock (clientsLock)
+        {
+            for (int i = 0; i < clientsData.Length; ++i)
+            {
+                if(clientsData[i].id != 0)
+                    players.Add(new KeyValuePair<string, int>(clientsData[i].name, clientsData[i].victories));
+            }
+        }
+        return players;
     }
 
     private void OnDestroy()

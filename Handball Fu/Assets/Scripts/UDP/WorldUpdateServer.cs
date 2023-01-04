@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class WorldUpdateServer : MonoBehaviour
 {
     // Server world object
@@ -78,6 +77,8 @@ public class WorldUpdateServer : MonoBehaviour
     private object updateDirectionLock = new object();
     private object updateStateLock = new object();
 
+    public GameObject canvaRoundResults;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -102,7 +103,7 @@ public class WorldUpdateServer : MonoBehaviour
 
         ps = FindObjectOfType<PlayerSpawner>();
     }
-
+    bool win = true;
     // Update is called once per frame
     void Update()
     {
@@ -374,7 +375,21 @@ public class WorldUpdateServer : MonoBehaviour
 
         // Win Condition
         if (GetPlayerAlive() == 1)
-            UpdateWorldObject(GetIndexWithGameObject(playerWin), 6, Vector2.zero);
+        {
+            int indx = GetIndexWithGameObject(playerWin);
+            server.AddVictory(worldObjects[indx].netId);
+            UpdateWorldObject(indx, 6, Vector2.zero);
+
+            Instantiate(canvaRoundResults);
+            List<KeyValuePair<string, int>> players = server.GetPlayersVictories();
+            string names = "", victories = "";
+            for (int i = 0; i < players.Count; ++i)
+            {
+                names += players[i].Key + ";";
+                victories += players[i].Value.ToString() + ";";
+            }
+            InstanceCanvaNotify(names, victories);
+        }
     }
 
     /// <NOTIFY>
@@ -393,6 +408,21 @@ public class WorldUpdateServer : MonoBehaviour
         DestroyWorldObjectByGameObject(obRef);
     }
 
+    // TYPE = 2
+    public void InstanceCanvaNotify(string names, string victories)
+    {
+        byte[] data;
+        lock (server.serializerLock)
+        {
+            data = server.serializer.SerializeVictory(names, victories);
+        }
+        SendNotify(data);
+    }
+
+    public void SendNotify(byte[] data)
+    {
+        server.AddNotifyEnqueueEvent(data);
+    }
     public void SendNotify(GameObject obRef, byte notifyType)
     {
         for (int i = 0; i < worldObjects.Count; ++i)

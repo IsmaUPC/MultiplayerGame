@@ -93,8 +93,27 @@ public class Serialization : MonoBehaviour
 
         return (objType, newlist, idParent, reader.ReadInt32());
     }
+    public byte[] SerializeVictory(string names, string victories)
+    {
+        InitializeWriter();
 
-    public byte[] SerializeNotify(byte myId, byte type, byte portId)
+        writer.Write((byte)0);
+        writer.Write('W');
+        writer.Write(names);
+        writer.Write(victories);
+
+        return writeStream.ToArray();
+    }
+    public (string, string) DeserializeVictory(byte[] data)
+    {
+        InitializeReader(data, 2);
+        string names = reader.ReadString();
+        string victories = reader.ReadString();
+
+        return (names, victories);
+    }
+
+    public byte[] SerializeNotify(byte myId, byte type, byte portId, string names = "", string victories = "")
     {
         InitializeWriter();
 
