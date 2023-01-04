@@ -200,6 +200,11 @@ public class WorldUpdateClient : MonoBehaviour
                     DestroyWorldObject(notify.Value);
                 }
                 break;
+            case 2:
+                DestroyAllObjects();
+                if(UDPClient.OnStart != null)
+                    UDPClient.OnStart.Invoke();
+                break;
             default:
                 break;
         }

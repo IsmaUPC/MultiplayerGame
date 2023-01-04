@@ -364,10 +364,9 @@ public class UDPClient : MonoBehaviour
                         break;
                     case EVENT_TYPE.EVENT_READY_TO_PLAY:
                         // Call all functions suscribe to OnStart
-                        if (OnStart != null)
+                        lock (clientWorldLock)
                         {
-                            clientWorld.DestroyAllObjects();
-                            OnStart.Invoke();
+                            clientWorld.AddNotify(2, 0);
                         }
                         break;
                     case EVENT_TYPE.EVENT_NOTIFY_ALL_CLIENTS:
