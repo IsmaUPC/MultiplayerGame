@@ -374,12 +374,12 @@ public class WorldUpdateServer : MonoBehaviour
         playerDeads++;
         UpdateWorldObject(GetIndexWithGameObject(playerDead), 5, Vector2.zero);
         playerDead.GetComponent<CharacterController>().enabled = false;
+        int indx = GetIndexWithGameObject(playerWin);
+        server.AddVictory(worldObjects[indx].netId);
 
         // Win Condition
         if (GetPlayerAlive() == 1)
-        {
-            int indx = GetIndexWithGameObject(playerWin);
-            server.AddVictory(worldObjects[indx].netId);
+        {            
             UpdateWorldObject(indx, 6, Vector2.zero);
 
             Instantiate(canvaRoundResults);
