@@ -16,6 +16,7 @@ public class Projectile : MonoBehaviour
     void Start()
     {
         worldServer = FindObjectOfType<WorldUpdateServer>();
+        Physics.IgnoreCollision(parent.GetComponent<Collider>(), GetComponent<Collider>());
     }
 
     // Update is called once per frame
@@ -54,6 +55,7 @@ public class Projectile : MonoBehaviour
                 isRecover = true;
                 GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
                 GetComponent<SphereCollider>().isTrigger = true;
+                Physics.IgnoreCollision(parent.GetComponent<Collider>(), GetComponent<Collider>(), false);
             }
             else
             {
