@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 public class WorldUpdateServer : MonoBehaviour
 {
     // Server world object
@@ -103,7 +104,7 @@ public class WorldUpdateServer : MonoBehaviour
 
         ps = FindObjectOfType<PlayerSpawner>();
     }
-    bool win = true;
+
     // Update is called once per frame
     void Update()
     {
@@ -388,6 +389,9 @@ public class WorldUpdateServer : MonoBehaviour
                 names += players[i].Key + ";";
                 victories += players[i].Value.ToString() + ";";
             }
+            names = names.Remove(name.Length - 1);
+            victories = victories.Remove(victories.Length - 1);
+
             InstanceCanvaNotify(names, victories);
         }
     }
