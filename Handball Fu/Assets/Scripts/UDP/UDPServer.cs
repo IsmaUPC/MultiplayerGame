@@ -208,7 +208,6 @@ public class UDPServer : MonoBehaviour
         }
         if (gameStart)
         {
-            inGame = true;
             gameStart = false;
             NextScene();
         }
@@ -237,7 +236,16 @@ public class UDPServer : MonoBehaviour
         ResetClientReady();
         serverWorld.DestroyAllObjects();
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        if(!inGame)
+        {
+            inGame = true;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); // LOBBY
+        }
+        else
+        {
+            // TODO: Change between 1-4 level random
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Restart same level
+        }        
     }
     public void OnServerClose()
     {

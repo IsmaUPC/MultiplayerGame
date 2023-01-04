@@ -8,7 +8,15 @@ public class Home : MonoBehaviour
     private bool nextScene = false;
     public void OnStartClick()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        if (SceneManager.GetActiveScene().buildIndex < 3)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); // LOBBY
+        }
+        else
+        {
+            // TODO: Change between 1-4 level random
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Restart same level
+        }
     }
 
     private void Update()
