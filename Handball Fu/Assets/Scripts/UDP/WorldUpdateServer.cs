@@ -370,6 +370,7 @@ public class WorldUpdateServer : MonoBehaviour
     {
         playerDeads++;
         UpdateWorldObject(GetIndexWithGameObject(playerDead), 5, Vector2.zero);
+        playerDead.GetComponent<CharacterController>().enabled = false;
 
         // Win Condition
         if (GetPlayerAlive() == 1)

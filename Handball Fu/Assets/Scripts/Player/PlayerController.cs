@@ -108,6 +108,7 @@ public class PlayerController : MonoBehaviour
             case State.DIE:
                 Die();
                 GetComponent<PlayerInput>().DeactivateInput();
+                GetComponent<CharacterController>().enabled = false;
                 break;
             case State.VICTORY:
                 Victory();
