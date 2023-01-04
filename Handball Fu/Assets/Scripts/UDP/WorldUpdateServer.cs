@@ -21,6 +21,9 @@ public class WorldUpdateServer : MonoBehaviour
 
         // Player type
         public byte type;
+
+        // Player isAlive
+        public bool isAlive = true;
     }
 
     public class WorldObjInfo
@@ -140,6 +143,12 @@ public class WorldUpdateServer : MonoBehaviour
                     case 4:
                         worldObjects[aux.Key].obj.GetComponent<PlayerController>().ShootDownload();
                         break;
+                    case 5:
+                        worldObjects[aux.Key].obj.GetComponent<PlayerController>().Die();
+                        break;
+                    case 6:
+                        worldObjects[aux.Key].obj.GetComponent<PlayerController>().Victory();
+                        break;
                     default:
                         break;
                 }
@@ -148,6 +157,9 @@ public class WorldUpdateServer : MonoBehaviour
 
         for (int i = 0; i < worldObjects.Count; ++i)
         {
+            if (!worldObjects[i].isAlive) 
+                continue;
+
             worldObjects[i].deltaLastTime += Time.deltaTime;
             switch (worldObjects[i].type)
             {
@@ -165,6 +177,9 @@ public class WorldUpdateServer : MonoBehaviour
             if (worldObjects[i].deltaLastTime > interpolationTime)
             {
                 int state = (worldObjects[i].type == 0) ? (int)worldObjects[i].obj.GetComponent<PlayerController>().state : 0;
+                if (state == (int)PlayerController.State.DIE || state == (int)PlayerController.State.VICTORY)
+                    worldObjects[i].isAlive = false;
+
                 server.BroadcastInterpolation(worldObjects[i].netId, GetDataUpdateTransform(worldObjects[i].obj.transform), state);
                 worldObjects[i].deltaLastTime = 0.0f;
             }
@@ -298,25 +313,19 @@ public class WorldUpdateServer : MonoBehaviour
 
     public void UpdateWorldObject(int index, int state, Vector2 dir)
     {
-        switch (state)
+        if (state == 0)
         {
-            case 0:
-                lock (updateDirectionLock)
-                {
-                    updateDirection.Enqueue(new KeyValuePair<int, Vector2>(index, dir));
-                }
-                break;
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                lock (updateStateLock)
-                {
-                    updateState.Enqueue(new KeyValuePair<int, int>(index, state));
-                }
-                break;
-            default:
-                break;
+            lock (updateDirectionLock)
+            {
+                updateDirection.Enqueue(new KeyValuePair<int, Vector2>(index, dir));
+            }
+        }
+        else
+        {
+            lock (updateStateLock)
+            {
+                updateState.Enqueue(new KeyValuePair<int, int>(index, state));
+            }
         }
     }
 
@@ -348,6 +357,25 @@ public class WorldUpdateServer : MonoBehaviour
         return server.GetPlayerConnec() - playerDeads;
     }
 
+    private int GetIndexWithGameObject(GameObject ob)
+    {
+        for (int i = 0; i < worldObjects.Count; ++i)
+        {
+            if (worldObjects[i].obj == ob)
+                return i;
+        }
+        return -1;
+    }
+    public void PlayerDied(GameObject playerDead, GameObject playerWin)
+    {
+        playerDeads++;
+        UpdateWorldObject(GetIndexWithGameObject(playerDead), 5, Vector2.zero);
+
+        // Win Condition
+        if (GetPlayerAlive() == 1)
+            UpdateWorldObject(GetIndexWithGameObject(playerWin), 6, Vector2.zero);
+    }
+
     /// <NOTIFY>
     /// /////////////////////////////////////////////
 
@@ -362,15 +390,6 @@ public class WorldUpdateServer : MonoBehaviour
     {
         SendNotify(obRef, 1);
         DestroyWorldObjectByGameObject(obRef);
-    }
-    public void PlayerDied(GameObject playerDead, GameObject playerWin)
-    {
-        playerDeads++;
-        SendNotify(playerDead, 2);
-
-        // Win Condition
-        if (GetPlayerAlive() == 1)
-            SendNotify(playerWin, 3);
     }
 
     public void SendNotify(GameObject obRef, byte notifyType)

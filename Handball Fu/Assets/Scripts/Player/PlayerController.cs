@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
     public Transform projectilePos;
 
     // States
-    public enum State { AWAKE, MOVE, DASH, ATTACK, LOAD_ARM, DIE };
+    public enum State { AWAKE, MOVE, DASH, ATTACK, LOAD_ARM, DIE, VICTORY };
     public State state = State.AWAKE;
 
     // Online
@@ -104,6 +104,14 @@ public class PlayerController : MonoBehaviour
                 break;
             case State.LOAD_ARM:
                 animator.SetBool("Shoot", true);
+                break;
+            case State.DIE:
+                Die();
+                GetComponent<PlayerInput>().DeactivateInput();
+                break;
+            case State.VICTORY:
+                Victory();
+                GetComponent<PlayerInput>().DeactivateInput();
                 break;
             default:
                 break;
@@ -243,7 +251,7 @@ public class PlayerController : MonoBehaviour
     public void Victory()
     {
         animator.SetBool("Victory", true);
-        state = State.DIE;
+        state = State.VICTORY;
     }
 
     void OnExit(InputValue value)

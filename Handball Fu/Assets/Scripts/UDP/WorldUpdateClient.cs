@@ -169,12 +169,6 @@ public class WorldUpdateClient : MonoBehaviour
                     DestroyWorldObject(notify.Value);
                 }
                 break;
-            case 2:
-                GetObjectWithNetID(notify.Value).GetComponent<PlayerController>().Die();
-                break;
-            case 3:
-                GetObjectWithNetID(notify.Value).GetComponent<PlayerController>().Victory();
-                break;
             default:
                 break;
         }
