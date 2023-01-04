@@ -27,14 +27,18 @@ public class Home : MonoBehaviour
 
     public void OnBackClick()
     {
-        // Provisional
-        GameObject go = GameObject.FindGameObjectWithTag("NetWork");
-        UDPClient udp = go.GetComponent<UDPClient>();
-        if (go != null)
+        GameObject goUDP = GameObject.FindGameObjectWithTag("NetWork");
+        if (goUDP != null)
         {
-            if(udp != null) udp.ShutdownClient();
-            Destroy(go);
+            UDPClient udp = goUDP.GetComponent<UDPClient>();
+            if (udp != null) udp.ShutdownClient();
+            Destroy(goUDP);
         }
+
+        GameObject goData = GameObject.FindGameObjectWithTag("Data");
+        if (goData != null)
+            Destroy(goData);
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
     public void OnExitClick()
