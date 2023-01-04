@@ -123,7 +123,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 6430688552658127504}
         m_TargetAssemblyTypeName: ReadyToPlay, AssemblyIS
         m_MethodName: Ready
         m_Mode: 1
