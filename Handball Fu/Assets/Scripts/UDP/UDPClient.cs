@@ -245,6 +245,19 @@ public class UDPClient : MonoBehaviour
                     case 'W':
                         e.type = EVENT_TYPE.EVENT_NOTIFY_WIN;
                         break;
+                    case 'T':
+                        //TODO: Responder al evento RTT sin procesar
+                         data = new byte[1024];
+                        lock (serializerLock)
+                        {
+                            data = serializer.SerializeRTT(myID);
+                        }
+                        lock (socketLock)
+                        {
+                            serverSocket.SendTo(data, SocketFlags.None, sep);
+                        }
+
+                        break;
                     default:
                         break;
                 }

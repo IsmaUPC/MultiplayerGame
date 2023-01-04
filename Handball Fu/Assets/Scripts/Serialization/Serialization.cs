@@ -31,7 +31,7 @@ public class Serialization : MonoBehaviour
 
         return (id, type);
     }
-
+   
     public byte[] SerializeConnection(byte id, string name)
     {
         InitializeWriter();
@@ -39,6 +39,15 @@ public class Serialization : MonoBehaviour
         writer.Write(id);
         writer.Write('C');
         writer.Write(name);
+
+        return writeStream.ToArray();
+    }
+    public byte[] SerializeRTT(byte idClient)
+    {
+        InitializeWriter();
+
+        writer.Write(idClient);
+        writer.Write('T');
 
         return writeStream.ToArray();
     }

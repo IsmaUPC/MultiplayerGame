@@ -76,9 +76,15 @@ public class UDPServer : MonoBehaviour
         public byte id;
         public float lastContact;
         public int port;
+        public double RTT;
 
         public int victories;
     }
+
+    double[] rtt = new double[9];
+    double maxRTT = 0;
+    double startTime ;
+
 
     private ClientData[] clientsData;
 
@@ -108,6 +114,7 @@ public class UDPServer : MonoBehaviour
     private object sendQueueLock = new object();
     private object serverWorldLock = new object();
     public object serializerLock = new object();
+    private object RTTLock = new object();
 
     // Host address
     IPAddress host;
@@ -124,6 +131,7 @@ public class UDPServer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        startTime = Time.realtimeSinceStartupAsDouble;
         GetHostIP();
 
         // Ports available from 7400 to 9056
@@ -319,6 +327,9 @@ public class UDPServer : MonoBehaviour
                     case 'R': // Player are ready to begin game
                         e.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
                         break;
+                    case 'T': // Calculate RTT Time
+                        RTTCalculate(e);
+                        break;
                     default:
                         break;
                 }
@@ -329,6 +340,7 @@ public class UDPServer : MonoBehaviour
             }
         }
     }
+
 
     // This thread is responsible to process all data
     private void ThreadServerProcess()
@@ -433,7 +445,7 @@ public class UDPServer : MonoBehaviour
                                 break;
                             }
                         }
-
+                       if(Time.realtimeSinceStartupAsDouble - startTime > 5.0D ) RTTInit();
                         break;
 
                     // Look for room for an incoming client
@@ -995,5 +1007,52 @@ public class UDPServer : MonoBehaviour
     {
         OnServerClose();
     }
-}
+    public void RTTInit()
+    {
+        double initTime = Time.realtimeSinceStartupAsDouble;
+        lock (clientsLock)
+        {
+            for (int i = 0; i < clientsData.Length; ++i)
+            {
+                if (clientsData[i].id != 0)
+                {
+                    byte[] data;
+                    lock (serializerLock)
+                    {
+                        data = serializer.SerializeRTT(clientsData[i].id);
+                    }
+                    lock (socketsLock)
+                    {
+                        ((Socket)clientSockets[0]).SendTo(data, clientsData[i].ipep);
+                    }
 
+                    rtt[i] = initTime - clientsData[i].RTT;
+                }
+            }
+        }
+    }
+    private void RTTCalculate(Event e)
+    {
+        double realtime = Time.realtimeSinceStartupAsDouble;
+        ClientData[] clients;
+        maxRTT = 0;
+        lock (clientsLock)
+        {
+            clients = clientsData;
+        }
+        for (int f = 0; f < clients.Length; ++f)
+        {
+            maxRTT = (maxRTT < clients[f].RTT) ? clients[f].RTT : maxRTT;
+            if (clients[f].ipep != null && clients[f].ipep.Equals(e.ipep))
+            {
+                lock (RTTLock)
+                {
+                    rtt[f] = clients[f].RTT - realtime;
+                    
+                }
+                break;
+            }
+        }
+    }
+
+}
