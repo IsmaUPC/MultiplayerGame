@@ -277,6 +277,7 @@ public class WorldUpdateServer : MonoBehaviour
             worldObjects.RemoveAt(i);
         }
         worldObjects.Clear();
+        playerDeads = 0;
     }
 
     public void DestroyWorldObject(byte netID)

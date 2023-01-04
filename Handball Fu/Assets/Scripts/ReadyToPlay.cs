@@ -7,6 +7,8 @@ using TMPro;
 public class ReadyToPlay : MonoBehaviour
 {
     public Button buttonStart;
+    public string textStart = "Start";
+    public string textCancel = "Cancel";
     UDPClient client;
     private bool ready = false;
     // Start is called before the first frame update
@@ -19,9 +21,9 @@ public class ReadyToPlay : MonoBehaviour
     {
         ready = !ready;
         if(ready)
-            buttonStart.GetComponentInChildren<TextMeshProUGUI>().text = "Cancel";
+            buttonStart.GetComponentInChildren<TextMeshProUGUI>().text = textCancel;
         else
-            buttonStart.GetComponentInChildren<TextMeshProUGUI>().text = "Start";
+            buttonStart.GetComponentInChildren<TextMeshProUGUI>().text = textStart;
         client.SendReadyToPlay(ready);
     }
 }

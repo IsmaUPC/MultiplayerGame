@@ -256,6 +256,7 @@ public class WorldUpdateClient : MonoBehaviour
             worldObjects.RemoveAt(i);
         }
         worldObjects.Clear();
+        winInfo = "";
     }
 
     public void DestroyWorldObject(byte netID)

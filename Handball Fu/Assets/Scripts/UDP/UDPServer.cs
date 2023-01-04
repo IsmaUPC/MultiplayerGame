@@ -64,7 +64,6 @@ public class UDPServer : MonoBehaviour
 
     // Accepting 6 clients a part of this
     private ArrayList clientSockets = new ArrayList();
-    bool gameStart = false;
 
     // This will save basic data of clients, as self-given username, an ip end point and id
     // id is the last 3 ip digits
@@ -114,7 +113,9 @@ public class UDPServer : MonoBehaviour
     IPAddress host;
 
     [HideInInspector] public Serialization serializer;
+    private bool gameStart = false;
     private bool ready = false;
+    private bool inGame = false;
     private bool breakReady = false;
 
     private WorldUpdateServer serverWorld;
@@ -199,6 +200,7 @@ public class UDPServer : MonoBehaviour
         }
         if (gameStart)
         {
+            inGame = true;
             gameStart = false;
             NextScene();
         }
@@ -224,6 +226,9 @@ public class UDPServer : MonoBehaviour
 
     private void NextScene()
     {
+        ResetClientReady();
+        serverWorld.DestroyAllObjects();
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
     public void OnServerClose()
@@ -613,32 +618,10 @@ public class UDPServer : MonoBehaviour
                             if (playerReadys < 1 && !playerReady)
                                 breakReady = true;
 
-                            String data = playerReadys.ToString() + " / " + playerConnec.ToString() + " players are ready. ";
-                            if (playerConnec == 1 && !breakReady)
-                                data += "<br><color=red>MINIMUM 2 PLAYERS ARE REQUIRED</color=red>";
-
-                            Event ev;
-                            lock (serializerLock)
-                            {
-                                ev.data = serializer.SerializeChatMessage(0, data);
-                            }
-                            ev.ipep = new IPEndPoint(IPAddress.Any, 0);
-                            ev.type = EVENT_TYPE.EVENT_MESSAGE;
-                            ev.senderId = e.senderId;
-                            EnqueueEvent(ev);
-
-                            // If all players are ready game begin
-                            /*else*/
-                            if (playerReadys == playerConnec)
-                            {
-                                // Begin game event
-                                lock (serializerLock)
-                                {
-                                    ev.data = serializer.SerializeChatMessage(0, "All players are ready, the game begin in 3 seconds!");
-                                }
-                                EnqueueEvent(ev);
+                            if (!inGame)
+                                SendMessageReadyToPlay(e, playerReadys);
+                            else if (playerReadys == playerConnec)
                                 ready = true;
-                            }
                         }
                         break;
                     default:
@@ -672,6 +655,37 @@ public class UDPServer : MonoBehaviour
             }
         }
     }
+
+    private void SendMessageReadyToPlay(Event e, int playerReadys)
+    {
+        String data = playerReadys.ToString() + " / " + playerConnec.ToString() + " players are ready. ";
+        if (playerConnec == 1 && !breakReady)
+            data += "<br><color=red>MINIMUM 2 PLAYERS ARE REQUIRED</color=red>";
+
+        Event ev;
+        lock (serializerLock)
+        {
+            ev.data = serializer.SerializeChatMessage(0, data);
+        }
+        ev.ipep = new IPEndPoint(IPAddress.Any, 0);
+        ev.type = EVENT_TYPE.EVENT_MESSAGE;
+        ev.senderId = e.senderId;
+        EnqueueEvent(ev);
+
+        // If all players are ready game begin
+        /*else*/
+        if (playerReadys == playerConnec)
+        {
+            // Begin game event
+            lock (serializerLock)
+            {
+                ev.data = serializer.SerializeChatMessage(0, "All players are ready, the game begin in 3 seconds!");
+            }
+            EnqueueEvent(ev);
+            ready = true;
+        }
+    }
+
     // Update client struct (bool ready)
     private void SetClientReady(ClientData[] clients, Event e, bool ret)
     {
@@ -686,6 +700,17 @@ public class UDPServer : MonoBehaviour
                 break;
             }
         }
+    }
+    private void ResetClientReady()
+    {
+        lock (clientsLock)
+        {
+            for (int i = 0; i < clientsData.Length; i++)
+            {
+                clientsData[i].ready = false;
+            }
+        }
+
     }
 
     public void BroadcastInterpolation(byte netID, Vector3 transform, int state)
@@ -959,7 +984,7 @@ public class UDPServer : MonoBehaviour
         {
             for (int i = 0; i < clientsData.Length; ++i)
             {
-                if(clientsData[i].id != 0)
+                if (clientsData[i].id != 0)
                     players.Add(new KeyValuePair<string, int>(clientsData[i].name, clientsData[i].victories));
             }
         }

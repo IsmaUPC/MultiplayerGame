@@ -367,6 +367,7 @@ public class UDPClient : MonoBehaviour
                         // Call all functions suscribe to OnStart
                         if (OnStart != null)
                         {
+                            clientWorld.DestroyAllObjects();
                             OnStart.Invoke();
                         }
                         break;
