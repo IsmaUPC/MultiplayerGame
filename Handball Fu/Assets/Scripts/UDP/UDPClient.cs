@@ -59,7 +59,6 @@ public class UDPClient : MonoBehaviour
     private object socketLock = new object();
     private object eventQueueLock = new object();
     private object stateLock = new object();
-    private object clientsLock = new object();
     private object messagesLock = new object();
     public object clientWorldLock = new object();
     private object serializerLock = new object();

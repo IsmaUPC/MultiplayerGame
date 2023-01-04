@@ -390,7 +390,7 @@ public class WorldUpdateServer : MonoBehaviour
                 names += players[i].Key + ";";
                 victories += players[i].Value.ToString() + ";";
             }
-            names = names.Remove(name.Length - 1);
+            names = names.Remove(names.Length - 1);
             victories = victories.Remove(victories.Length - 1);
 
             InstanceCanvaNotify(names, victories);
