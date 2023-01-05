@@ -15,7 +15,9 @@ public class Home : MonoBehaviour
         else
         {
             // TODO: Change between 1-4 level random
+            Debug.Log("Loading new scene...");
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Restart same level
+            Debug.Log("New scene Complete");
         }
     }
 

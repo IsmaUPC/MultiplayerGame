@@ -202,8 +202,7 @@ public class WorldUpdateClient : MonoBehaviour
                 break;
             case 2:
                 DestroyAllObjects();
-                if(UDPClient.OnStart != null)
-                    UDPClient.OnStart.Invoke();
+                UDPClient.OnStart.Invoke();
                 break;
             default:
                 break;

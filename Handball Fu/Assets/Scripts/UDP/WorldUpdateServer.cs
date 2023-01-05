@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class WorldUpdateServer : MonoBehaviour
 {
     // Server world object
@@ -159,7 +159,7 @@ public class WorldUpdateServer : MonoBehaviour
 
         for (int i = 0; i < worldObjects.Count; ++i)
         {
-            if (!worldObjects[i].isAlive) 
+            if (!worldObjects[i].isAlive)
                 continue;
 
             worldObjects[i].deltaLastTime += Time.deltaTime;
@@ -186,8 +186,14 @@ public class WorldUpdateServer : MonoBehaviour
                 worldObjects[i].deltaLastTime = 0.0f;
             }
         }
+        
+        if (SceneManager.GetActiveScene().name == "Lobby" && win)
+        {
+            win = false;
+            ActiveWinPanel();
+        }
     }
-
+    bool win = true;
     private Vector3 GetDataUpdateTransform(Transform trans)
     {
         Vector3 posPitch;
@@ -382,19 +388,24 @@ public class WorldUpdateServer : MonoBehaviour
             server.AddVictory(worldObjects[indx].netId);
             UpdateWorldObject(indx, 6, Vector2.zero);
 
-            Instantiate(canvaRoundResults);
-            List<KeyValuePair<string, int>> players = server.GetPlayersVictories();
-            string names = "", victories = "";
-            for (int i = 0; i < players.Count; ++i)
-            {
-                names += players[i].Key + ";";
-                victories += players[i].Value.ToString() + ";";
-            }
-            names = names.Remove(names.Length - 1);
-            victories = victories.Remove(victories.Length - 1);
-
-            InstanceCanvaNotify(names, victories);
+            ActiveWinPanel();
         }
+    }
+
+    private void ActiveWinPanel()
+    {
+        Instantiate(canvaRoundResults);
+        List<KeyValuePair<string, int>> players = server.GetPlayersVictories();
+        string names = "", victories = "";
+        for (int i = 0; i < players.Count; ++i)
+        {
+            names += players[i].Key + ";";
+            victories += players[i].Value.ToString() + ";";
+        }
+        names = names.Remove(names.Length - 1);
+        victories = victories.Remove(victories.Length - 1);
+
+        InstanceCanvaNotify(names, victories);
     }
 
     /// <NOTIFY>
