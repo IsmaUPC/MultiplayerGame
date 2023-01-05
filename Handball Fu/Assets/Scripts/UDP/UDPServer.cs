@@ -889,7 +889,6 @@ public class UDPServer : MonoBehaviour
                         }
 
                         break;
-
                     // Send failed connection message to said client
                     case EVENT_TYPE.EVENT_DENIEDCONNECT:
                         {
@@ -904,8 +903,8 @@ public class UDPServer : MonoBehaviour
                                 ((Socket)clientSockets[0]).SendTo(data, e.ipep);
                             }
                         }
-                        break;
 
+                        break;
                     // Send message to everyone! So we know data, that only server knows
                     // such as color codes, ids and other
                     case EVENT_TYPE.EVENT_MESSAGE:
@@ -1058,23 +1057,17 @@ public class UDPServer : MonoBehaviour
     public void RTTInit()
     {
         double initTime = Time.realtimeSinceStartupAsDouble;
+        byte[] data;
         lock (clientsLock)
         {
             for (int i = 0; i < clientsData.Length; ++i)
             {
                 if (clientsData[i].id != 0)
                 {
-                    byte[] data;
-                    lock (serializerLock)
-                    {
-                        data = serializer.SerializeRTT(clientsData[i].id);
-                    }
-                    lock (socketsLock)
-                    {
-                        ((Socket)clientSockets[0]).SendTo(data, clientsData[i].ipep);
-                    }
-
-                    rtt[i] = initTime - clientsData[i].RTT;
+                    data=new byte[1024];
+                    lock (serializerLock) data = serializer.SerializeRTT(clientsData[i].id);                    
+                    lock (socketsLock) ((Socket)clientSockets[0]).SendTo(data, clientsData[i].ipep);                   
+                    rtt[i] = initTime;
                 }
             }
         }
@@ -1084,20 +1077,14 @@ public class UDPServer : MonoBehaviour
         double realtime = Time.realtimeSinceStartupAsDouble;
         ClientData[] clients;
         maxRTT = 0;
-        lock (clientsLock)
-        {
-            clients = clientsData;
-        }
+        lock (clientsLock) clients = clientsData;
+        
         for (int f = 0; f < clients.Length; ++f)
         {
             maxRTT = (maxRTT < clients[f].RTT) ? clients[f].RTT : maxRTT;
             if (clients[f].ipep != null && clients[f].ipep.Equals(e.ipep))
             {
-                lock (RTTLock)
-                {
-                    rtt[f] = clients[f].RTT - realtime;
-
-                }
+                lock (RTTLock)rtt[f] = clients[f].RTT - realtime;           
                 break;
             }
         }

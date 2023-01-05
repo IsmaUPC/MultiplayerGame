@@ -70,6 +70,8 @@ public class WorldUpdateClient : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        // TODO: calculate RTT
         // 50 ms
         interpolationTime = 0.05f;
 
