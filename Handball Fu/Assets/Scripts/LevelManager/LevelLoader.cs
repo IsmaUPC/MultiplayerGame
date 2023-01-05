@@ -43,10 +43,10 @@ public class LevelLoader : MonoBehaviour
 
     public void OnNextLevel(int level)
     {
-        StartCoroutine(LoadLevel(level, Vector2.zero));
+        StartCoroutine(LoadLevel(level));
     }
 
-    IEnumerator LoadLevel(int sceneIndexBuild, Vector2 position)
+    IEnumerator LoadLevel(int sceneIndexBuild)
     {
         // Find position where the center of the circle will be
         var mousePos = Mouse.current.position.ReadValue();
@@ -57,11 +57,6 @@ public class LevelLoader : MonoBehaviour
         circleWipe.FadeOut();
 
         yield return new WaitForSeconds(circleWipe.duration);
-        //var asyncLoad = SceneManager.LoadSceneAsync(sceneIndexBuild);
-        //while (!asyncLoad.isDone)
-        //{
-        //    yield return null;
-        //}
         SceneManager.LoadScene(sceneIndexBuild);
 
         circleWipe.FadeIn();
