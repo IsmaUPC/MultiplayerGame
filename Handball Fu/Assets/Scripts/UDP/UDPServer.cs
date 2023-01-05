@@ -267,6 +267,11 @@ public class UDPServer : MonoBehaviour
         }
         else
         {
+            if(win)
+            {
+                win = false;
+                inGame = false;
+            }
             levelLoader.OnNextLevel(currentLevel);
         }
     }
@@ -1028,7 +1033,6 @@ public class UDPServer : MonoBehaviour
                 clientsData[i].victories = 0;
             }
         }
-        win = false;
     }
 
     public List<KeyValuePair<string, int>> GetPlayersVictories()
