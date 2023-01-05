@@ -120,7 +120,6 @@ public class UDPServer : MonoBehaviour
     IPAddress host;
 
     [HideInInspector] public Serialization serializer;
-    private bool gameStart = false;
     private bool ready = false;
     private bool inGame = false;
     private bool breakReady = false;
@@ -208,10 +207,6 @@ public class UDPServer : MonoBehaviour
                     EnqueueEvent(ev);
                 }
             }
-        }
-        if (gameStart)
-        {
-            gameStart = false;
             NextScene();
         }
         // If the countdown was begin but a player press Cancel or disconnect break countdown
@@ -986,7 +981,6 @@ public class UDPServer : MonoBehaviour
                                 }
                             }
                         }
-                        gameStart = true;
                         break;
                     default:
                         break;
