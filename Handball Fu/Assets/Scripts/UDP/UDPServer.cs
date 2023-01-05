@@ -1015,7 +1015,7 @@ public class UDPServer : MonoBehaviour
         {
             for (int i = 0; i < clientsData.Length; ++i)
             {
-                if (clientsData[i].port - initialPort == netID)
+                if (clientsData[i].port - initialPort - 1 == netID)
                 {
                     clientsData[i].victories++;
                     if (clientsData[i].victories >= maxVictories)
