@@ -201,7 +201,7 @@ public class UDPServer : MonoBehaviour
                     currentLevel = levelLoader.GetFirstLevelOfList();
                     if (win)
                     {
-                        currentLevel = SceneManager.GetSceneByName("CustomAvatar").buildIndex;
+                        currentLevel = 2; // CUSTOM AVATAR SCENE
                         ResetVictory();
                     }
                     ev.data = serializer.SerializeReadyToPlay(true, currentLevel);
