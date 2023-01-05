@@ -206,13 +206,14 @@ public class UDPServer : MonoBehaviour
                     ev.data = serializer.SerializeReadyToPlay(true, currentLevel);
                     EnqueueEvent(ev);
                 }
-            }
-            NextScene();
+                NextScene();
+            }            
         }
         // If the countdown was begin but a player press Cancel or disconnect break countdown
         if (breakReady)
         {
             breakReady = false;
+            CancelInvoke();
             StopAllCoroutines();
         }
 
@@ -247,6 +248,7 @@ public class UDPServer : MonoBehaviour
             StartCoroutine(EnqueueEventCoroutine(ev, 3));
             ev.data = serializer.SerializeChatMessage(0, "GAME START!");
             StartCoroutine(EnqueueEventCoroutine(ev, 3.5f));
+            Invoke("NextScene", 3.5f);
 
             // Game begin
             ev.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
