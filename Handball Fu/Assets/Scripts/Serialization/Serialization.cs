@@ -27,7 +27,7 @@ public class Serialization : MonoBehaviour
         InitializeReader(data);
 
         byte id = reader.ReadByte();
-        char type = Convert.ToChar(reader.ReadByte()); // TODO: Solve error in this line. Unity says we want to decode in utf-8
+        char type = Convert.ToChar(reader.ReadByte());
 
         return (id, type);
     }
@@ -180,22 +180,25 @@ public class Serialization : MonoBehaviour
         return writeStream.ToArray();
     }
 
-    public byte[] SerializeReadyToPlay(bool ready)
+    public byte[] SerializeReadyToPlay(bool ready, int nextLevel)
     {
         InitializeWriter();
 
         writer.Write(((byte)0));
         writer.Write('R');
         writer.Write(ready);
+        writer.Write(nextLevel);
 
         return writeStream.ToArray();
     }
 
-    public bool DeserializeReadyToPlay(byte[] data)
+    public (bool, int) DeserializeReadyToPlay(byte[] data)
     {
         InitializeReader(data, 2);
+        bool ready = reader.ReadBoolean();
+        int level = reader.ReadInt32();
 
-        return reader.ReadBoolean();
+        return (ready, level);
     }
 
     public string AuxiliarDeserializeMessage(byte[] m)
@@ -300,7 +303,6 @@ public class Serialization : MonoBehaviour
         return writeStream.ToArray();
     }
 
-    // TODO Transform
     public (byte, Vector3, int) DeserializeTransform(byte[] data)
     {
         InitializeReader(data, 2);

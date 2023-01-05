@@ -6,24 +6,28 @@ using UnityEngine.InputSystem;
 
 public class LevelLoader : MonoBehaviour
 {
-    private List<string> levels = new List<string>();
-
-    public int levelCount = 0;
-
+    private List<int> levels = new List<int>();
+    public int indexLevel1 = 0;
+    public int levelCount = 1;
     public float transitionTime = 1f;
-
     public CircleWipeController circleWipe;
 
-    //private float timer = 0;
-
-    void Awake()
+    void OnEnable()
     {
-        DontDestroyOnLoad(this.gameObject);
+        UDPClient.OnStart += OnNextLevel;
+    }
+    void OnDisable()
+    {
+        UDPClient.OnStart -= OnNextLevel;
     }
 
     void Start()
     {
+        DontDestroyOnLoad(this.gameObject);
         ResetLevels();
+        UDPServer server = FindObjectOfType<UDPServer>();
+        if (server)
+            server.SetLevelLoader(this);
     }
 
     // Update is called once per frame
@@ -32,13 +36,17 @@ public class LevelLoader : MonoBehaviour
 
     }
 
-    public void OnNextLevel()
+    public int GetFirstLevelOfList()
     {
-        if(levels.Count > 0) 
-            StartCoroutine(LoadLevel(levels[Random.Range(0, levels.Count)], Vector2.zero));
+        return levels[0];
     }
 
-    IEnumerator LoadLevel(string sceneName, Vector2 position)
+    public void OnNextLevel(int level)
+    {
+        StartCoroutine(LoadLevel(level, Vector2.zero));
+    }
+
+    IEnumerator LoadLevel(int sceneIndexBuild, Vector2 position)
     {
         // Find position where the center of the circle will be
         var mousePos = Mouse.current.position.ReadValue();
@@ -49,28 +57,51 @@ public class LevelLoader : MonoBehaviour
         circleWipe.FadeOut();
 
         yield return new WaitForSeconds(circleWipe.duration);
-        var asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
-        }
+        //var asyncLoad = SceneManager.LoadSceneAsync(sceneIndexBuild);
+        //while (!asyncLoad.isDone)
+        //{
+        //    yield return null;
+        //}
+        SceneManager.LoadScene(sceneIndexBuild);
 
         circleWipe.FadeIn();
+        circleWipe.findPosition = true;
         yield return new WaitForSeconds(circleWipe.duration);
 
-        Debug.Log("Loaded scene: " + sceneName);
-
-        levels.Remove(sceneName);
+        levels.RemoveAt(0);
         ResetLevels();
+    }
+    public void OnBackClick()
+    {
+        GameObject goUDP = GameObject.FindGameObjectWithTag("NetWork");
+        if (goUDP != null)
+        {
+            UDPClient udp = goUDP.GetComponent<UDPClient>();
+            if (udp != null) udp.ShutdownClient();
+            Destroy(goUDP);
+        }
+
+        GameObject goData = GameObject.FindGameObjectWithTag("Data");
+        if (goData != null)
+            Destroy(goData);
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+    }
+    public void OnExitClick()
+    {
+        Application.Quit();
     }
 
     public void ResetLevels()
     {
-        if (levels.Count == 0) levels.Clear();
-        for (int i = 1; i < levelCount; i++)
+        if (levels.Count == 0)
         {
-            levels.Add("Level_" + (i + 1).ToString());
+            levels.Clear();
+            for (int i = 0; i < levelCount; i++)
+            {
+                levels.Add(indexLevel1 + i);
+            }
+            levels.Sort();
         }
     }
 }

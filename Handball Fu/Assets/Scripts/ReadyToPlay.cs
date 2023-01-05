@@ -24,6 +24,6 @@ public class ReadyToPlay : MonoBehaviour
             buttonStart.GetComponentInChildren<TextMeshProUGUI>().text = textCancel;
         else
             buttonStart.GetComponentInChildren<TextMeshProUGUI>().text = textStart;
-        client.SendReadyToPlay(ready);
+        client.SendReadyToPlay(ready, 0);
     }
 }

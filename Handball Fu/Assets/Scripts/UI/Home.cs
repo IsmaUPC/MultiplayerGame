@@ -8,17 +8,7 @@ public class Home : MonoBehaviour
     private bool nextScene = false;
     public void OnStartClick()
     {
-        if (SceneManager.GetActiveScene().buildIndex < 3)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); // LOBBY
-        }
-        else
-        {
-            // TODO: Change between 1-4 level random
-            Debug.Log("Loading new scene...");
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Restart same level
-            Debug.Log("New scene Complete");
-        }
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); // LOBBY
     }
 
     private void Update()
@@ -30,7 +20,7 @@ public class Home : MonoBehaviour
         }
     }
 
-    private void SetNextScene()
+    private void SetNextScene(int s)
     {
         nextScene = true;
     }

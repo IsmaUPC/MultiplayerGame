@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+
 public class WorldUpdateServer : MonoBehaviour
 {
     // Server world object
@@ -186,14 +186,8 @@ public class WorldUpdateServer : MonoBehaviour
                 worldObjects[i].deltaLastTime = 0.0f;
             }
         }
-        
-        if (SceneManager.GetActiveScene().name == "Lobby" && win)
-        {
-            win = false;
-            ActiveWinPanel();
-        }
     }
-    bool win = true;
+
     private Vector3 GetDataUpdateTransform(Transform trans)
     {
         Vector3 posPitch;

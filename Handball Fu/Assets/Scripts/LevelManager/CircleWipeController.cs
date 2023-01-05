@@ -10,26 +10,21 @@ using UnityEngine;
 /// </summary>
 public class CircleWipeController : MonoBehaviour
 {
-    private const float RADIUS = 2f;
-
+    private const float RADIUS = 3f;
     public Shader shader;
-
     private Material material;
 
     [Range(0, RADIUS)]
     public float radius = 0f;
-
     public float horizontal = 16;
-
     public float verical = 9;
-
     public float duration = 1f;
 
     public Color fadeColour = Color.black;
-
     public Texture fadeTexture;
-
     public Vector2 offset;
+
+    [HideInInspector] public bool findPosition = false;
 
     void Awake()
     {
@@ -47,7 +42,15 @@ public class CircleWipeController : MonoBehaviour
     {
         Graphics.Blit(source, destination, material);
     }
-
+    private void Update()
+    {
+        if(findPosition)
+        {
+            findPosition = false;
+            Transform WaypointCamera = GameObject.FindGameObjectWithTag("WaypointCamera").transform;
+            transform.SetPositionAndRotation(WaypointCamera.position, WaypointCamera.rotation);
+        }
+    }
     public void FadeOut(Action callback = null)
     {
         StartCoroutine(DoFade(RADIUS, 0f, callback));

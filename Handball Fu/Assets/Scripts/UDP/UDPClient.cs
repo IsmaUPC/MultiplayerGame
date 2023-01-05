@@ -76,7 +76,7 @@ public class UDPClient : MonoBehaviour
 
     private bool isSocketAlive;
 
-    public static Action OnStart;
+    public static Action<int> OnStart;
 
     int numCosmetis = 7;
 
@@ -376,10 +376,14 @@ public class UDPClient : MonoBehaviour
                         }
                         break;
                     case EVENT_TYPE.EVENT_READY_TO_PLAY:
-                        // Call all functions suscribe to OnStart
+                        (bool playerReady, int level) readyToPlay;
+                        lock (serializerLock)
+                        {
+                            readyToPlay = serializer.DeserializeReadyToPlay(e.data);
+                        }
                         lock (clientWorldLock)
                         {
-                            clientWorld.AddNotify(2, 0);
+                            clientWorld.AddNotify(2, (byte)readyToPlay.level);
                         }
                         break;
                     case EVENT_TYPE.EVENT_NOTIFY_ALL_CLIENTS:
@@ -432,12 +436,12 @@ public class UDPClient : MonoBehaviour
         }
     }
 
-    public void SendReadyToPlay(bool ready)
+    public void SendReadyToPlay(bool ready, int level)
     {
         byte[] data;
         lock (serializerLock)
         {
-            data = serializer.SerializeReadyToPlay(ready);
+            data = serializer.SerializeReadyToPlay(ready, level);
         }
         lock (socketLock)
         {
@@ -447,7 +451,6 @@ public class UDPClient : MonoBehaviour
 
     public void SendControllerToServer(byte netID, byte type, int state, Vector2 dir)
     {
-        // TODO move to world script
         byte[] data;
         lock (serializerLock)
         {

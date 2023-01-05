@@ -56,7 +56,7 @@ public class DataTransfer : MonoBehaviour
         ca = custom;
     }
 
-    public void TransferData()
+    public void TransferData(int s)
     {
         if(ca != null)
             ca.UpdateAvatar();    

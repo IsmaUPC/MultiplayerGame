@@ -202,7 +202,8 @@ public class WorldUpdateClient : MonoBehaviour
                 break;
             case 2:
                 DestroyAllObjects();
-                UDPClient.OnStart.Invoke();
+                // Call all functions suscribe to OnStart
+                UDPClient.OnStart.Invoke(notify.Value);
                 break;
             default:
                 break;

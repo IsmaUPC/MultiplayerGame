@@ -83,7 +83,7 @@ public class UDPServer : MonoBehaviour
 
     double[] rtt = new double[9];
     double maxRTT = 0;
-    double startTime ;
+    double startTime;
 
 
     private ClientData[] clientsData;
@@ -127,6 +127,9 @@ public class UDPServer : MonoBehaviour
 
     private WorldUpdateServer serverWorld;
     int numCosmetis = 7;
+    int currentLevel = 0;
+    private LevelLoader levelLoader;
+    public void SetLevelLoader(LevelLoader level) { levelLoader = level; }
 
     // Start is called before the first frame update
     void Start()
@@ -182,29 +185,22 @@ public class UDPServer : MonoBehaviour
         if (ready)
         {
             ready = false;
-
-            Event ev;
-            ev.ipep = new IPEndPoint(IPAddress.Any, 0);
-            ev.type = EVENT_TYPE.EVENT_MESSAGE;
-            ev.senderId = 0;
-
-            // Countdown
-            lock (serializerLock)
+            if (!inGame)
+                CouldDownGameBegin();
+            else
             {
-                ev.data = serializer.SerializeChatMessage(0, "3");
-                StartCoroutine(EnqueueEventCoroutine(ev, 1));
-                ev.data = serializer.SerializeChatMessage(0, "2");
-                StartCoroutine(EnqueueEventCoroutine(ev, 2));
-                ev.data = serializer.SerializeChatMessage(0, "1");
-                StartCoroutine(EnqueueEventCoroutine(ev, 3));
-                ev.data = serializer.SerializeChatMessage(0, "GAME START!");
-                StartCoroutine(EnqueueEventCoroutine(ev, 3.5f));
-
-                // Game begin
+                Event ev;
+                ev.ipep = new IPEndPoint(IPAddress.Any, 0);
                 ev.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
-                ev.data = serializer.SerializeReadyToPlay(true);
+                ev.senderId = 0;
+
+                lock (serializerLock)
+                {
+                    currentLevel = levelLoader.GetFirstLevelOfList();
+                    ev.data = serializer.SerializeReadyToPlay(true, currentLevel);
+                    EnqueueEvent(ev);
+                }
             }
-            StartCoroutine(EnqueueEventCoroutine(ev, 4));
         }
         if (gameStart)
         {
@@ -231,21 +227,46 @@ public class UDPServer : MonoBehaviour
         }
     }
 
+    private void CouldDownGameBegin()
+    {
+        Event ev;
+        ev.ipep = new IPEndPoint(IPAddress.Any, 0);
+        ev.type = EVENT_TYPE.EVENT_MESSAGE;
+        ev.senderId = 0;
+
+        // Countdown
+        lock (serializerLock)
+        {
+            ev.data = serializer.SerializeChatMessage(0, "3");
+            StartCoroutine(EnqueueEventCoroutine(ev, 1));
+            ev.data = serializer.SerializeChatMessage(0, "2");
+            StartCoroutine(EnqueueEventCoroutine(ev, 2));
+            ev.data = serializer.SerializeChatMessage(0, "1");
+            StartCoroutine(EnqueueEventCoroutine(ev, 3));
+            ev.data = serializer.SerializeChatMessage(0, "GAME START!");
+            StartCoroutine(EnqueueEventCoroutine(ev, 3.5f));
+
+            // Game begin
+            ev.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
+            ev.data = serializer.SerializeReadyToPlay(true, SceneManager.GetActiveScene().buildIndex + 1);
+            StartCoroutine(EnqueueEventCoroutine(ev, 4));
+        }
+    }
+
     private void NextScene()
     {
         ResetClientReady();
         serverWorld.DestroyAllObjects();
 
-        if(!inGame)
+        if (!inGame)
         {
             inGame = true;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); // LOBBY
+            levelLoader.OnNextLevel(SceneManager.GetActiveScene().buildIndex + 1);
         }
         else
         {
-            // TODO: Change between 1-4 level random
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Restart same level
-        }        
+            levelLoader.OnNextLevel(currentLevel);
+        }
     }
     public void OnServerClose()
     {
@@ -453,7 +474,7 @@ public class UDPServer : MonoBehaviour
                                 break;
                             }
                         }
-                       if(Time.realtimeSinceStartupAsDouble - startTime > 5.0D ) RTTInit();
+                        //if (Time.realtimeSinceStartupAsDouble - startTime > 5.0D) RTTInit();
                         break;
 
                     // Look for room for an incoming client
@@ -615,12 +636,12 @@ public class UDPServer : MonoBehaviour
                         {
                             // playerReady = if client click "Start" playerReady = true
                             // playerReady = if client click "Cancel" playerReady = false
-                            bool playerReady;
+                            (bool playerReady, int level) readyToPlay;
                             lock (serializerLock)
                             {
-                                playerReady = serializer.DeserializeReadyToPlay(e.data);
+                                readyToPlay = serializer.DeserializeReadyToPlay(e.data);
                             }
-                            SetClientReady(clients, e, playerReady);
+                            SetClientReady(clients, e, readyToPlay.playerReady);
                             lock (clientsLock)
                             {
                                 clients = clientsData;
@@ -635,7 +656,7 @@ public class UDPServer : MonoBehaviour
                             }
 
                             // TODO: If there are less minimum players required(2) cancel countdown
-                            if (playerReadys < 1 && !playerReady)
+                            if (playerReadys < 1 && !readyToPlay.playerReady)
                                 breakReady = true;
 
                             if (!inGame)
@@ -916,7 +937,6 @@ public class UDPServer : MonoBehaviour
                         break;
                     case EVENT_TYPE.EVENT_SPAWN_PLAYER:
                         {
-                            // TODO: Sent info to other players DONE???
                             for (int i = 0; i < clients.Length; ++i)
                             {
                                 if (clients[i].id != 0 && clients[i].ipep.Equals(e.ipep))
@@ -959,7 +979,6 @@ public class UDPServer : MonoBehaviour
                                 }
                             }
                         }
-                        // TODO NET: Load level scene
                         gameStart = true;
                         break;
                     default:
@@ -1056,7 +1075,7 @@ public class UDPServer : MonoBehaviour
                 lock (RTTLock)
                 {
                     rtt[f] = clients[f].RTT - realtime;
-                    
+
                 }
                 break;
             }
