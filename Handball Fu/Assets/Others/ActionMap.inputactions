@@ -915,6 +915,34 @@
                     "isPartOfComposite": true
                 }
             ]
+        },
+        {
+            "name": "Server",
+            "id": "2ff90465-8f46-41e5-8de6-2a7fbb315660",
+            "actions": [
+                {
+                    "name": "NextLevel",
+                    "type": "Button",
+                    "id": "8452bde2-544c-4c1d-85c3-adfc783f6eb5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "bd890568-1d8b-4c13-84ed-d8b56b0073e1",
+                    "path": "<Keyboard>/l",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "NextLevel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

@@ -10,8 +10,6 @@ public class LevelLoader : MonoBehaviour
 
     public int levelCount = 0;
 
-    public Animator transition;
-
     public float transitionTime = 1f;
 
     public CircleWipeController circleWipe;
@@ -32,29 +30,20 @@ public class LevelLoader : MonoBehaviour
     void Update()
     {
 
-        // timer += Time.deltaTime;
-
-        // if(timer >= 6.0f && levels.Count > 0)
-        // {
-        //     //LoadNextLevel();
-        //     timer = 0f;
-        // }*
     }
 
-    public void OnNextLevel(Vector2 pos)
+    public void OnNextLevel()
     {
         if(levels.Count > 0) 
-            StartCoroutine(LoadLevel(levels[Random.Range(0, levels.Count)], pos));
+            StartCoroutine(LoadLevel(levels[Random.Range(0, levels.Count)], Vector2.zero));
     }
 
     IEnumerator LoadLevel(string sceneName, Vector2 position)
     {
-        //transition.SetTrigger("Start");
-
         // Find position where the center of the circle will be
-        //var mousePos = Mouse.current.position.ReadValue();
-        var x = (position.x - Screen.width / 2f);
-        var y = (position.y - Screen.height / 2f);
+        var mousePos = Mouse.current.position.ReadValue();
+        var x = (mousePos.x - Screen.width / 2f);
+        var y = (mousePos.y - Screen.height / 2f);
         var offset = new Vector2(x / Screen.width, y / Screen.height);
         circleWipe.offset = offset;
         circleWipe.FadeOut();
@@ -70,13 +59,10 @@ public class LevelLoader : MonoBehaviour
         circleWipe.FadeIn();
         yield return new WaitForSeconds(circleWipe.duration);
 
-        //SceneManager.LoadScene(sceneName);
-
         Debug.Log("Loaded scene: " + sceneName);
 
         levels.Remove(sceneName);
-
-        //transition.Play("Crossfade_End");
+        ResetLevels();
     }
 
     public void ResetLevels()
