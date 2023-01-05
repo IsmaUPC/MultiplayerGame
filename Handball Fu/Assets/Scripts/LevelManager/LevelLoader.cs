@@ -11,6 +11,7 @@ public class LevelLoader : MonoBehaviour
     public int levelCount = 1;
     public float transitionTime = 1f;
     public CircleWipeController circleWipe;
+    private int iAmCreateOnScene = 2;
 
     void OnEnable()
     {
@@ -28,12 +29,8 @@ public class LevelLoader : MonoBehaviour
         UDPServer server = FindObjectOfType<UDPServer>();
         if (server)
             server.SetLevelLoader(this);
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-
+        iAmCreateOnScene = SceneManager.GetActiveScene().buildIndex;
     }
 
     public int GetFirstLevelOfList()
@@ -63,6 +60,13 @@ public class LevelLoader : MonoBehaviour
         circleWipe.findPosition = true;
         yield return new WaitForSeconds(circleWipe.duration);
 
+        // If return to custom scene (create a camera and levelLoader) destroy the currents
+        if(sceneIndexBuild == iAmCreateOnScene)
+        {
+            Destroy(Camera.main.gameObject, 0.1f);
+            Destroy(gameObject);
+        }
+
         levels.RemoveAt(0);
         ResetLevels();
     }
@@ -80,7 +84,10 @@ public class LevelLoader : MonoBehaviour
         if (goData != null)
             Destroy(goData);
 
+        GameObject lastCamera = Camera.main.gameObject;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+        Destroy(lastCamera, 0.1f);
+        Destroy(gameObject);
     }
     public void OnExitClick()
     {

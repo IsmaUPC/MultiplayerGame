@@ -128,6 +128,8 @@ public class UDPServer : MonoBehaviour
     private WorldUpdateServer serverWorld;
     int numCosmetis = 7;
     int currentLevel = 0;
+    public int maxVictories = 10;
+    bool win = false;
     private LevelLoader levelLoader;
     public void SetLevelLoader(LevelLoader level) { levelLoader = level; }
 
@@ -197,6 +199,11 @@ public class UDPServer : MonoBehaviour
                 lock (serializerLock)
                 {
                     currentLevel = levelLoader.GetFirstLevelOfList();
+                    if (win)
+                    {
+                        currentLevel = SceneManager.GetSceneByName("CustomAvatar").buildIndex;
+                        ResetVictory();
+                    }
                     ev.data = serializer.SerializeReadyToPlay(true, currentLevel);
                     EnqueueEvent(ev);
                 }
@@ -1011,11 +1018,25 @@ public class UDPServer : MonoBehaviour
                 if (clientsData[i].port - initialPort == netID)
                 {
                     clientsData[i].victories++;
+                    if (clientsData[i].victories >= maxVictories)
+                        win = true;
                     break;
                 }
             }
         }
     }
+    public void ResetVictory()
+    {
+        lock (clientsLock)
+        {
+            for (int i = 0; i < clientsData.Length; ++i)
+            {
+                clientsData[i].victories = 0;
+            }
+        }
+        win = false;
+    }
+
     public List<KeyValuePair<string, int>> GetPlayersVictories()
     {
         List<KeyValuePair<string, int>> players = new List<KeyValuePair<string, int>>();
