@@ -62,8 +62,10 @@ public class UDPClient : MonoBehaviour
     private object messagesLock = new object();
     public object clientWorldLock = new object();
     private object serializerLock = new object();
+    private object RTTLock = new object();
 
     byte myID;
+    float RTT;
 
     private CONNECTION_STATE state;
     private Queue<Event> eventQueue;
@@ -247,10 +249,14 @@ public class UDPClient : MonoBehaviour
                         break;
                     case 'T':
                         //TODO: Responder al evento RTT sin procesar
-                         data = new byte[1024];
+
                         lock (serializerLock)
                         {
-                            data = serializer.SerializeRTT(myID);
+                            RTT = (float)serializer.DeserializeRTT(e.data);
+                            lock (clientWorldLock) clientWorld.interpolationTime = RTT;
+
+                            data = new byte[1024];
+                            data = serializer.SerializeRTT(myID, 0);
                         }
                         lock (socketLock)
                         {

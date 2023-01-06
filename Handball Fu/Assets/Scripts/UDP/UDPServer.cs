@@ -84,7 +84,7 @@ public class UDPServer : MonoBehaviour
     double[] rtt = new double[9];
     double maxRTT = 0;
     double startTime;
-
+    float lastRTTUpdate;
 
     private ClientData[] clientsData;
 
@@ -182,6 +182,14 @@ public class UDPServer : MonoBehaviour
 
     private void Update()
     {
+
+        lastRTTUpdate += Time.deltaTime;
+        if (lastRTTUpdate > 0.2f)
+        {
+            lock (RTTLock) serverWorld.interpolationTime = (float)maxRTT;
+            lastRTTUpdate = 0;
+            RTTInit();
+        }
         // This is necesary do in main thread 
         // When all players are ready countdown is begin
         if (ready)
@@ -792,6 +800,7 @@ public class UDPServer : MonoBehaviour
         ev.type = EVENT_TYPE.EVENT_NOTIFY_ALL_CLIENTS;
         EnqueueEvent(ev);
     }
+
     private void EnqueueEvent(Event ev)
     {
         lock (sendQueueLock)
@@ -903,7 +912,6 @@ public class UDPServer : MonoBehaviour
                                 ((Socket)clientSockets[0]).SendTo(data, e.ipep);
                             }
                         }
-
                         break;
                     // Send message to everyone! So we know data, that only server knows
                     // such as color codes, ids and other
@@ -937,7 +945,6 @@ public class UDPServer : MonoBehaviour
                                 }
                             }
                         }
-
                         break;
                     case EVENT_TYPE.EVENT_UPDATE:
                         break;
@@ -1064,9 +1071,9 @@ public class UDPServer : MonoBehaviour
             {
                 if (clientsData[i].id != 0)
                 {
-                    data=new byte[1024];
-                    lock (serializerLock) data = serializer.SerializeRTT(clientsData[i].id);                    
-                    lock (socketsLock) ((Socket)clientSockets[0]).SendTo(data, clientsData[i].ipep);                   
+                    data = new byte[1024];
+                    lock (serializerLock) data = serializer.SerializeRTT(clientsData[i].id,maxRTT);
+                    lock (socketsLock) ((Socket)clientSockets[0]).SendTo(data, clientsData[i].ipep);
                     rtt[i] = initTime;
                 }
             }
@@ -1078,16 +1085,17 @@ public class UDPServer : MonoBehaviour
         ClientData[] clients;
         maxRTT = 0;
         lock (clientsLock) clients = clientsData;
-        
+
         for (int f = 0; f < clients.Length; ++f)
         {
             maxRTT = (maxRTT < clients[f].RTT) ? clients[f].RTT : maxRTT;
             if (clients[f].ipep != null && clients[f].ipep.Equals(e.ipep))
             {
-                lock (RTTLock)rtt[f] = clients[f].RTT - realtime;           
+                lock (RTTLock) rtt[f] = clients[f].RTT - realtime;
                 break;
             }
         }
+
     }
 
 }

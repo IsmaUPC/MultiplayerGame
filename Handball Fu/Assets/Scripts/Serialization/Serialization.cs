@@ -42,14 +42,22 @@ public class Serialization : MonoBehaviour
 
         return writeStream.ToArray();
     }
-    public byte[] SerializeRTT(byte idClient)
+    public byte[] SerializeRTT(byte idClient,double maxRtt)
     {
         InitializeWriter();
 
         writer.Write(idClient);
         writer.Write('T');
-
+        writer.Write(maxRtt);
+        
         return writeStream.ToArray();
+    }
+    public double DeserializeRTT(byte[] data)
+    {
+        InitializeReader(data, 2); 
+        double maxRtt = reader.ReadDouble();
+
+        return maxRtt;
     }
 
     public byte[] SerializeConnection(byte id, int port)

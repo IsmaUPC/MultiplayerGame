@@ -63,7 +63,7 @@ public class WorldUpdateServer : MonoBehaviour
     public Queue<KeyValuePair<int, int>> updateState;
 
     // Interpolation time - How often to deliver new positions
-    private float interpolationTime;
+    public float interpolationTime;
 
     private UDPServer server;
 

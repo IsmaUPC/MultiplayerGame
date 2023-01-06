@@ -56,7 +56,7 @@ public class WorldUpdateClient : MonoBehaviour
     private Queue<KeyValuePair<byte, byte>> notifyWorldObjQueue;
     private string winInfo = "";
 
-    private float interpolationTime;
+    public float interpolationTime;
 
     private UDPClient client;
 
