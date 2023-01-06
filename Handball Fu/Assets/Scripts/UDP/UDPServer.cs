@@ -85,6 +85,7 @@ public class UDPServer : MonoBehaviour
     double maxRTT = 0;
     double startTime;
     float lastRTTUpdate;
+    double minTimeInterpolation = 0.02f;
 
     private ClientData[] clientsData;
 
@@ -184,8 +185,9 @@ public class UDPServer : MonoBehaviour
     {
 
         lastRTTUpdate += Time.deltaTime;
-        if (lastRTTUpdate > 0.2f)
+        if (lastRTTUpdate > 0.15f)
         {
+            maxRTT = (maxRTT > minTimeInterpolation) ? maxRTT : minTimeInterpolation;
             lock (RTTLock) serverWorld.interpolationTime = (float)maxRTT;
             lastRTTUpdate = 0;
             RTTInit();

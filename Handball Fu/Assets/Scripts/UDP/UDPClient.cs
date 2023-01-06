@@ -253,9 +253,8 @@ public class UDPClient : MonoBehaviour
                         lock (serializerLock)
                         {
                             RTT = (float)serializer.DeserializeRTT(e.data);
-                            lock (clientWorldLock) clientWorld.interpolationTime = RTT;
-
-                            data = new byte[1024];
+                            lock (clientWorldLock) clientWorld.interpolationTime= RTT;
+                                data = new byte[1024];
                             data = serializer.SerializeRTT(myID, 0);
                         }
                         lock (socketLock)
