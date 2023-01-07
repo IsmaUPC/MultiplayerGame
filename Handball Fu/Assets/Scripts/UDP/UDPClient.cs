@@ -199,7 +199,7 @@ public class UDPClient : MonoBehaviour
                     continue;
                 }
 
-                (byte id, char type) header;
+                (byte id, char type, UInt16 packetNum) header;
                 lock (serializerLock)
                 {
                     header = serializer.DeserializeHeader(data);
@@ -467,7 +467,7 @@ public class UDPClient : MonoBehaviour
         byte[] data;
         lock (serializerLock)
         {
-            data = serializer.SerializeSpawnObjectInfo(myID, type, portId, indexs);
+            data = serializer.SerializeSpawnObjectInfo(myID, type, portId,0, indexs);
         }
         lock (socketLock)
         {

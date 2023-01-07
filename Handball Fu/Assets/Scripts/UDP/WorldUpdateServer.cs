@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -347,7 +348,12 @@ public class WorldUpdateServer : MonoBehaviour
                 byte[] data;
                 lock (server.serializerLock)
                 {
-                    data = server.serializer.SerializeSpawnObjectInfo(worldObjects[i].clientCreator, 1, netId, null, worldObjects[i].netId);
+                    lock (server.packetListLock)
+                    {
+                        UInt16 auxPacketNum = server.GetNextPacketNumber();
+                        data = server.serializer.SerializeSpawnObjectInfo(worldObjects[i].clientCreator, 1, netId, auxPacketNum, null, worldObjects[i].netId);
+                        server.AddPacketToList(data, auxPacketNum);
+                    }
                 }
                 server.AddNotifyEnqueueEvent(data);
                 break;
@@ -424,7 +430,12 @@ public class WorldUpdateServer : MonoBehaviour
         byte[] data;
         lock (server.serializerLock)
         {
-            data = server.serializer.SerializeVictory(names, victories);
+            lock (server.packetListLock)
+            {
+                UInt16 auxPacketNum = server.GetNextPacketNumber();
+                data = server.serializer.SerializeVictory(names, victories);
+                server.AddPacketToList(data, auxPacketNum);
+            }
         }
         SendNotify(data);
     }
@@ -442,7 +453,12 @@ public class WorldUpdateServer : MonoBehaviour
                 byte[] data;
                 lock (server.serializerLock)
                 {
-                    data = server.serializer.SerializeNotify(worldObjects[i].clientCreator, notifyType, worldObjects[i].netId);
+                    lock (server.packetListLock)
+                    {
+                        UInt16 auxPacketNum = server.GetNextPacketNumber();
+                        data = server.serializer.SerializeNotify(worldObjects[i].clientCreator, notifyType, worldObjects[i].netId, auxPacketNum);
+                        server.AddPacketToList(data, auxPacketNum);
+                    }
                 }
                 server.AddNotifyEnqueueEvent(data);
                 break;

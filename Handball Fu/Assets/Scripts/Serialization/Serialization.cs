@@ -18,56 +18,61 @@ public class Serialization : MonoBehaviour
         return readStream.ToArray();
     }
 
-    public (byte, char) DeserializeHeader(byte[] data)
+    public (byte, char, UInt16) DeserializeHeader(byte[] data)
     {
         if (data.Length < 2)
         {
-            return (0, '\0');
+            return (0, '\0', 0);
         }
         InitializeReader(data);
 
         byte id = reader.ReadByte();
         char type = Convert.ToChar(reader.ReadByte());
+        UInt16 packetNum = reader.ReadUInt16();
 
-        return (id, type);
+        return (id, type, packetNum);
     }
    
-    public byte[] SerializeConnection(byte id, string name)
+    public byte[] SerializeConnection(byte id, string name, UInt16 packetNum = 0)
     {
         InitializeWriter();
 
         writer.Write(id);
         writer.Write('C');
+        writer.Write(packetNum);
         writer.Write(name);
 
         return writeStream.ToArray();
     }
-    public byte[] SerializeRTT(byte idClient)
+    public byte[] SerializeRTT(byte idClient, UInt16 packetNum = 0)
     {
         InitializeWriter();
 
         writer.Write(idClient);
         writer.Write('T');
+        writer.Write(packetNum);
 
         return writeStream.ToArray();
     }
 
-    public byte[] SerializeConnection(byte id, int port)
+    public byte[] SerializeConnection(byte id, int port, UInt16 packetNum = 0)
     {
         InitializeWriter();
 
         writer.Write(id);
         writer.Write('C');
+        writer.Write(packetNum);
         writer.Write(port);
 
         return writeStream.ToArray();
     }
-    public byte[] SerializeSpawnObjectInfo(byte myId, byte type, int portId, int[] index = null, byte netIDParent = 0)
+    public byte[] SerializeSpawnObjectInfo(byte myId, byte type, int portId, UInt16 packetNum = 0, int[] index = null, byte netIDParent = 0)
     {
         InitializeWriter();
 
         writer.Write(myId);
         writer.Write('S');
+        writer.Write(packetNum);
         writer.Write(type); // 0 = PLAYER TYPE  1 = FIST
         if(type == 0)
         {
@@ -86,7 +91,7 @@ public class Serialization : MonoBehaviour
 
     public (byte, int[], byte, int) DeserializeSpawnObjectInfo(byte[] data, int cosmeticLength)
     {
-        InitializeReader(data, 2);
+        InitializeReader(data, 4);
         byte objType = reader.ReadByte();
         int[] newlist = new int[cosmeticLength];
         if(objType == 0)
@@ -102,12 +107,13 @@ public class Serialization : MonoBehaviour
 
         return (objType, newlist, idParent, reader.ReadInt32());
     }
-    public byte[] SerializeVictory(string names, string victories)
+    public byte[] SerializeVictory(string names, string victories, UInt16 packetNum = 0)
     {
         InitializeWriter();
 
         writer.Write((byte)0);
         writer.Write('W');
+        writer.Write(packetNum);
         writer.Write(names);
         writer.Write(victories);
 
@@ -115,19 +121,20 @@ public class Serialization : MonoBehaviour
     }
     public (string, string) DeserializeVictory(byte[] data)
     {
-        InitializeReader(data, 2);
+        InitializeReader(data, 4);
         string names = reader.ReadString();
         string victories = reader.ReadString();
 
         return (names, victories);
     }
 
-    public byte[] SerializeNotify(byte myId, byte type, byte portId, string names = "", string victories = "")
+    public byte[] SerializeNotify(byte myId, byte type, byte portId, UInt16 packetNum = 0, string names = "", string victories = "")
     {
         InitializeWriter();
 
         writer.Write(myId);
         writer.Write('N');
+        writer.Write(packetNum);
         writer.Write(type); // 0 = ACTIVE PUNCH GRAVITY || 1 = DESTROY OBJECT
         writer.Write(portId);
 
@@ -135,7 +142,7 @@ public class Serialization : MonoBehaviour
     }
     public (byte, byte) DeserializeNotify(byte[] data)
     {
-        InitializeReader(data, 2);
+        InitializeReader(data, 4);
         byte notifyType = reader.ReadByte();
         byte netID = reader.ReadByte();
 
@@ -148,44 +155,48 @@ public class Serialization : MonoBehaviour
 
         writer.Write(0);
         writer.Write('F');
+        writer.Write((UInt16)0);
 
         return writeStream.ToArray();
     }
 
     public string DeserializeUsername(byte[] data)
     {
-        InitializeReader(data, 2);
+        InitializeReader(data, 4);
 
         return reader.ReadString();
     }
 
-    public byte[] SerializeKeepConnect(byte id)
+    public byte[] SerializeKeepConnect(byte id, UInt16 packetNum = 0)
     {
         InitializeWriter();
 
         writer.Write(id);
         writer.Write('K');
+        writer.Write(packetNum);
 
         return writeStream.ToArray();
     }
 
-    public byte[] SerializeChatMessage(int color, string username, byte[] actualMessage)
+    public byte[] SerializeChatMessage(int color, string username, byte[] actualMessage, UInt16 packetNum = 0)
     {
         InitializeWriter();
 
         writer.Write(((byte)0));
         writer.Write('M');
+        writer.Write(packetNum);
         writer.Write(color.ToString() + username + AuxiliarDeserializeMessage(actualMessage));
 
         return writeStream.ToArray();
     }
 
-    public byte[] SerializeReadyToPlay(bool ready, int nextLevel)
+    public byte[] SerializeReadyToPlay(bool ready, int nextLevel, UInt16 packetNum = 0)
     {
         InitializeWriter();
 
         writer.Write(((byte)0));
         writer.Write('R');
+        writer.Write(packetNum);
         writer.Write(ready);
         writer.Write(nextLevel);
 
@@ -194,7 +205,7 @@ public class Serialization : MonoBehaviour
 
     public (bool, int) DeserializeReadyToPlay(byte[] data)
     {
-        InitializeReader(data, 2);
+        InitializeReader(data, 4);
         bool ready = reader.ReadBoolean();
         int level = reader.ReadInt32();
 
@@ -212,46 +223,49 @@ public class Serialization : MonoBehaviour
         return aux;
     }
 
-    public byte[] SerializeChatMessage(byte id, string message)
+    public byte[] SerializeChatMessage(byte id, string message, UInt16 packetNum = 0)
     {
         InitializeWriter();
 
         writer.Write(id);
         writer.Write('M');
+        writer.Write(packetNum);
         writer.Write(message);
 
         return writeStream.ToArray();
     }
 
-    public byte[] SerializeDisconnection(byte id)
+    public byte[] SerializeDisconnection(byte id, UInt16 packetNum = 0)
     {
         InitializeWriter();
 
         writer.Write(id);
         writer.Write('D');
+        writer.Write(packetNum);
 
         return writeStream.ToArray();
     }
 
     public string DeserializeChatMessage(byte[] data)
     {
-        InitializeReader(data, 2);
+        InitializeReader(data, 4);
         string a = reader.ReadString();
         return a;
     }
 
     public int DeserializeConnectionPort(byte[] data)
     {
-        InitializeReader(data, 2);
+        InitializeReader(data, 4);
         return reader.ReadInt32();
     }
 
 
-    public byte[] SerializeDirection(byte id, byte netId, byte type, int state, Vector2 dir)
+    public byte[] SerializeDirection(byte id, byte netId, byte type, int state, Vector2 dir, UInt16 packetNum = 0)
     {
         InitializeWriter();
         writer.Write(id);
         writer.Write('U');
+        writer.Write(packetNum);
         writer.Write(netId);
         writer.Write(type);
         writer.Write(state);
@@ -270,7 +284,7 @@ public class Serialization : MonoBehaviour
 
     public (byte, byte, int, Vector2) DeserializeDirection(byte[] data)
     {
-        InitializeReader(data, 2);
+        InitializeReader(data, 4);
         byte netID = reader.ReadByte();
         byte type = reader.ReadByte();
         int state = reader.ReadInt32();
@@ -288,11 +302,12 @@ public class Serialization : MonoBehaviour
         return (netID, type, state, new Vector2(x, y));
     }
 
-    public byte[] SerializeTransform(byte id, byte netId, Vector3 trans, int state)
+    public byte[] SerializeTransform(byte id, byte netId, Vector3 trans, int state, UInt16 packetNum = 0)
     {
         InitializeWriter();
         writer.Write(id);
         writer.Write('U');
+        writer.Write(packetNum);
 
         writer.Write(netId);
         writer.Write((double)trans.x);
@@ -305,7 +320,7 @@ public class Serialization : MonoBehaviour
 
     public (byte, Vector3, int) DeserializeTransform(byte[] data)
     {
-        InitializeReader(data, 2);
+        InitializeReader(data, 4);
 
         byte netId = reader.ReadByte();
 

@@ -53,10 +53,24 @@ public class UDPServer : MonoBehaviour
         public byte senderId;
     }
 
+    struct Packet
+    {
+        public UInt16 packetNum;
+        public byte[] data;
+    }
+
     // Event list to process
     private Queue<Event> eventQueue;
     private Queue<Event> sendQueue;
     private List<Event> playerData = new List<Event>();
+
+    /*
+     * This list is for acknowledgement of packets, but only for global events that are broadcasted to all the clients
+     * such as messages positions and other global events, but never a connection confimation or denial nor keepconnect events for example
+     */
+    private List<Packet> sentPackets;
+
+    private UInt16 currentPacketNumber;
 
     // Counts
     private int playerConnec = 0;
@@ -115,6 +129,7 @@ public class UDPServer : MonoBehaviour
     private object serverWorldLock = new object();
     public object serializerLock = new object();
     private object RTTLock = new object();
+    public object packetListLock = new object();
 
     // Host address
     IPAddress host;
@@ -161,6 +176,8 @@ public class UDPServer : MonoBehaviour
         }
 
         clientsData = new ClientData[6];
+        sentPackets = new List<Packet>();
+        currentPacketNumber = 0;
 
         serverWorld = gameObject.GetComponent<WorldUpdateServer>();
         serverWorld.AssignUDPServerReference(this);
@@ -203,11 +220,17 @@ public class UDPServer : MonoBehaviour
                         currentLevel = 2; // CUSTOM AVATAR SCENE
                         ResetVictory();
                     }
-                    ev.data = serializer.SerializeReadyToPlay(true, currentLevel);
+                    lock (packetListLock)
+                    {
+                        UInt16 auxPacketNum = GetNextPacketNumber();
+                        ev.data = serializer.SerializeReadyToPlay(true, currentLevel, auxPacketNum);
+                        AddPacketToList(ev.data, auxPacketNum);
+                    }
                     EnqueueEvent(ev);
+
                 }
                 NextScene();
-            }            
+            }
         }
         // If the countdown was begin but a player press Cancel or disconnect break countdown
         if (breakReady)
@@ -240,19 +263,38 @@ public class UDPServer : MonoBehaviour
         // Countdown
         lock (serializerLock)
         {
-            ev.data = serializer.SerializeChatMessage(0, "3");
-            StartCoroutine(EnqueueEventCoroutine(ev, 1));
-            ev.data = serializer.SerializeChatMessage(0, "2");
-            StartCoroutine(EnqueueEventCoroutine(ev, 2));
-            ev.data = serializer.SerializeChatMessage(0, "1");
-            StartCoroutine(EnqueueEventCoroutine(ev, 3));
-            ev.data = serializer.SerializeChatMessage(0, "GAME START!");
-            StartCoroutine(EnqueueEventCoroutine(ev, 3.5f));
+            lock (packetListLock)
+            {
+                UInt16 auxPacketNum = GetNextPacketNumber();
+                ev.data = serializer.SerializeChatMessage(0, "3");
+                StartCoroutine(EnqueueEventCoroutine(ev, 1));
+                AddPacketToList(ev.data, auxPacketNum);
+
+                auxPacketNum = GetNextPacketNumber();
+                ev.data = serializer.SerializeChatMessage(0, "2");
+                StartCoroutine(EnqueueEventCoroutine(ev, 2));
+                AddPacketToList(ev.data, auxPacketNum);
+
+                auxPacketNum = GetNextPacketNumber();
+                ev.data = serializer.SerializeChatMessage(0, "1");
+                StartCoroutine(EnqueueEventCoroutine(ev, 3));
+                AddPacketToList(ev.data, auxPacketNum);
+
+                auxPacketNum = GetNextPacketNumber();
+                ev.data = serializer.SerializeChatMessage(0, "GAME START!");
+                StartCoroutine(EnqueueEventCoroutine(ev, 3.5f));
+                AddPacketToList(ev.data, auxPacketNum);
+            }
             Invoke("NextScene", 3.5f);
 
             // Game begin
             ev.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
-            ev.data = serializer.SerializeReadyToPlay(true, SceneManager.GetActiveScene().buildIndex + 1);
+            lock (packetListLock)
+            {
+                UInt16 auxPacketNum = GetNextPacketNumber();
+                ev.data = serializer.SerializeReadyToPlay(true, SceneManager.GetActiveScene().buildIndex + 1);
+                AddPacketToList(ev.data, auxPacketNum);
+            }
             StartCoroutine(EnqueueEventCoroutine(ev, 4));
         }
     }
@@ -269,7 +311,7 @@ public class UDPServer : MonoBehaviour
         }
         else
         {
-            if(win)
+            if (win)
             {
                 win = false;
                 inGame = false;
@@ -327,7 +369,7 @@ public class UDPServer : MonoBehaviour
                 byte[] data = new byte[recv];
                 Array.Copy(d, 0, data, 0, recv);
 
-                (byte id, char type) header;
+                (byte id, char type, UInt16 packetNum) header;
                 lock (serializerLock)
                 {
                     header = serializer.DeserializeHeader(data);
@@ -456,7 +498,12 @@ public class UDPServer : MonoBehaviour
                             ev.type = EVENT_TYPE.EVENT_MESSAGE;
                             lock (serializerLock)
                             {
-                                ev.data = serializer.SerializeChatMessage(0, name + " has disconnected!");
+                                lock (packetListLock)
+                                {
+                                    UInt16 auxPacketNum = GetNextPacketNumber();
+                                    ev.data = serializer.SerializeChatMessage(0, name + " has disconnected!");
+                                    AddPacketToList(ev.data, auxPacketNum);
+                                }
                             }
                             ev.ipep = e.ipep;
                             ev.senderId = e.senderId;
@@ -715,7 +762,12 @@ public class UDPServer : MonoBehaviour
         Event ev;
         lock (serializerLock)
         {
-            ev.data = serializer.SerializeChatMessage(0, data);
+            lock (packetListLock)
+            {
+                UInt16 auxPacketNum = GetNextPacketNumber();
+                ev.data = serializer.SerializeChatMessage(0, data);
+                AddPacketToList(ev.data, auxPacketNum);
+            }
         }
         ev.ipep = new IPEndPoint(IPAddress.Any, 0);
         ev.type = EVENT_TYPE.EVENT_MESSAGE;
@@ -729,7 +781,12 @@ public class UDPServer : MonoBehaviour
             // Begin game event
             lock (serializerLock)
             {
-                ev.data = serializer.SerializeChatMessage(0, "All players are ready, the game begin in 3 seconds!");
+                lock (packetListLock)
+                {
+                    UInt16 auxPacketNum = GetNextPacketNumber();
+                    ev.data = serializer.SerializeChatMessage(0, "All players are ready, the game begin in 3 seconds!");
+                    AddPacketToList(ev.data, auxPacketNum);
+                }
             }
             EnqueueEvent(ev);
             ready = true;
@@ -777,7 +834,12 @@ public class UDPServer : MonoBehaviour
                 byte[] data;
                 lock (serializerLock)
                 {
-                    data = serializer.SerializeTransform(0, netID, transform, state);
+                    lock (packetListLock)
+                    {
+                        UInt16 auxPacketNum = GetNextPacketNumber();
+                        data = serializer.SerializeTransform(0, netID, transform, state);
+                        AddPacketToList(data, auxPacketNum);
+                    }
                 }
                 lock (socketsLock)
                 {
@@ -872,6 +934,7 @@ public class UDPServer : MonoBehaviour
 
                                 lock (socketsLock)
                                 {
+
                                     ((Socket)clientSockets[0]).SendTo(data, clients[i].ipep);
                                 }
 
@@ -880,7 +943,12 @@ public class UDPServer : MonoBehaviour
                                 ev.type = EVENT_TYPE.EVENT_MESSAGE;
                                 lock (serializerLock)
                                 {
-                                    ev.data = serializer.SerializeChatMessage(0, clients[i].name + " has connected!");
+                                    lock (packetListLock)
+                                    {
+                                        UInt16 auxPacketNum = GetNextPacketNumber();
+                                        ev.data = serializer.SerializeChatMessage(0, clients[i].name + " has connected!");
+                                        AddPacketToList(ev.data, auxPacketNum);
+                                    }
                                 }
                                 ev.ipep = null;
                                 ev.senderId = 0;
@@ -931,7 +999,12 @@ public class UDPServer : MonoBehaviour
                                     byte[] data;
                                     lock (serializerLock)
                                     {
-                                        data = serializer.SerializeChatMessage(colorIdx, n + ";", e.data);
+                                        lock (packetListLock)
+                                        {
+                                            UInt16 auxPacketNum = GetNextPacketNumber();
+                                            data = serializer.SerializeChatMessage(colorIdx, n + ";", e.data);
+                                            AddPacketToList(data, auxPacketNum);
+                                        }
                                     }
                                     lock (socketsLock)
                                     {
@@ -1078,6 +1151,19 @@ public class UDPServer : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void AddPacketToList(byte[] data, UInt16 packetNum)
+    {
+        Packet packet = new Packet();
+        packet.data = data;
+        packet.packetNum = packetNum;
+        sentPackets.Add(packet);
+    }
+
+    public UInt16 GetNextPacketNumber()
+    {
+        return currentPacketNumber++;
     }
     private void RTTCalculate(Event e)
     {
