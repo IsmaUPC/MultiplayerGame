@@ -8,6 +8,7 @@ TagManager:
   - Data
   - Floor
   - WaypointCamera
+  - Audio
   layers:
   - Default
   - TransparentFX
