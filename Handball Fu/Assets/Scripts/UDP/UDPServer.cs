@@ -184,7 +184,7 @@ public class UDPServer : MonoBehaviour
     {
 
         lastRTTUpdate += Time.deltaTime;
-        if (lastRTTUpdate > 0.15f)
+        if (lastRTTUpdate > 0.150f)
         {
             maxRTT = (maxRTT > minTimeInterpolation) ? maxRTT : minTimeInterpolation;
             lock (RTTLock) serverWorld.interpolationTime = (float)maxRTT*0.5f;

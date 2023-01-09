@@ -85,7 +85,7 @@ public class UDPClient : MonoBehaviour
     private WorldUpdateClient clientWorld;
 
     private bool connected;
-    private float minTimeInterpolation=0.032f;
+    private float minTimeInterpolation = 0.032f;
 
     // Start is called before the first frame update
     public void ClientStart()
@@ -255,9 +255,11 @@ public class UDPClient : MonoBehaviour
                         lock (serializerLock)
                         {
                             RTT = (float)serializer.DeserializeRTT(e.data);
-                            lock (clientWorldLock) clientWorld.interpolationTime= RTT;
-                            lock (clientWorldLock) clientWorld.interpolationTime = (RTT > minTimeInterpolation) ? RTT : minTimeInterpolation;
-                                data = new byte[1024];
+                            lock (clientWorldLock)
+                            {
+                                clientWorld.interpolationTime = (RTT > minTimeInterpolation) ? RTT : minTimeInterpolation;
+                            }
+                            data = new byte[1024];
                             data = serializer.SerializeRTT(myID, 0);
                         }
                         lock (socketLock)
