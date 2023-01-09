@@ -157,7 +157,7 @@ public class WorldUpdateClient : MonoBehaviour
                 worldObjects[i].obj.transform.position = Vector3.Lerp(worldObjects[i].pastTransform.position, worldObjects[i].futurePosition, worldObjects[i].deltaLastTime / interpolationTime);
                 worldObjects[i].obj.transform.rotation = Quaternion.Lerp(worldObjects[i].pastTransform.rotation, worldObjects[i].futureRotation, worldObjects[i].deltaLastTime / interpolationTime);
             }
-            if (!worldObjects[i].atTargetTransform && (Vector3.Distance(worldObjects[i].obj.transform.position, worldObjects[i].futurePosition) < 0.01F || worldObjects[i].deltaLastTime >= interpolationTime))
+            if (!worldObjects[i].atTargetTransform && (Vector3.Distance(worldObjects[i].obj.transform.position, worldObjects[i].futurePosition) < 0.005F || worldObjects[i].deltaLastTime >= interpolationTime))
             {
                 worldObjects[i].atTargetTransform = true;
                 worldObjects[i].obj.transform.position = worldObjects[i].futurePosition;
@@ -221,7 +221,7 @@ public class WorldUpdateClient : MonoBehaviour
         {
             if (worldObjects[i].netId == up.netID)
             {
-                worldObjects[i].pastTransform.position = worldObjects[i].futurePosition;
+                worldObjects[i].pastTransform.position = worldObjects[i].obj.transform.position;
                 worldObjects[i].pastTransform.rotation = worldObjects[i].futureRotation;
 
                 worldObjects[i].futurePosition = new Vector3(up.tform.x, worldObjects[i].obj.transform.position.y, up.tform.z);

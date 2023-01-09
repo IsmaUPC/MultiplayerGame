@@ -22,7 +22,6 @@ public class MovingStone : MonoBehaviour
     void Update()
     {
         speed += (speed) * Time.deltaTime;
-        Debug.Log(speed);
         Move();
         elapsedTime += Time.deltaTime;
     }

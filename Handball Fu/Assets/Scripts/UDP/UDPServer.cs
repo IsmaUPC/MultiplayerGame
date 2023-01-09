@@ -121,7 +121,6 @@ public class UDPServer : MonoBehaviour
     IPAddress host;
 
     [HideInInspector] public Serialization serializer;
-    private bool gameStart = false;
     private bool ready = false;
     private bool inGame = false;
     private bool breakReady = false;
@@ -211,23 +210,20 @@ public class UDPServer : MonoBehaviour
                     currentLevel = levelLoader.GetFirstLevelOfList();
                     if (win)
                     {
-                        currentLevel = SceneManager.GetSceneByName("CustomAvatar").buildIndex;
+                        currentLevel = 2; // CUSTOM AVATAR SCENE
                         ResetVictory();
                     }
                     ev.data = serializer.SerializeReadyToPlay(true, currentLevel);
                     EnqueueEvent(ev);
                 }
-            }
-        }
-        if (gameStart)
-        {
-            gameStart = false;
-            NextScene();
+                NextScene();
+            }            
         }
         // If the countdown was begin but a player press Cancel or disconnect break countdown
         if (breakReady)
         {
             breakReady = false;
+            CancelInvoke();
             StopAllCoroutines();
         }
 
@@ -262,6 +258,7 @@ public class UDPServer : MonoBehaviour
             StartCoroutine(EnqueueEventCoroutine(ev, 3));
             ev.data = serializer.SerializeChatMessage(0, "GAME START!");
             StartCoroutine(EnqueueEventCoroutine(ev, 3.5f));
+            Invoke("NextScene", 3.5f);
 
             // Game begin
             ev.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
@@ -282,6 +279,11 @@ public class UDPServer : MonoBehaviour
         }
         else
         {
+            if(win)
+            {
+                win = false;
+                inGame = false;
+            }
             levelLoader.OnNextLevel(currentLevel);
         }
     }
@@ -994,7 +996,6 @@ public class UDPServer : MonoBehaviour
                                 }
                             }
                         }
-                        gameStart = true;
                         break;
                     default:
                         break;
@@ -1042,7 +1043,6 @@ public class UDPServer : MonoBehaviour
                 clientsData[i].victories = 0;
             }
         }
-        win = false;
     }
 
     public List<KeyValuePair<string, int>> GetPlayersVictories()

@@ -23,6 +23,11 @@ public class DataTransfer : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        if(FindObjectsOfType<DataTransfer>().Length > 1)
+        {
+            Destroy(gameObject);
+            return;
+        }
         // Add all GameObject to list 
         cosmetics.Add(bodies);
         cosmetics.Add(headParts);
