@@ -15,21 +15,15 @@ EditorBuildSettings:
     path: Assets/Scenes/CustomAvatar.unity
     guid: c167c32d4dba24948808f6f0f18c10c6
   - enabled: 1
-    path: Assets/Scenes/Levels/Level_Town.unity
-    guid: 0124996e4fb0cb642a6621b7be8d6b4a
-  - enabled: 1
     path: Assets/Scenes/Levels/Level_Lobby.unity
     guid: f6ebce454d7a0e242aa34668d6259a56
   - enabled: 1
+    path: Assets/Scenes/Levels/Level_Maze.unity
+    guid: fc05d83f4da1ee74e8d1ee11571823bb
+  - enabled: 1
+    path: Assets/Scenes/Levels/Level_Town.unity
+    guid: 0124996e4fb0cb642a6621b7be8d6b4a
+  - enabled: 1
     path: Assets/Scenes/Levels/Level_Toaster.unity
     guid: f01b477323a1bc74b822d6c3d1c2a258
-  - enabled: 1
-    path: Assets/Scenes/Lobby.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 1
-    path: Assets/Scenes/Levels/Level_1.unity
-    guid: 7e765b65a095a314ab3eb38ff30e40da
-  - enabled: 1
-    path: Assets/Scenes/Levels/Level_2.unity
-    guid: 71423ab55c16c8d4a958f13452f55901
   m_configObjects: {}

@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9109188fd46b9ab4380b02da7aac43e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  indexLevel1: 4
+  indexLevel1: 3
   levelCount: 4
   transitionTime: 1
   circleWipe: {fileID: 0}
