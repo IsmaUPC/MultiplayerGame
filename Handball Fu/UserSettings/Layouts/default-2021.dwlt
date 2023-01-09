@@ -68,8 +68,8 @@ MonoBehaviour:
     y: 0
     width: 708
     height: 1058.8
-  m_MinSize: {x: 276, y: 71}
-  m_MaxSize: {x: 4001, y: 4021}
+  m_MinSize: {x: 275, y: 50}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 16}
   m_Panes:
   - {fileID: 16}
@@ -94,8 +94,8 @@ MonoBehaviour:
     y: 0
     width: 286.4
     height: 765.6
-  m_MinSize: {x: 201, y: 221}
-  m_MaxSize: {x: 4001, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 17}
   m_Panes:
   - {fileID: 17}
@@ -1132,13 +1132,13 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scenes
+    - Assets/Scenes/Levels
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scenes
+  - Assets/Scenes/Levels
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\Msi\Desktop\Universidad\4t Carrera\Xarxes\MultiplayerGame\Handball
     Fu
@@ -1146,9 +1146,9 @@ MonoBehaviour:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 67.79993}
-    m_SelectedIDs: 1e780000
-    m_LastClickedID: 30750
-    m_ExpandedIDs: 000000000678000000ca9a3b
+    m_SelectedIDs: ba780000
+    m_LastClickedID: 30906
+    m_ExpandedIDs: 0000000092780000aa78000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1176,7 +1176,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 0000000006780000
+    m_ExpandedIDs: 0000000092780000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1203,7 +1203,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 0
+    m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000bed4000092d40000d8d300009ed30000586500006c650000886500001e6500005c6500001a6500001e5d0000582300004e730000b664000000000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1306,7 +1306,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 5cfaffff
+      m_ExpandedIDs: 9eeaffffeeeaffff9aecffff9eecffffa2ecffffacecffffb0ecffffb4ecfffff8ecffff0aedffff14edffffb8f5ffff08f6ffffaef7ffffb6f7ffffbef7ffffccf7ffffd4f7ffffdcf7ffff26f8ffff3cf8ffff4af8ffff5afaffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1555,9 +1555,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -2.2244787, y: 15.470337, z: 14.048173}
+    m_Target: {x: -3.027615, y: 16.006363, z: 14.133668}
     speed: 2
-    m_Value: {x: -2.2244787, y: 15.470337, z: 14.048173}
+    m_Value: {x: -3.027615, y: 16.006363, z: 14.133668}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1604,9 +1604,9 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.07581928, y: 0.01196489, z: -0.00090937625, w: 0.9970488}
+    m_Target: {x: 0.06684764, y: -0.0014969172, z: 0.000100768215, w: 0.997761}
     speed: 2
-    m_Value: {x: 0.07581933, y: 0.011964898, z: -0.0009093768, w: 0.9970494}
+    m_Value: {x: 0.06684771, y: -0.0014969188, z: 0.000100768324, w: 0.9977621}
   m_Size:
     m_Target: 15.042862
     speed: 2

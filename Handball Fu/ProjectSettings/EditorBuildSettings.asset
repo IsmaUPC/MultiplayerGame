@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/CustomAvatar.unity
     guid: c167c32d4dba24948808f6f0f18c10c6
   - enabled: 1
-    path: Assets/Scenes/Levels/Level_Lobby.unity
+    path: Assets/Scenes/Levels/Level_Toaster.unity
     guid: 0124996e4fb0cb642a6621b7be8d6b4a
   - enabled: 1
     path: Assets/Scenes/Lobby.unity
