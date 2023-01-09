@@ -182,7 +182,6 @@ public class UDPServer : MonoBehaviour
 
     private void Update()
     {
-
         lastRTTUpdate += Time.deltaTime;
         if (lastRTTUpdate > 0.150f)
         {

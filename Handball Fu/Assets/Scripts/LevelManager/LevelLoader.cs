@@ -25,7 +25,7 @@ public class LevelLoader : MonoBehaviour
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
-        ResetLevels();
+        ResetLevels(indexLevel1);
         UDPServer server = FindObjectOfType<UDPServer>();
         if (server)
             server.SetLevelLoader(this);
@@ -68,7 +68,7 @@ public class LevelLoader : MonoBehaviour
         }
 
         levels.RemoveAt(0);
-        ResetLevels();
+        ResetLevels(sceneIndexBuild);
     }
     public void OnBackClick()
     {
@@ -94,14 +94,15 @@ public class LevelLoader : MonoBehaviour
         Application.Quit();
     }
 
-    public void ResetLevels()
+    public void ResetLevels(int lastLevel)
     {
         if (levels.Count == 0)
         {
             levels.Clear();
             for (int i = 0; i < levelCount; i++)
             {
-                levels.Add(indexLevel1 + i);
+                if(levelCount + i != lastLevel)
+                    levels.Add(indexLevel1 + i);
             }
             levels.Sort();
         }
