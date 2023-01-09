@@ -139,6 +139,7 @@ public class RoomSelect : MonoBehaviour
         // Change UI
         mainButtons[0].SetActive(false);
         mainButtons[1].SetActive(false);
+        mainButtons[2].SetActive(false);
 
         usernamePanel.SetActive(true);
     }
@@ -165,6 +166,7 @@ public class RoomSelect : MonoBehaviour
         // Change UI
         mainButtons[0].SetActive(true);
         mainButtons[1].SetActive(true);
+        mainButtons[2].SetActive(true);
 
         usernamePanel.SetActive(false);
     }

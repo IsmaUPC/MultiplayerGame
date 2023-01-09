@@ -2217,6 +2217,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Options_menu
       objectReference: {fileID: 0}
+    - target: {fileID: 3202246450649870355, guid: 0b959706bf5ecfe41a4e031edbdb943d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3202246450886962848, guid: 0b959706bf5ecfe41a4e031edbdb943d, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -2329,6 +2333,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1321799702 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3202246450649870355, guid: 0b959706bf5ecfe41a4e031edbdb943d, type: 3}
+  m_PrefabInstance: {fileID: 1321799699}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1387265437
 GameObject:
   m_ObjectHideFlags: 0
@@ -4228,6 +4237,7 @@ MonoBehaviour:
   mainButtons:
   - {fileID: 1054924479}
   - {fileID: 1196741282}
+  - {fileID: 1321799702}
   errorText: {fileID: 1387265439}
   udpServerPrefab: {fileID: 770643592340001744, guid: faad0b5da83138f478e0133e2a5cfe0e, type: 3}
   udpClientPrefab: {fileID: 3777377659754493148, guid: a43330b096945df41b718911466da13b, type: 3}
