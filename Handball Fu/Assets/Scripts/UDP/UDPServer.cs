@@ -187,7 +187,7 @@ public class UDPServer : MonoBehaviour
         if (lastRTTUpdate > 0.15f)
         {
             maxRTT = (maxRTT > minTimeInterpolation) ? maxRTT : minTimeInterpolation;
-            lock (RTTLock) serverWorld.interpolationTime = (float)maxRTT;
+            lock (RTTLock) serverWorld.interpolationTime = (float)maxRTT*0.5f;
             lastRTTUpdate = 0;
             RTTInit();
         }
@@ -1074,7 +1074,7 @@ public class UDPServer : MonoBehaviour
                 if (clientsData[i].id != 0)
                 {
                     data = new byte[1024];
-                    lock (serializerLock) data = serializer.SerializeRTT(clientsData[i].id,maxRTT);
+                    lock (serializerLock) data = serializer.SerializeRTT(clientsData[i].id,maxRTT*0.5f);
                     lock (socketsLock) ((Socket)clientSockets[0]).SendTo(data, clientsData[i].ipep);
                     rtt[i] = initTime;
                 }

@@ -73,7 +73,7 @@ public class WorldUpdateClient : MonoBehaviour
 
         // TODO: calculate RTT
         // 50 ms
-        interpolationTime = 0.05f;
+        interpolationTime = 0.032f;
 
         worldObjects = new List<WorldObject>();
 
