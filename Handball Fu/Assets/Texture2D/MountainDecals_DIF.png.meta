@@ -1,0 +1,2885 @@
+fileFormatVersion: 2
+guid: 789f130cb7506bd4580be99833baf45e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: MountainDecals_DIF_2
+  - first:
+      213: 21300002
+    second: MountainDecals_DIF_11
+  - first:
+      213: 21300004
+    second: MountainDecals_DIF_15
+  - first:
+      213: 21300006
+    second: MountainDecals_DIF_24
+  - first:
+      213: 21300008
+    second: MountainDecals_DIF_26
+  - first:
+      213: 21300010
+    second: MountainDecals_DIF_32
+  - first:
+      213: 21300012
+    second: MountainDecals_DIF_34
+  - first:
+      213: 21300014
+    second: MountainDecals_DIF_37
+  - first:
+      213: 21300016
+    second: MountainDecals_DIF_39
+  - first:
+      213: 21300018
+    second: MountainDecals_DIF_45
+  - first:
+      213: 21300020
+    second: MountainDecals_DIF_1
+  - first:
+      213: 21300022
+    second: MountainDecals_DIF_4
+  - first:
+      213: 21300024
+    second: MountainDecals_DIF_5
+  - first:
+      213: 21300026
+    second: MountainDecals_DIF_6
+  - first:
+      213: 21300028
+    second: MountainDecals_DIF_7
+  - first:
+      213: 21300030
+    second: MountainDecals_DIF_8
+  - first:
+      213: 21300032
+    second: MountainDecals_DIF_10
+  - first:
+      213: 21300034
+    second: MountainDecals_DIF_12
+  - first:
+      213: 21300036
+    second: MountainDecals_DIF_18
+  - first:
+      213: 21300038
+    second: MountainDecals_DIF_19
+  - first:
+      213: 21300040
+    second: MountainDecals_DIF_20
+  - first:
+      213: 21300042
+    second: MountainDecals_DIF_23
+  - first:
+      213: 21300044
+    second: MountainDecals_DIF_25
+  - first:
+      213: 21300046
+    second: MountainDecals_DIF_33
+  - first:
+      213: 21300048
+    second: MountainDecals_DIF_42
+  - first:
+      213: 21300050
+    second: MountainDecals_DIF_46
+  - first:
+      213: 21300052
+    second: MountainDecals_DIF_47
+  - first:
+      213: 21300054
+    second: MountainDecals_DIF_3
+  - first:
+      213: 21300056
+    second: MountainDecals_DIF_9
+  - first:
+      213: 21300058
+    second: MountainDecals_DIF_17
+  - first:
+      213: 21300060
+    second: MountainDecals_DIF_28
+  - first:
+      213: 21300062
+    second: MountainDecals_DIF_30
+  - first:
+      213: 21300064
+    second: MountainDecals_DIF_31
+  - first:
+      213: 21300066
+    second: MountainDecals_DIF_44
+  - first:
+      213: 21300068
+    second: MountainDecals_DIF_0
+  - first:
+      213: 21300070
+    second: MountainDecals_DIF_14
+  - first:
+      213: 21300072
+    second: MountainDecals_DIF_16
+  - first:
+      213: 21300074
+    second: MountainDecals_DIF_22
+  - first:
+      213: 21300076
+    second: MountainDecals_DIF_21
+  - first:
+      213: 21300078
+    second: MountainDecals_DIF_29
+  - first:
+      213: 21300080
+    second: MountainDecals_DIF_40
+  - first:
+      213: 21300082
+    second: MountainDecals_DIF_41
+  - first:
+      213: 21300084
+    second: MountainDecals_DIF_43
+  - first:
+      213: 21300086
+    second: MountainDecals_DIF_27
+  - first:
+      213: 21300088
+    second: MountainDecals_DIF_35
+  - first:
+      213: 21300090
+    second: MountainDecals_DIF_36
+  - first:
+      213: 21300092
+    second: MountainDecals_DIF_38
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 12
+  maxTextureSize: 1024
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 1
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: MountainDecals_DIF_2
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 958
+        width: 98
+        height: 58
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 30, y: -29}
+        - {x: -1, y: -29}
+        - {x: -1, y: -27}
+        - {x: 14, y: -13}
+        - {x: 24, y: -13}
+        - {x: 28, y: -15}
+        - {x: 30, y: -25}
+      - - {x: -38, y: -29}
+        - {x: -49, y: -14}
+        - {x: -49, y: 13}
+        - {x: -44, y: 29}
+        - {x: 49, y: 29}
+        - {x: 49, y: 1}
+        - {x: -28, y: -29}
+      physicsShape:
+      - - {x: 19, y: -14}
+        - {x: 9.999999, y: -17}
+        - {x: 0, y: -27}
+        - {x: 0, y: -29}
+        - {x: 27, y: -29}
+        - {x: 27, y: -21}
+        - {x: 22, y: -14}
+      - - {x: 49, y: 20}
+        - {x: 47, y: 22}
+        - {x: 34, y: 28}
+        - {x: 17, y: 28}
+        - {x: -23, y: 15}
+        - {x: -38, y: 14}
+        - {x: -49, y: 2}
+        - {x: -49, y: -9.999999}
+        - {x: -43, y: -19}
+        - {x: -34, y: -29}
+        - {x: -30, y: -29}
+        - {x: 9, y: -5}
+        - {x: 41, y: 3}
+        - {x: 49, y: 7}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 48e5ce9ece4e4c1f9310b04d027fedb2
+      internalID: 21300000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_11
+      rect:
+        serializedVersion: 2
+        x: 772
+        y: 715
+        width: 70
+        height: 53
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -15, y: -26.5}
+        - {x: -35, y: -14.5}
+        - {x: -35, y: 7.5}
+        - {x: -10, y: 26.5}
+        - {x: 27, y: 26.5}
+        - {x: 35, y: 21.5}
+        - {x: 35, y: -8.5}
+        - {x: 12, y: -26.5}
+      physicsShape:
+      - - {x: -3, y: 26.5}
+        - {x: -22, y: 16.5}
+        - {x: -33, y: 1.5}
+        - {x: -33, y: -10.5}
+        - {x: -12, y: -25.5}
+        - {x: -9, y: -26.5}
+        - {x: 11, y: -26.5}
+        - {x: 35, y: -5.5}
+        - {x: 35, y: 19.5}
+        - {x: 20, y: 26.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b0068a02d0b4757b3621cd1070c08d0
+      internalID: 21300002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_15
+      rect:
+        serializedVersion: 2
+        x: 795
+        y: 623
+        width: 58
+        height: 54
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -22, y: -27}
+        - {x: -29, y: -26}
+        - {x: -29, y: 23}
+        - {x: -22, y: 27}
+        - {x: 3, y: 27}
+        - {x: 21, y: 24}
+        - {x: 29, y: 21}
+        - {x: 29, y: -20}
+        - {x: 23, y: -27}
+      physicsShape:
+      - - {x: 20, y: 22}
+        - {x: 9.999999, y: 12}
+        - {x: 1, y: 5}
+        - {x: -5, y: 23}
+        - {x: -11, y: 27}
+        - {x: -22, y: 27}
+        - {x: -29, y: 18}
+        - {x: -29, y: -3}
+        - {x: -19, y: -26}
+        - {x: -13, y: -27}
+        - {x: 15, y: -27}
+        - {x: 22, y: -21}
+        - {x: 29, y: 7}
+        - {x: 29, y: 20}
+      tessellationDetail: 0
+      bones: []
+      spriteID: a03ab124fce24f75970d110c6301a504
+      internalID: 21300004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_24
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 447
+        width: 69
+        height: 129
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -27.5, y: -64.5}
+        - {x: -34.5, y: -50.5}
+        - {x: -34.5, y: -27.5}
+        - {x: -29.5, y: 22.5}
+        - {x: -31.5, y: 19.5}
+        - {x: -34.5, y: 18.5}
+        - {x: -34.5, y: 64.5}
+        - {x: -24.5, y: 64.5}
+        - {x: -19.5, y: 54.5}
+        - {x: -19.5, y: 40.5}
+        - {x: -22.5, y: 35.5}
+        - {x: 0.5, y: 64.5}
+        - {x: 25.5, y: 64.5}
+        - {x: 31.5, y: 58.5}
+        - {x: 34.5, y: -14.5}
+        - {x: 34.5, y: -51.5}
+        - {x: 25.5, y: -59.5}
+        - {x: -6.5, y: -64.5}
+      physicsShape:
+      - - {x: 34.5, y: -48.5}
+        - {x: 34.5, y: -33.5}
+        - {x: 28.5, y: 22.5}
+        - {x: 27.5, y: 36.5}
+        - {x: 26.5, y: 54.5}
+        - {x: 25.5, y: 56.5}
+        - {x: 0.5, y: 56.5}
+        - {x: -11.5, y: 41.5}
+        - {x: -17.5, y: 25.5}
+        - {x: -23.5, y: -1.5}
+        - {x: -33.5, y: -41.5}
+        - {x: -33.5, y: -47.5}
+        - {x: -23.5, y: -64.5}
+        - {x: -15.5, y: -64.5}
+        - {x: -8.5, y: -62.5}
+        - {x: 13.5, y: -57.5}
+        - {x: 30.5, y: -52.5}
+      - - {x: -34.5, y: 64.5}
+        - {x: -34.5, y: 22.5}
+        - {x: -31.5, y: 23.5}
+        - {x: -21.5, y: 43.5}
+        - {x: -21.5, y: 50.5}
+        - {x: -27.5, y: 64.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70f1025bd6a8440b8bee2a3d8da372d9
+      internalID: 21300006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_26
+      rect:
+        serializedVersion: 2
+        x: 891
+        y: 444
+        width: 125
+        height: 155.9733
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5000858}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 62.5, y: -77.98663}
+        - {x: -62.5, y: -77.98663}
+        - {x: -62.5, y: 78.01337}
+        - {x: 33.5, y: 78.01337}
+        - {x: 36.5, y: 77.01337}
+        - {x: 62.5, y: 12.01337}
+      physicsShape:
+      - - {x: 40.5, y: -46.98663}
+        - {x: 29.5, y: -46.98663}
+        - {x: 17.5, y: -56.98663}
+        - {x: 17.5, y: -67.98663}
+        - {x: 27.5, y: -76.98663}
+        - {x: 31.5, y: -77.98663}
+        - {x: 50.5, y: -77.98663}
+        - {x: 61.5, y: -67.98663}
+        - {x: 61.5, y: -54.98663}
+        - {x: 59.5, y: -51.98663}
+      - - {x: 43.5, y: -19.98662}
+        - {x: 43.5, y: -8.986626}
+        - {x: 34.5, y: 34.01337}
+        - {x: 30.5, y: 42.01337}
+        - {x: 22.5, y: 44.01337}
+        - {x: 38.5, y: 60.01337}
+        - {x: 37.5, y: 69.01337}
+        - {x: 24.5, y: 77.01337}
+        - {x: 11.5, y: 77.01337}
+        - {x: -3.5, y: 61.01337}
+        - {x: -5.5, y: 53.01337}
+        - {x: -4.5, y: 48.01337}
+        - {x: -10.5, y: 48.01337}
+        - {x: -16.5, y: 45.01337}
+        - {x: -37.5, y: 23.01337}
+        - {x: -44.5, y: 13.01337}
+        - {x: -55.5, y: -8.986626}
+        - {x: -55.5, y: -16.98663}
+        - {x: -45.5, y: -55.98663}
+        - {x: -41.5, y: -60.98663}
+        - {x: 1.5, y: -60.98663}
+        - {x: 10.5, y: -55.98663}
+        - {x: 23.5, y: -45.98662}
+        - {x: 36.5, y: -32.98663}
+      - - {x: 50.5, y: -29.98662}
+        - {x: 41.5, y: -29.98662}
+        - {x: 37.5, y: -36.98663}
+        - {x: 37.5, y: -42.98662}
+        - {x: 45.5, y: -47.98663}
+        - {x: 50.5, y: -47.98663}
+        - {x: 59.5, y: -42.98662}
+        - {x: 59.5, y: -33.98663}
+        - {x: 58.5, y: -31.98663}
+      - - {x: -54.5, y: 39.01337}
+        - {x: -59.5, y: 34.01337}
+        - {x: -59.5, y: 26.01337}
+        - {x: -55.5, y: 20.01337}
+        - {x: -45.5, y: 20.01337}
+        - {x: -39.5, y: 23.01337}
+        - {x: -38.5, y: 27.01337}
+        - {x: -38.5, y: 32.01337}
+        - {x: -46.5, y: 39.01337}
+      - - {x: -34.5, y: 71.01337}
+        - {x: -47.5, y: 65.01337}
+        - {x: -47.5, y: 36.01337}
+        - {x: -26.5, y: 36.01337}
+        - {x: -19.5, y: 45.01337}
+        - {x: -19.5, y: 61.01337}
+        - {x: -22.5, y: 71.01337}
+      - - {x: -2.5, y: 72.01337}
+        - {x: -5.5, y: 71.01337}
+        - {x: -10.5, y: 67.01337}
+        - {x: -10.5, y: 59.01337}
+        - {x: 0.5, y: 59.01337}
+        - {x: 2.5, y: 64.01337}
+        - {x: 2.5, y: 72.01337}
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb4db6bb69bb4d7283fefbaaa9ce9ea8
+      internalID: 21300008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_32
+      rect:
+        serializedVersion: 2
+        x: 694
+        y: 286
+        width: 40
+        height: 41
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 20, y: -20.5}
+        - {x: -20, y: -20.5}
+        - {x: -20, y: -1.5}
+        - {x: -9, y: 19.5}
+        - {x: -6, y: 20.5}
+        - {x: 9, y: 20.5}
+        - {x: 13, y: 16.5}
+        - {x: 15, y: 10.5}
+        - {x: 20, y: -2.5}
+      physicsShape:
+      - - {x: 7, y: 20.5}
+        - {x: -5, y: 20.5}
+        - {x: -20, y: -1.5}
+        - {x: -20, y: -20.5}
+        - {x: 20, y: -20.5}
+        - {x: 20, y: -3.5}
+        - {x: 16, y: 14.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 83161c1b9a014966966885063758086a
+      internalID: 21300010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_34
+      rect:
+        serializedVersion: 2
+        x: 795
+        y: 280
+        width: 65
+        height: 56
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -15.5, y: -28}
+        - {x: -32.5, y: -20}
+        - {x: -32.5, y: 20}
+        - {x: -30.5, y: 28}
+        - {x: 31.5, y: 28}
+        - {x: 32.5, y: 27}
+        - {x: 32.5, y: -28}
+      physicsShape:
+      - - {x: 6.5, y: 28}
+        - {x: 4.5, y: 27}
+        - {x: -2.5, y: 21}
+        - {x: -5.5, y: 16}
+        - {x: -13.5, y: 21}
+        - {x: -20.5, y: 19}
+        - {x: -30.5, y: 9.999999}
+        - {x: -32.5, y: 8}
+        - {x: -32.5, y: -6}
+        - {x: -31.5, y: -9.999999}
+        - {x: -10.5, y: -28}
+        - {x: 19.5, y: -28}
+        - {x: 32.5, y: -18}
+        - {x: 32.5, y: 6}
+        - {x: 17.5, y: 28}
+      tessellationDetail: 0
+      bones: []
+      spriteID: f3c3f7ed017b4525b68ef3befb9c0455
+      internalID: 21300012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_37
+      rect:
+        serializedVersion: 2
+        x: 688
+        y: 234
+        width: 44
+        height: 37
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -19, y: -16.5}
+        - {x: -22, y: -9.5}
+        - {x: -22, y: 9.5}
+        - {x: -14, y: 18.5}
+        - {x: -3, y: 18.5}
+        - {x: 12, y: 16.5}
+        - {x: 21, y: 13.5}
+        - {x: 22, y: 10.5}
+        - {x: 22, y: -10.5}
+        - {x: 17, y: -17.5}
+        - {x: 14, y: -18.5}
+        - {x: -15, y: -18.5}
+      physicsShape:
+      - - {x: 1, y: 16.5}
+        - {x: -9, y: 16.5}
+        - {x: -22, y: 5.5}
+        - {x: -22, y: -15.5}
+        - {x: 20, y: -15.5}
+        - {x: 22, y: -10.5}
+        - {x: 22, y: 7.5}
+        - {x: 18, y: 11.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 46a0b16c36e44783aea10ac2228cc7f3
+      internalID: 21300014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_39
+      rect:
+        serializedVersion: 2
+        x: 804
+        y: 243
+        width: 41
+        height: 29
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -20.5, y: -14.5}
+        - {x: -20.5, y: 14.5}
+        - {x: 20.5, y: 14.5}
+        - {x: 20.5, y: -14.5}
+      physicsShape:
+      - - {x: 20.5, y: 10.5}
+        - {x: 18.5, y: 14.5}
+        - {x: -2.5, y: 14.5}
+        - {x: -9.5, y: 13.5}
+        - {x: -18.5, y: 2.5}
+        - {x: -20.5, y: -1.5}
+        - {x: -20.5, y: -12.5}
+        - {x: -18.5, y: -14.5}
+        - {x: -1.5, y: -14.5}
+        - {x: 15.5, y: -4.5}
+        - {x: 17.5, y: -1.5}
+        - {x: 20.5, y: 6.5}
+      - - {x: 10.5, y: -12.5}
+        - {x: 10.5, y: -14.5}
+        - {x: 20.5, y: -14.5}
+        - {x: 20.5, y: -5.5}
+        - {x: 17.5, y: -5.5}
+        - {x: 14.5, y: -6.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 840a46219cf847ea94876c50000c8efa
+      internalID: 21300016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_45
+      rect:
+        serializedVersion: 2
+        x: 695
+        y: 176
+        width: 59
+        height: 51.92388
+      alignment: 9
+      pivot: {x: 0.5, y: 0.500733}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 29.5, y: -25.96194}
+        - {x: 17.5, y: -25.96194}
+        - {x: 17.5, y: -24.96194}
+        - {x: 18.5, y: -23.96194}
+        - {x: 7.5, y: -25.96194}
+        - {x: -29.5, y: -25.96194}
+        - {x: -29.5, y: 4.038061}
+        - {x: -11.5, y: 26.03806}
+        - {x: 25.5, y: 26.03806}
+        - {x: 28.5, y: 21.03806}
+        - {x: 29.5, y: 17.03806}
+        - {x: 22.5, y: 10.03806}
+        - {x: 20.5, y: 10.03806}
+        - {x: 28.5, y: 5.038061}
+        - {x: 29.5, y: 1.038061}
+        - {x: 29.5, y: -14.96194}
+        - {x: 28.5, y: -16.96194}
+        - {x: 29.5, y: -16.96194}
+      physicsShape:
+      - - {x: 19.5, y: -23.96194}
+        - {x: 19.5, y: -25.96194}
+        - {x: 29.5, y: -25.96194}
+        - {x: 29.5, y: -18.96194}
+        - {x: 28.5, y: -18.96194}
+      - - {x: 27.5, y: 3.038061}
+        - {x: 10.5, y: 13.03806}
+        - {x: -7.5, y: 13.03806}
+        - {x: -28.5, y: -1.961939}
+        - {x: -29.5, y: -2.961939}
+        - {x: -29.5, y: -18.96194}
+        - {x: -19.5, y: -24.96194}
+        - {x: -1.5, y: -24.96194}
+        - {x: 6.5, y: -23.96194}
+        - {x: 18.5, y: -21.96194}
+        - {x: 28.5, y: -8.961939}
+        - {x: 28.5, y: 2.038061}
+      - - {x: 11.5, y: 25.03806}
+        - {x: 5.5, y: 18.03806}
+        - {x: 5.5, y: 14.03806}
+        - {x: 11.5, y: 11.03806}
+        - {x: 24.5, y: 11.03806}
+        - {x: 27.5, y: 16.03806}
+        - {x: 27.5, y: 22.03806}
+        - {x: 23.5, y: 25.03806}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 336803f457fc4a479ceb56c9583b6a77
+      internalID: 21300018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_1
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 934
+        width: 74
+        height: 79
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -33, y: -39.5}
+        - {x: -37, y: -27.5}
+        - {x: -37, y: 24.5}
+        - {x: -29, y: 31.5}
+        - {x: -4, y: 39.5}
+        - {x: 19, y: 39.5}
+        - {x: 27, y: 26.5}
+        - {x: 37, y: 3.5}
+        - {x: 37, y: -21.5}
+        - {x: 20, y: -39.5}
+      physicsShape:
+      - - {x: 20, y: 32.5}
+        - {x: 17, y: 37.5}
+        - {x: -2, y: 37.5}
+        - {x: -13, y: 35.5}
+        - {x: -23, y: 28.5}
+        - {x: -36, y: 11.5}
+        - {x: -36, y: -10.5}
+        - {x: -31, y: -36.5}
+        - {x: -27, y: -38.5}
+        - {x: 13, y: -38.5}
+        - {x: 35, y: -23.5}
+        - {x: 35, y: 2.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 22c7380fbd58457fa53bcda46e35e07a
+      internalID: 21300020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_4
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 696.0429
+        width: 308
+        height: 320.9571
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4999332}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -139, y: -160.5215}
+        - {x: -154, y: -149.5215}
+        - {x: -154, y: 115.4785}
+        - {x: -140, y: 160.4785}
+        - {x: 57, y: 160.4785}
+        - {x: 87, y: 152.4785}
+        - {x: 154, y: 107.4786}
+        - {x: 154, y: -143.5215}
+        - {x: 95, y: -160.5215}
+      physicsShape:
+      - - {x: 101, y: -145.5215}
+        - {x: 115, y: -129.5215}
+        - {x: 137, y: -101.5215}
+        - {x: 138, y: -93.52145}
+        - {x: 136, y: -69.52145}
+        - {x: 151, y: -41.52145}
+        - {x: 154, y: -32.52145}
+        - {x: 154, y: -20.52145}
+        - {x: 153, y: -10.52145}
+        - {x: 152, y: -2.521454}
+        - {x: 150, y: 27.47855}
+        - {x: 148, y: 45.47855}
+        - {x: 151, y: 57.47855}
+        - {x: 149, y: 69.47855}
+        - {x: 140, y: 89.47855}
+        - {x: 116, y: 109.4785}
+        - {x: 108, y: 121.4785}
+        - {x: 106, y: 134.4785}
+        - {x: 85, y: 146.4785}
+        - {x: 66.99999, y: 151.4785}
+        - {x: 40, y: 157.4785}
+        - {x: 16, y: 159.4785}
+        - {x: -4, y: 159.4785}
+        - {x: -21, y: 153.4785}
+        - {x: -30, y: 144.4785}
+        - {x: -41, y: 139.4785}
+        - {x: -63, y: 140.4785}
+        - {x: -75, y: 140.4785}
+        - {x: -85, y: 137.4785}
+        - {x: -104, y: 123.4785}
+        - {x: -133, y: 91.47855}
+        - {x: -145, y: 74.47855}
+        - {x: -152, y: 57.47855}
+        - {x: -152, y: 56.47855}
+        - {x: -151, y: 52.47854}
+        - {x: -141, y: 27.47855}
+        - {x: -134, y: 15.47855}
+        - {x: -143, y: -5.521454}
+        - {x: -151, y: -27.52145}
+        - {x: -152, y: -38.52145}
+        - {x: -152, y: -69.52145}
+        - {x: -144, y: -80.52145}
+        - {x: -142, y: -79.52145}
+        - {x: -102, y: -123.5215}
+        - {x: -100, y: -130.5215}
+        - {x: -85, y: -149.5215}
+        - {x: -60, y: -157.5215}
+        - {x: -14, y: -156.5215}
+        - {x: -5, y: -157.5215}
+        - {x: 9, y: -159.5214}
+        - {x: 35, y: -159.5214}
+        - {x: 43, y: -155.5215}
+        - {x: 66, y: -138.5215}
+        - {x: 90, y: -146.5214}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2ca2ec10a86242a5af0a49dfa43319e8
+      internalID: 21300022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_5
+      rect:
+        serializedVersion: 2
+        x: 694
+        y: 770
+        width: 310
+        height: 230
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -36, y: 115}
+        - {x: 155, y: 115}
+        - {x: 155, y: -51}
+        - {x: 154, y: -52}
+        - {x: 155, y: -55}
+        - {x: 155, y: -115}
+        - {x: 70, y: -115}
+        - {x: 66, y: -107}
+        - {x: 66, y: -88}
+        - {x: 3, y: -115}
+        - {x: -155, y: -115}
+        - {x: -155, y: 50}
+        - {x: -118, y: 101}
+      physicsShape:
+      - - {x: 114, y: -47}
+        - {x: 71, y: -64}
+        - {x: 66.99999, y: -85}
+        - {x: 66.99999, y: -113}
+        - {x: 72.99999, y: -115}
+        - {x: 155, y: -115}
+        - {x: 155, y: -62}
+        - {x: 147, y: -47}
+      - - {x: -52, y: -88}
+        - {x: -31, y: -68}
+        - {x: -28, y: -61}
+        - {x: -29, y: -43}
+        - {x: -26, y: -35}
+        - {x: -13, y: -16}
+        - {x: 14, y: 8}
+        - {x: 61, y: 1}
+        - {x: 71, y: -9}
+        - {x: 111, y: -13}
+        - {x: 122, y: -14}
+        - {x: 131, y: -3}
+        - {x: 149, y: 29}
+        - {x: 147, y: 37}
+        - {x: 150, y: 43}
+        - {x: 153, y: 51}
+        - {x: 153, y: 60}
+        - {x: 149, y: 72.99999}
+        - {x: 141, y: 88}
+        - {x: 133, y: 95}
+        - {x: 114, y: 109}
+        - {x: 81, y: 109}
+        - {x: 62, y: 106}
+        - {x: 45, y: 104}
+        - {x: 12, y: 111}
+        - {x: 4, y: 111}
+        - {x: -9, y: 109}
+        - {x: -29, y: 105}
+        - {x: -66, y: 97}
+        - {x: -85.99999, y: 90}
+        - {x: -95, y: 85}
+        - {x: -116, y: 68}
+        - {x: -121, y: 55}
+        - {x: -124, y: 30}
+        - {x: -138, y: 17}
+        - {x: -145, y: 2}
+        - {x: -149, y: -11}
+        - {x: -155, y: -33}
+        - {x: -155, y: -51}
+        - {x: -151, y: -66}
+        - {x: -143, y: -78}
+        - {x: -136, y: -87}
+        - {x: -126, y: -107}
+        - {x: -108, y: -112}
+        - {x: -97, y: -113}
+        - {x: -87, y: -113}
+        - {x: -78, y: -109}
+        - {x: -71, y: -104}
+        - {x: -59, y: -94}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2314d5a0bc694467b4f89a0939a4d00c
+      internalID: 21300024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_6
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 708
+        width: 206
+        height: 188
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -54, y: -94}
+        - {x: -103, y: -76}
+        - {x: -103, y: 52}
+        - {x: -86, y: 94}
+        - {x: 34, y: 94}
+        - {x: 69, y: 86}
+        - {x: 64, y: 89}
+        - {x: 64, y: 94}
+        - {x: 95, y: 94}
+        - {x: 95, y: 91}
+        - {x: 87, y: 85}
+        - {x: 73, y: 85}
+        - {x: 90, y: 81}
+        - {x: 103, y: 63}
+        - {x: 103, y: -89}
+        - {x: 102, y: -94}
+      physicsShape:
+      - - {x: 101, y: -49}
+        - {x: 102, y: -47}
+        - {x: 102, y: 11}
+        - {x: 94, y: 26}
+        - {x: 75, y: 66.99999}
+        - {x: 71, y: 71}
+        - {x: 44, y: 79}
+        - {x: 22, y: 87}
+        - {x: 17, y: 87}
+        - {x: -2, y: 84}
+        - {x: -42, y: 91}
+        - {x: -58, y: 91}
+        - {x: -65, y: 88}
+        - {x: -68, y: 85}
+        - {x: -85.99999, y: 61}
+        - {x: -93, y: 48}
+        - {x: -89, y: 40}
+        - {x: -89, y: 28}
+        - {x: -97.99999, y: 18}
+        - {x: -102, y: 13}
+        - {x: -102, y: -4}
+        - {x: -101, y: -9}
+        - {x: -98.99999, y: -37}
+        - {x: -97.99999, y: -50}
+        - {x: -95, y: -59}
+        - {x: -85.99999, y: -66.99999}
+        - {x: -68, y: -79}
+        - {x: -59, y: -83}
+        - {x: -16, y: -89}
+        - {x: -8, y: -90}
+        - {x: 54, y: -90}
+        - {x: 59, y: -89}
+        - {x: 65, y: -88}
+        - {x: 90, y: -63}
+      - - {x: 65, y: 94}
+        - {x: 65, y: 89}
+        - {x: 68, y: 85.99999}
+        - {x: 87, y: 85.99999}
+        - {x: 93, y: 89}
+        - {x: 93, y: 94}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 98a21f33751c400880c4ce5e4bbfc32b
+      internalID: 21300026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_7
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 888
+        width: 49
+        height: 48
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 0.5, y: -24}
+        - {x: -24.5, y: -24}
+        - {x: -24.5, y: 2}
+        - {x: 1.5, y: 24}
+        - {x: 24.5, y: 24}
+        - {x: 24.5, y: 2}
+        - {x: 23.5, y: -1}
+      physicsShape:
+      - - {x: 1.5, y: 24}
+        - {x: -24.5, y: 5}
+        - {x: -24.5, y: -22}
+        - {x: -23.5, y: -23}
+        - {x: -20.5, y: -24}
+        - {x: -1.5, y: -24}
+        - {x: 24.5, y: -1}
+        - {x: 24.5, y: 21}
+        - {x: 19.5, y: 24}
+      tessellationDetail: 0
+      bones: []
+      spriteID: b8e6e56f62ba49f3a26ff3e9e89c7994
+      internalID: 21300028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_8
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 828
+        width: 98
+        height: 73
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 18, y: 36.5}
+        - {x: 23, y: 30.5}
+        - {x: 23, y: 36.5}
+        - {x: 41, y: 36.5}
+        - {x: 41, y: 32.5}
+        - {x: 37, y: 26.5}
+        - {x: 30, y: 26.5}
+        - {x: 24, y: 29.5}
+        - {x: 45, y: 2.5}
+        - {x: 49, y: -3.5}
+        - {x: 49, y: -21.5}
+        - {x: 45, y: -36.5}
+        - {x: -38, y: -36.5}
+        - {x: -49, y: -15.5}
+        - {x: -49, y: 26.5}
+        - {x: -12, y: 36.5}
+      physicsShape:
+      - - {x: 9.999999, y: 36.5}
+        - {x: -7, y: 36.5}
+        - {x: -12, y: 35.5}
+        - {x: -42, y: 23.5}
+        - {x: -49, y: 12.5}
+        - {x: -49, y: -8.5}
+        - {x: -35, y: -29.5}
+        - {x: -28, y: -36.5}
+        - {x: 42, y: -36.5}
+        - {x: 49, y: -17.5}
+        - {x: 49, y: -2.5}
+      - - {x: 25, y: 36.5}
+        - {x: 25, y: 34.5}
+        - {x: 27, y: 32.5}
+        - {x: 32, y: 32.5}
+        - {x: 36, y: 35.5}
+        - {x: 36, y: 36.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef0c004968f4439282036e1621968ce0
+      internalID: 21300030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_10
+      rect:
+        serializedVersion: 2
+        x: 234
+        y: 700.0267
+        width: 102
+        height: 103.9733
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4998715}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 42, y: 48.98664}
+        - {x: 40, y: 51.98664}
+        - {x: 45, y: 51.98664}
+        - {x: 45, y: 49.98664}
+      - - {x: 36, y: -46.01336}
+        - {x: 34, y: -43.01336}
+        - {x: 27, y: -50.01336}
+        - {x: -5, y: -52.01336}
+        - {x: -34, y: -52.01336}
+        - {x: -51, y: -44.01336}
+        - {x: -51, y: 33.98664}
+        - {x: -49, y: 48.98664}
+        - {x: 24, y: 48.98664}
+        - {x: 42, y: 36.98664}
+        - {x: 51, y: 4.986641}
+        - {x: 51, y: -28.01336}
+        - {x: 37, y: -41.01336}
+        - {x: 39, y: -42.01336}
+        - {x: 39, y: -45.01336}
+      physicsShape:
+      - - {x: 44, y: -29.01336}
+        - {x: 49, y: -12.01336}
+        - {x: 49, y: 1.986641}
+        - {x: 34, y: 22.98664}
+        - {x: 33, y: 28.98664}
+        - {x: 26, y: 34.98664}
+        - {x: 15, y: 46.98664}
+        - {x: 1, y: 46.98664}
+        - {x: -26, y: 41.98664}
+        - {x: -34, y: 35.98664}
+        - {x: -38, y: 31.98664}
+        - {x: -51, y: 8.986641}
+        - {x: -51, y: -32.01336}
+        - {x: -33, y: -50.01336}
+        - {x: -24, y: -51.01336}
+        - {x: -3, y: -51.01336}
+        - {x: 27, y: -47.01336}
+        - {x: 31, y: -43.01336}
+        - {x: 40, y: -35.01336}
+      tessellationDetail: 0
+      bones: []
+      spriteID: b67bafa88db04380965f7d648e216e61
+      internalID: 21300032
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_12
+      rect:
+        serializedVersion: 2
+        x: 879
+        y: 707
+        width: 133
+        height: 132.9239
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5002863}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -57.5, y: -66.46194}
+        - {x: -66.5, y: -57.46194}
+        - {x: -66.5, y: -8.461937}
+        - {x: -5.5, y: 66.53806}
+        - {x: 58.5, y: 66.53806}
+        - {x: 66.5, y: 29.53806}
+        - {x: 66.5, y: -47.46194}
+        - {x: 38.5, y: -66.46194}
+      physicsShape:
+      - - {x: 39.5, y: -60.46193}
+        - {x: 61.5, y: -37.46194}
+        - {x: 66.5, y: -30.46194}
+        - {x: 66.5, y: 20.53806}
+        - {x: 65.5, y: 23.53806}
+        - {x: 53.5, y: 58.53806}
+        - {x: 48.5, y: 64.53806}
+        - {x: 17.5, y: 64.53806}
+        - {x: -20.5, y: 43.53806}
+        - {x: -30.5, y: 12.53806}
+        - {x: -22.5, y: -6.461937}
+        - {x: -45.5, y: -9.461937}
+        - {x: -63.5, y: -18.46194}
+        - {x: -66.5, y: -33.46193}
+        - {x: -66.5, y: -48.46194}
+        - {x: -43.5, y: -66.46194}
+        - {x: -29.5, y: -66.46194}
+        - {x: -18.5, y: -65.46194}
+        - {x: 6.5, y: -66.46194}
+        - {x: 29.5, y: -66.46194}
+      tessellationDetail: 0
+      bones: []
+      spriteID: fd8d9aeeb12b405cae27aec855f794d5
+      internalID: 21300034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_18
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 583
+        width: 84
+        height: 85
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -15, y: -42.5}
+        - {x: -42, y: -28.5}
+        - {x: -42, y: 21.5}
+        - {x: -34, y: 42.5}
+        - {x: 28, y: 42.5}
+        - {x: 42, y: 30.5}
+        - {x: 42, y: -15.5}
+        - {x: 27, y: -42.5}
+      - - {x: -27, y: -42.5}
+        - {x: -42, y: -42.5}
+        - {x: -42, y: -35.5}
+        - {x: -33, y: -35.5}
+        - {x: -27, y: -41.5}
+      physicsShape:
+      - - {x: -42, y: -42.5}
+        - {x: -29, y: -42.5}
+        - {x: -29, y: -40.5}
+        - {x: -35, y: -36.5}
+        - {x: -42, y: -36.5}
+      - - {x: 41, y: 11.5}
+        - {x: 33, y: 24.5}
+        - {x: 27, y: 37.5}
+        - {x: 23, y: 40.5}
+        - {x: 11, y: 41.5}
+        - {x: -11, y: 42.5}
+        - {x: -20, y: 42.5}
+        - {x: -41, y: 18.5}
+        - {x: -41, y: -4.5}
+        - {x: -39, y: -13.5}
+        - {x: -36, y: -19.5}
+        - {x: -3, y: -41.5}
+        - {x: 3, y: -41.5}
+        - {x: 5, y: -40.5}
+        - {x: 31, y: -22.5}
+        - {x: 34, y: -18.5}
+        - {x: 41, y: 3.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c83b30ac8174f489c43463923f0d6fa
+      internalID: 21300036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_19
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 360
+        width: 261
+        height: 262
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 114.5, y: 119}
+        - {x: 107.5, y: 128}
+        - {x: 107.5, y: 131}
+        - {x: 130.5, y: 131}
+        - {x: 130.5, y: 114}
+        - {x: 128.5, y: 114}
+      - - {x: 127.5, y: -46}
+        - {x: 117.5, y: -29}
+        - {x: 117.5, y: -17}
+        - {x: 123.5, y: 13}
+        - {x: 127.5, y: 22}
+        - {x: 130.5, y: 23}
+        - {x: 130.5, y: -46}
+      - - {x: -44.5, y: -131}
+        - {x: -130.5, y: -81}
+        - {x: -130.5, y: 42}
+        - {x: 28.5, y: 131}
+        - {x: 60.5, y: 131}
+        - {x: 122.5, y: 106}
+        - {x: 130.5, y: 94}
+        - {x: 130.5, y: 44}
+        - {x: 65.5, y: -100}
+        - {x: -17.5, y: -131}
+      physicsShape:
+      - - {x: 29.5, y: -103}
+        - {x: 43.5, y: -97.99999}
+        - {x: 54.5, y: -89}
+        - {x: 80.5, y: -47}
+        - {x: 94.5, y: -23}
+        - {x: 102.5, y: -1}
+        - {x: 125.5, y: 57}
+        - {x: 130.5, y: 68}
+        - {x: 130.5, y: 71}
+        - {x: 127.5, y: 78}
+        - {x: 118.5, y: 97.99999}
+        - {x: 108.5, y: 105}
+        - {x: 92.49999, y: 111}
+        - {x: 81.5, y: 116}
+        - {x: 66.5, y: 123}
+        - {x: 50.5, y: 131}
+        - {x: 40.5, y: 131}
+        - {x: 11.5, y: 115}
+        - {x: -8.5, y: 105}
+        - {x: -34.5, y: 91}
+        - {x: -46.5, y: 84}
+        - {x: -57.5, y: 77}
+        - {x: -109.5, y: 42}
+        - {x: -117.5, y: 36}
+        - {x: -122.5, y: 32}
+        - {x: -128.5, y: 17}
+        - {x: -130.5, y: 11}
+        - {x: -130.5, y: -6}
+        - {x: -128.5, y: -15}
+        - {x: -127.5, y: -30}
+        - {x: -126.5, y: -52}
+        - {x: -125.5, y: -66.99999}
+        - {x: -124.5, y: -74}
+        - {x: -119.5, y: -79.99999}
+        - {x: -109.5, y: -87}
+        - {x: -95.5, y: -95}
+        - {x: -55.5, y: -121}
+        - {x: -42.5, y: -129}
+        - {x: -37.5, y: -131}
+        - {x: -33.5, y: -130}
+        - {x: -17.5, y: -123}
+        - {x: -4.5, y: -117}
+        - {x: 5.5, y: -113}
+      - - {x: 126.5, y: 17}
+        - {x: 118.5, y: -21}
+        - {x: 118.5, y: -29}
+        - {x: 128.5, y: -43}
+        - {x: 130.5, y: -43}
+        - {x: 130.5, y: 17}
+      - - {x: 110.5, y: 131}
+        - {x: 110.5, y: 129}
+        - {x: 118.5, y: 122}
+        - {x: 128.5, y: 116}
+        - {x: 130.5, y: 116}
+        - {x: 130.5, y: 131}
+      tessellationDetail: 0
+      bones: []
+      spriteID: ced5594e864246698dde7053c586885e
+      internalID: 21300038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_20
+      rect:
+        serializedVersion: 2
+        x: 580
+        y: 595
+        width: 80
+        height: 74
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 2, y: -37}
+        - {x: -40, y: -17}
+        - {x: -40, y: 22}
+        - {x: -13, y: 37}
+        - {x: 6, y: 37}
+        - {x: 40, y: -4}
+        - {x: 40, y: -21}
+        - {x: 24, y: -37}
+      - - {x: -30, y: -37}
+        - {x: -40, y: -37}
+        - {x: -40, y: -31}
+        - {x: -31, y: -34}
+      physicsShape:
+      - - {x: -34, y: -37}
+        - {x: -35, y: -34}
+        - {x: -40, y: -33}
+        - {x: -40, y: -37}
+      - - {x: 38, y: -1}
+        - {x: 30, y: 4}
+        - {x: 5, y: 37}
+        - {x: -4, y: 37}
+        - {x: -14, y: 35}
+        - {x: -32, y: 15}
+        - {x: -38, y: 6}
+        - {x: -38, y: -4}
+        - {x: -37, y: -8}
+        - {x: -4, y: -29}
+        - {x: 9.999999, y: -37}
+        - {x: 19, y: -37}
+        - {x: 35, y: -26}
+        - {x: 39, y: -18}
+        - {x: 39, y: -6}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 27c99713d178408bb445c5ef2519836a
+      internalID: 21300040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_23
+      rect:
+        serializedVersion: 2
+        x: 8.012913
+        y: 348
+        width: 287.911
+        height: 243
+      alignment: 9
+      pivot: {x: 0.5001097, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 45.03159, y: -121.5}
+        - {x: -120.9684, y: -121.5}
+        - {x: -143.9684, y: -87.5}
+        - {x: -143.9684, y: 85.5}
+        - {x: -137.9684, y: 119.5}
+        - {x: -132.9684, y: 120.5}
+        - {x: -131.9684, y: 120.5}
+        - {x: -131.9684, y: 121.5}
+        - {x: -124.9684, y: 121.5}
+        - {x: -106.9684, y: 121.5}
+        - {x: -106.9684, y: 121.5}
+        - {x: -61.96841, y: 121.5}
+        - {x: -61.96841, y: 121.5}
+        - {x: 109.0316, y: 120.5}
+        - {x: 109.0316, y: 121.5}
+        - {x: 136.0316, y: 121.5}
+        - {x: 136.0316, y: 120.5}
+        - {x: 133.0316, y: 116.5}
+        - {x: 131.0316, y: 115.5}
+        - {x: 144.0316, y: 95.5}
+        - {x: 144.0316, y: -61.5}
+      physicsShape:
+      - - {x: 66.03159, y: -61.5}
+        - {x: 73.03158, y: -56.5}
+        - {x: 77.03159, y: -46.5}
+        - {x: 78.03159, y: -40.5}
+        - {x: 85.03159, y: -25.5}
+        - {x: 87.03159, y: -22.5}
+        - {x: 97.03159, y: -14.5}
+        - {x: 107.0316, y: -9.5}
+        - {x: 138.0316, y: 10.5}
+        - {x: 140.0316, y: 21.5}
+        - {x: 140.0316, y: 47.5}
+        - {x: 142.0316, y: 47.5}
+        - {x: 142.0316, y: 82.5}
+        - {x: 139.0316, y: 86.5}
+        - {x: 111.0316, y: 103.5}
+        - {x: 87.03159, y: 119.5}
+        - {x: 56.03159, y: 119.5}
+        - {x: 44.03159, y: 118.5}
+        - {x: 23.03158, y: 116.5}
+        - {x: 8.031586, y: 114.5}
+        - {x: -30.96841, y: 107.5}
+        - {x: -68.96841, y: 99.5}
+        - {x: -88.96841, y: 95.5}
+        - {x: -115.9684, y: 89.5}
+        - {x: -118.9684, y: 88.5}
+        - {x: -130.9684, y: 77.5}
+        - {x: -140.9684, y: 61.5}
+        - {x: -141.9684, y: 56.5}
+        - {x: -141.9684, y: 31.5}
+        - {x: -140.9684, y: 30.5}
+        - {x: -140.9684, y: -12.5}
+        - {x: -141.9684, y: -26.5}
+        - {x: -141.9684, y: -39.5}
+        - {x: -123.9684, y: -57.5}
+        - {x: -109.9684, y: -66.5}
+        - {x: -84.96841, y: -84.5}
+        - {x: -83.96841, y: -84.5}
+        - {x: -63.96841, y: -105.5}
+        - {x: -56.96841, y: -112.5}
+        - {x: -51.96841, y: -113.5}
+        - {x: -40.96841, y: -114.5}
+        - {x: -17.96841, y: -116.5}
+        - {x: -13.96841, y: -116.5}
+        - {x: 4.031586, y: -104.5}
+        - {x: 15.03158, y: -96.5}
+        - {x: 57.03159, y: -66.5}
+      - - {x: -104.9684, y: 121.5}
+        - {x: -104.9684, y: 115.5}
+        - {x: -98.96841, y: 113.5}
+        - {x: -77.96841, y: 113.5}
+        - {x: -67.96841, y: 119.5}
+        - {x: -67.96841, y: 121.5}
+      - - {x: 118.0316, y: 114.5}
+        - {x: 125.0316, y: 114.5}
+        - {x: 132.0316, y: 118.5}
+        - {x: 132.0316, y: 121.5}
+        - {x: 112.0316, y: 121.5}
+        - {x: 113.0316, y: 118.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe2d976fd9eb4373a8874790ffd22eda
+      internalID: 21300042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_25
+      rect:
+        serializedVersion: 2
+        x: 692
+        y: 356
+        width: 236
+        height: 96
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -3, y: 48}
+        - {x: 15, y: 48}
+        - {x: 89, y: 48}
+        - {x: 95, y: 43}
+        - {x: 118, y: -7}
+        - {x: 118, y: -48}
+        - {x: -82, y: -48}
+        - {x: -118, y: -16}
+        - {x: -118, y: 46}
+        - {x: -117, y: 48}
+      physicsShape:
+      - - {x: 87, y: -45}
+        - {x: 94, y: -35}
+        - {x: 101, y: -21}
+        - {x: 101, y: 9.999999}
+        - {x: 98.99999, y: 13}
+        - {x: 91.99999, y: 17}
+        - {x: 78, y: 24}
+        - {x: 85.99999, y: 33}
+        - {x: 87, y: 38}
+        - {x: 79.99999, y: 43}
+        - {x: 76, y: 42}
+        - {x: 72, y: 47}
+        - {x: 59, y: 47}
+        - {x: 55, y: 43}
+        - {x: 54, y: 47}
+        - {x: 50, y: 47}
+        - {x: 35, y: 45}
+        - {x: 30, y: 28}
+        - {x: 33, y: 19}
+        - {x: 12, y: 23}
+        - {x: -30, y: 27}
+        - {x: -45, y: 20}
+        - {x: -63, y: 22}
+        - {x: -87, y: 21}
+        - {x: -104, y: 0}
+        - {x: -104, y: -9}
+        - {x: -94, y: -28}
+        - {x: -78, y: -38}
+        - {x: -53, y: -44}
+        - {x: -36, y: -48}
+        - {x: -22, y: -48}
+        - {x: -5, y: -39}
+        - {x: 21, y: -39}
+        - {x: 43, y: -45}
+      - - {x: 97.99999, y: -25}
+        - {x: 96, y: -31}
+        - {x: 96, y: -43}
+        - {x: 97.99999, y: -44}
+        - {x: 110, y: -44}
+        - {x: 117, y: -42}
+        - {x: 118, y: -36}
+        - {x: 118, y: -27}
+        - {x: 116, y: -25}
+      - - {x: 105, y: -13}
+        - {x: 101, y: -18}
+        - {x: 101, y: -22}
+        - {x: 105, y: -25}
+        - {x: 110, y: -25}
+        - {x: 112, y: -24}
+        - {x: 112, y: -16}
+        - {x: 111, y: -13}
+      - - {x: -115, y: 18}
+        - {x: -118, y: 13}
+        - {x: -118, y: 6}
+        - {x: -110, y: 0}
+        - {x: -104, y: 0}
+        - {x: -100, y: 3}
+        - {x: -100, y: 9}
+        - {x: -106, y: 18}
+      - - {x: -95, y: 39}
+        - {x: -100, y: 38}
+        - {x: -106, y: 32}
+        - {x: -106, y: 20}
+        - {x: -105, y: 15}
+        - {x: -95, y: 15}
+        - {x: -87, y: 19}
+        - {x: -87, y: 37}
+        - {x: -90, y: 39}
+      - - {x: -79, y: 42}
+        - {x: -87, y: 39}
+        - {x: -87, y: 22}
+        - {x: -83, y: 20}
+        - {x: -79, y: 20}
+        - {x: -66.99999, y: 24}
+        - {x: -66.99999, y: 36}
+        - {x: -71, y: 42}
+      - - {x: -1, y: 48}
+        - {x: -1, y: 47}
+        - {x: 2, y: 44}
+        - {x: 9, y: 44}
+        - {x: 12, y: 47}
+        - {x: 12, y: 48}
+      tessellationDetail: 0
+      bones: []
+      spriteID: a2efa138108f4bbaa56aefb99e768ad1
+      internalID: 21300044
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_33
+      rect:
+        serializedVersion: 2
+        x: 743
+        y: 287
+        width: 45
+        height: 43
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 22.5, y: -21.5}
+        - {x: -22.5, y: -21.5}
+        - {x: -22.5, y: 1.5}
+        - {x: -17.5, y: 12.5}
+        - {x: -12.5, y: 21.5}
+        - {x: 17.5, y: 21.5}
+        - {x: 22.5, y: 4.5}
+      physicsShape:
+      - - {x: 0.5, y: 21.5}
+        - {x: -11.5, y: 21.5}
+        - {x: -22.5, y: -2.5}
+        - {x: -22.5, y: -16.5}
+        - {x: -20.5, y: -21.5}
+        - {x: 18.5, y: -21.5}
+        - {x: 21.5, y: -18.5}
+        - {x: 21.5, y: -3.5}
+        - {x: 7.5, y: 14.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e86c83e76e4463aa86edd84c9524fa0
+      internalID: 21300046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_42
+      rect:
+        serializedVersion: 2
+        x: 920.0165
+        y: 235
+        width: 39.98349
+        height: 33
+      alignment: 9
+      pivot: {x: 0.4997928, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -19.00828, y: -16.5}
+        - {x: -20.00828, y: -13.5}
+        - {x: -20.00828, y: 6.5}
+        - {x: -13.00828, y: 16.5}
+        - {x: 19.99172, y: 16.5}
+        - {x: 19.99172, y: -6.5}
+        - {x: 5.991716, y: -16.5}
+      physicsShape:
+      - - {x: -13.00828, y: 16.5}
+        - {x: -19.00828, y: 5.5}
+        - {x: -19.00828, y: -16.5}
+        - {x: 15.99172, y: -16.5}
+        - {x: 18.99172, y: -8.5}
+        - {x: 18.99172, y: 13.5}
+        - {x: 13.99172, y: 16.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: edf9c3aa985c409c9fcdce122be72b9b
+      internalID: 21300048
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_46
+      rect:
+        serializedVersion: 2
+        x: 738
+        y: 160
+        width: 24
+        height: 25
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -12, y: -12.5}
+        - {x: -12, y: 12.5}
+        - {x: 12, y: 12.5}
+        - {x: 12, y: -12.5}
+      physicsShape:
+      - - {x: 4, y: 12.5}
+        - {x: -12, y: 2.5}
+        - {x: -12, y: -7.5}
+        - {x: -5, y: -12.5}
+        - {x: -1, y: -12.5}
+        - {x: 1, y: -11.5}
+        - {x: 8, y: -6.5}
+        - {x: 12, y: 0.5}
+        - {x: 12, y: 12.5}
+      - - {x: -12, y: 12.5}
+        - {x: -12, y: 9.5}
+        - {x: -8, y: 9.5}
+        - {x: -6, y: 11.5}
+        - {x: -6, y: 12.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: e503f847e9564d1fbde6e6713688007c
+      internalID: 21300050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_47
+      rect:
+        serializedVersion: 2
+        x: 776
+        y: 176
+        width: 68
+        height: 42
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -25, y: -21}
+        - {x: -34, y: -15}
+        - {x: -34, y: 21}
+        - {x: 20, y: 21}
+        - {x: 34, y: 6}
+        - {x: 34, y: -17}
+        - {x: 30, y: -21}
+      physicsShape:
+      - - {x: -28, y: 21}
+        - {x: -33, y: 19}
+        - {x: -33, y: -18}
+        - {x: -26, y: -20}
+        - {x: 20, y: -20}
+        - {x: 23, y: -7}
+        - {x: 23, y: 11}
+        - {x: 12, y: 21}
+      - - {x: 26, y: -3}
+        - {x: 20, y: -8}
+        - {x: 20, y: -15}
+        - {x: 22, y: -20}
+        - {x: 28, y: -20}
+        - {x: 34, y: -12}
+        - {x: 34, y: -9}
+        - {x: 30, y: -3}
+      tessellationDetail: 0
+      bones: []
+      spriteID: a8ef943302294284b7dd4c16be242c3d
+      internalID: 21300052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_3
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 927
+        width: 38
+        height: 45
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 19, y: -22.5}
+        - {x: 13, y: -22.5}
+        - {x: 12, y: -22.5}
+        - {x: -11, y: -22.5}
+        - {x: -19, y: -18.5}
+        - {x: -19, y: 0.5}
+        - {x: -4, y: 21.5}
+        - {x: -1, y: 22.5}
+        - {x: 18, y: 22.5}
+        - {x: 19, y: 21.5}
+        - {x: 19, y: -8.5}
+        - {x: 18, y: -14.5}
+        - {x: 18, y: -14.5}
+        - {x: 19, y: -14.5}
+      physicsShape:
+      - - {x: 13, y: -21.5}
+        - {x: 13, y: -22.5}
+        - {x: 19, y: -22.5}
+        - {x: 19, y: -15.5}
+        - {x: 15, y: -15.5}
+      - - {x: 16, y: 22.5}
+        - {x: 1, y: 22.5}
+        - {x: -17, y: 12.5}
+        - {x: -17, y: -14.5}
+        - {x: -5, y: -22.5}
+        - {x: -1, y: -22.5}
+        - {x: 12, y: -12.5}
+        - {x: 18, y: -0.5}
+        - {x: 18, y: 17.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: adc9f64b055d41f4b3a9864dc328057a
+      internalID: 21300054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_9
+      rect:
+        serializedVersion: 2
+        x: 284
+        y: 893
+        width: 43
+        height: 56
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -13.5, y: -28}
+        - {x: -21.5, y: -24}
+        - {x: -21.5, y: 9}
+        - {x: -21.5, y: 28}
+        - {x: -11.5, y: 28}
+        - {x: -11.5, y: 25}
+        - {x: -9.5, y: 28}
+        - {x: 21.5, y: 28}
+        - {x: 21.5, y: -11}
+        - {x: -0.5, y: -28}
+      physicsShape:
+      - - {x: 1.5, y: 28}
+        - {x: -16.5, y: 14}
+        - {x: -21.5, y: 2}
+        - {x: -21.5, y: -14}
+        - {x: -12.5, y: -24}
+        - {x: -0.5, y: -24}
+        - {x: 21.5, y: -8}
+        - {x: 21.5, y: 20}
+        - {x: 13.5, y: 28}
+      - - {x: -21.5, y: 28}
+        - {x: -21.5, y: 13}
+        - {x: -19.5, y: 13}
+        - {x: -13.5, y: 20}
+        - {x: -13.5, y: 28}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5ae8428b50e743ce9b313b566f31b8e3
+      internalID: 21300056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_17
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 583
+        width: 132
+        height: 54
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 63, y: -10}
+        - {x: 61, y: -8}
+        - {x: 61, y: -5}
+        - {x: 66, y: -3}
+        - {x: 66, y: -9}
+        - {x: 65, y: -10}
+      - - {x: -50, y: -27}
+        - {x: -66, y: -14}
+        - {x: -66, y: 2}
+        - {x: -27, y: 27}
+        - {x: 43, y: 27}
+        - {x: 61, y: 16}
+        - {x: 61, y: -3}
+        - {x: 58, y: -14}
+        - {x: -31, y: -27}
+      physicsShape:
+      - - {x: 56, y: -7}
+        - {x: 60, y: 3}
+        - {x: 60, y: 9.999999}
+        - {x: 38, y: 27}
+        - {x: -3, y: 27}
+        - {x: -17, y: 26}
+        - {x: -28, y: 20}
+        - {x: -52, y: 4}
+        - {x: -66, y: -7}
+        - {x: -66, y: -9.999999}
+        - {x: -62, y: -15}
+        - {x: -46, y: -27}
+        - {x: -36, y: -27}
+        - {x: -3, y: -19}
+        - {x: 37, y: -12}
+        - {x: 53, y: -9.999999}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c32dd29537e46feb48d30d28fce4281
+      internalID: 21300058
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_28
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 13
+        width: 295
+        height: 313
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -57.5, y: 156.5}
+        - {x: -147.5, y: 156.5}
+        - {x: -147.5, y: -156.5}
+        - {x: 147.5, y: -156.5}
+        - {x: 147.5, y: -4.5}
+        - {x: 19.5, y: -1.5}
+        - {x: 12.5, y: 113.5}
+      physicsShape:
+      - - {x: 110.5, y: -95.5}
+        - {x: 104.5, y: -90.5}
+        - {x: 80.5, y: -71.5}
+        - {x: 69.5, y: -74.5}
+        - {x: 37.5, y: -87.5}
+        - {x: -2.5, y: -79.49999}
+        - {x: -22.5, y: -69.5}
+        - {x: -25.5, y: -69.5}
+        - {x: -51.5, y: -33.5}
+        - {x: -61.5, y: -14.5}
+        - {x: -64.5, y: 1.5}
+        - {x: -52.5, y: 18.5}
+        - {x: -47.5, y: 26.5}
+        - {x: -39.5, y: 62.5}
+        - {x: -43.5, y: 79.49999}
+        - {x: -51.5, y: 104.5}
+        - {x: -60.5, y: 112.5}
+        - {x: -80.5, y: 112.5}
+        - {x: -101.5, y: 110.5}
+        - {x: -110.5, y: 112.5}
+        - {x: -113.5, y: 112.5}
+        - {x: -118.5, y: 110.5}
+        - {x: -139.5, y: 89.5}
+        - {x: -139.5, y: 66.5}
+        - {x: -138.5, y: 16.5}
+        - {x: -139.5, y: 15.5}
+        - {x: -141.5, y: -13.5}
+        - {x: -145.5, y: -49.5}
+        - {x: -145.5, y: -66.5}
+        - {x: -137.5, y: -76.5}
+        - {x: -61.5, y: -151.5}
+        - {x: -58.5, y: -152.5}
+        - {x: 79.49999, y: -152.5}
+        - {x: 82.5, y: -151.5}
+        - {x: 92.49999, y: -143.5}
+        - {x: 110.5, y: -102.5}
+      - - {x: 100.5, y: 149.5}
+        - {x: 76.5, y: 105.5}
+        - {x: 76.5, y: 87.5}
+        - {x: 93.5, y: 66.5}
+        - {x: 106.5, y: 59.5}
+        - {x: 108.5, y: 59.5}
+        - {x: 141.5, y: 74.5}
+        - {x: 145.5, y: 78.5}
+        - {x: 147.5, y: 78.5}
+        - {x: 147.5, y: 149.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: a730939c867d440e92f8fa1806d07c32
+      internalID: 21300060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_30
+      rect:
+        serializedVersion: 2
+        x: 353
+        y: 232
+        width: 224
+        height: 102
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -93, y: -48}
+        - {x: -112, y: -3}
+        - {x: -112, y: 32}
+        - {x: -102, y: 51}
+        - {x: 104, y: 51}
+        - {x: 112, y: 43}
+        - {x: 112, y: -34}
+        - {x: 109, y: -48}
+        - {x: 29, y: -51}
+        - {x: -91, y: -51}
+      physicsShape:
+      - - {x: 48, y: 8}
+        - {x: 48, y: 16}
+        - {x: 46, y: 23}
+        - {x: 39, y: 24}
+        - {x: 3, y: 24}
+        - {x: -15, y: 23}
+        - {x: -33, y: 20}
+        - {x: -61, y: 18}
+        - {x: -76, y: 4}
+        - {x: -76, y: 2}
+        - {x: -75, y: -1}
+        - {x: -58, y: -23}
+        - {x: -36, y: -23}
+        - {x: -12, y: -18}
+        - {x: 34, y: -14}
+        - {x: 42, y: -7}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 89d2ed4a00ad4e20aeeb56108db6fddc
+      internalID: 21300062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_31
+      rect:
+        serializedVersion: 2
+        x: 596
+        y: 244
+        width: 83
+        height: 93
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -30.5, y: -46.5}
+        - {x: -41.5, y: -34.5}
+        - {x: -41.5, y: 30.5}
+        - {x: -23.5, y: 46.5}
+        - {x: 25.5, y: 46.5}
+        - {x: 40.5, y: 38.5}
+        - {x: 41.5, y: 24.5}
+        - {x: 41.5, y: -23.5}
+        - {x: 20.5, y: -46.5}
+      physicsShape:
+      - - {x: 13.5, y: 22.5}
+        - {x: 1.5, y: 22.5}
+        - {x: -18.5, y: 14.5}
+        - {x: -18.5, y: -2.5}
+        - {x: -12.5, y: -16.5}
+        - {x: 16.5, y: -16.5}
+        - {x: 21.5, y: -7.5}
+        - {x: 21.5, y: 0.5}
+        - {x: 16.5, y: 21.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf82e042441044fc86c7c37a65e6d23b
+      internalID: 21300064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_44
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 12.02835
+        width: 326
+        height: 221.9716
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4999361}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -129, y: 107.9858}
+        - {x: -130, y: 110.9858}
+        - {x: -112, y: 110.9858}
+        - {x: -112, y: 109.9858}
+        - {x: -114, y: 107.9858}
+      - - {x: -159, y: -107.0142}
+        - {x: -163, y: -94.01418}
+        - {x: -163, y: 85.98582}
+        - {x: -80, y: 110.9858}
+        - {x: 155, y: 110.9858}
+        - {x: 163, y: 104.9858}
+        - {x: 163, y: -91.01418}
+        - {x: 80, y: -111.0142}
+        - {x: -150, y: -111.0142}
+      physicsShape:
+      - - {x: 122, y: -42.01418}
+        - {x: 122, y: -36.01418}
+        - {x: 118, y: -2.014175}
+        - {x: 111, y: 6.985825}
+        - {x: 100, y: 15.98582}
+        - {x: 77, y: 17.98582}
+        - {x: 11, y: 20.98582}
+        - {x: -33, y: 24.98582}
+        - {x: -72, y: 31.98582}
+        - {x: -76, y: 32.98582}
+        - {x: -79.99999, y: 32.98582}
+        - {x: -107, y: 23.98582}
+        - {x: -113, y: 15.98582}
+        - {x: -113, y: -2.014175}
+        - {x: -110, y: -26.01418}
+        - {x: -109, y: -37.01418}
+        - {x: -97, y: -47.01418}
+        - {x: -82, y: -48.01418}
+        - {x: -55, y: -48.01418}
+        - {x: -54, y: -47.01418}
+        - {x: 113, y: -47.01418}
+        - {x: 120, y: -44.01418}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6b4e25f369aa448bb2bd18d79530047f
+      internalID: 21300066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_0
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 920
+        width: 100
+        height: 96
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -30, y: -46}
+        - {x: -50, y: -22}
+        - {x: -50, y: 24}
+        - {x: -44, y: 42}
+        - {x: -18, y: 48}
+        - {x: 27, y: 48}
+        - {x: 50, y: 22}
+        - {x: 50, y: -22}
+        - {x: 21, y: -48}
+        - {x: -17, y: -48}
+      physicsShape:
+      - - {x: 47, y: 15}
+        - {x: 34, y: 27}
+        - {x: 11, y: 46}
+        - {x: 2, y: 46}
+        - {x: -28, y: 35}
+        - {x: -42, y: 24}
+        - {x: -46, y: 17}
+        - {x: -49, y: 9.999999}
+        - {x: -49, y: -2}
+        - {x: -41, y: -23}
+        - {x: -33, y: -32}
+        - {x: 0, y: -46}
+        - {x: 15, y: -46}
+        - {x: 26, y: -39}
+        - {x: 49, y: -20}
+        - {x: 49, y: 8}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 926fae321e0a4df8a94d2323692b905f
+      internalID: 21300068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_14
+      rect:
+        serializedVersion: 2
+        x: 696
+        y: 620.0267
+        width: 84
+        height: 59.9465
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5000003}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -7, y: -29.99998}
+        - {x: -42, y: -4.999983}
+        - {x: -42, y: 28.00002}
+        - {x: -41, y: 30.00002}
+        - {x: 15, y: 30.00002}
+        - {x: 42, y: 22.00002}
+        - {x: 42, y: -15.99998}
+        - {x: 36, y: -29.99998}
+      physicsShape:
+      - - {x: 41, y: 11.00002}
+        - {x: 24, y: 10.00002}
+        - {x: 21, y: 17.00002}
+        - {x: 15, y: 25.00002}
+        - {x: -4, y: 20.00002}
+        - {x: -22, y: 29.00002}
+        - {x: -33, y: 29.00002}
+        - {x: -42, y: 20.00002}
+        - {x: -42, y: 8.000017}
+        - {x: -5, y: -28.99998}
+        - {x: 25, y: -28.99998}
+        - {x: 35, y: -23.99998}
+        - {x: 42, y: -2.999983}
+        - {x: 42, y: 8.000017}
+      tessellationDetail: 0
+      bones: []
+      spriteID: e26e1b59915147bf900a98db2a983382
+      internalID: 21300070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_16
+      rect:
+        serializedVersion: 2
+        x: 875
+        y: 611
+        width: 69
+        height: 66
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -13.5, y: -33}
+        - {x: -34.5, y: -14}
+        - {x: -34.5, y: 33}
+        - {x: 34.5, y: 33}
+        - {x: 34.5, y: -19}
+        - {x: 21.5, y: -33}
+      physicsShape:
+      - - {x: 21.5, y: 33}
+        - {x: 11.5, y: 25}
+        - {x: 8.5, y: 20}
+        - {x: 8.5, y: 11}
+        - {x: 7.5, y: 12}
+        - {x: 2.5, y: 13}
+        - {x: -14.5, y: 33}
+        - {x: -26.5, y: 33}
+        - {x: -34.5, y: 25}
+        - {x: -34.5, y: -16}
+        - {x: -7.5, y: -33}
+        - {x: 19.5, y: -33}
+        - {x: 34.5, y: -11}
+        - {x: 34.5, y: 24}
+        - {x: 29.5, y: 33}
+      tessellationDetail: 0
+      bones: []
+      spriteID: eaaff75df7584cd3bb817cbf0dad724d
+      internalID: 21300072
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_22
+      rect:
+        serializedVersion: 2
+        x: 962
+        y: 612.0267
+        width: 42
+        height: 59.97325
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4997773}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -6, y: -30.01336}
+        - {x: -21, y: -10.01336}
+        - {x: -21, y: 23.98664}
+        - {x: -13, y: 29.98664}
+        - {x: 21, y: 29.98664}
+        - {x: 21, y: -22.01336}
+        - {x: 7, y: -30.01336}
+      physicsShape:
+      - - {x: -21, y: 28.98664}
+        - {x: -21, y: -5.013357}
+        - {x: -5, y: -28.01336}
+        - {x: 11, y: -28.01336}
+        - {x: 21, y: -22.01336}
+        - {x: 21, y: 28.98664}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d726575cc93441389bb6ed1718fc90d
+      internalID: 21300074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_21
+      rect:
+        serializedVersion: 2
+        x: 697
+        y: 445
+        width: 179
+        height: 172
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -55.5, y: -85}
+        - {x: -89.5, y: -81}
+        - {x: -89.5, y: 55}
+        - {x: -44.5, y: 84}
+        - {x: -34.5, y: 84}
+        - {x: -34.5, y: 85}
+        - {x: -33.5, y: 86}
+        - {x: -25.5, y: 86}
+        - {x: -25.5, y: 85}
+        - {x: -26.5, y: 84}
+        - {x: 41.5, y: 84}
+        - {x: 89.5, y: 45}
+        - {x: 89.5, y: -69}
+        - {x: 43.5, y: -86}
+        - {x: -45.5, y: -86}
+        - {x: -49.5, y: -86}
+        - {x: -55.5, y: -86}
+      - - {x: 89.5, y: -86}
+        - {x: 58.5, y: -86}
+        - {x: 58.5, y: -84}
+        - {x: 64.5, y: -80}
+        - {x: 83.5, y: -78}
+        - {x: 89.5, y: -78}
+      physicsShape:
+      - - {x: 77.5, y: -85.99999}
+        - {x: 76.5, y: -83}
+        - {x: 64.5, y: -83}
+        - {x: 63.5, y: -85.99999}
+      - - {x: 79.49999, y: -85}
+        - {x: 79.49999, y: -85.99999}
+        - {x: 89.5, y: -85.99999}
+        - {x: 89.5, y: -79.99999}
+        - {x: 82.5, y: -79.99999}
+      - - {x: 23.5, y: -62}
+        - {x: 20.5, y: -66}
+        - {x: 19.5, y: -70}
+        - {x: 19.5, y: -77}
+        - {x: 24.5, y: -83}
+        - {x: 35.5, y: -83}
+        - {x: 39.5, y: -76}
+        - {x: 39.5, y: -66}
+        - {x: 33.5, y: -62}
+      - - {x: 56.5, y: -52}
+        - {x: 41.5, y: -52}
+        - {x: 34.5, y: -55}
+        - {x: 34.5, y: -66}
+        - {x: 49.5, y: -72.99999}
+        - {x: 53.5, y: -72.99999}
+        - {x: 55.5, y: -72}
+        - {x: 63.5, y: -66}
+        - {x: 63.5, y: -60}
+        - {x: 62.5, y: -56}
+      - - {x: -59.5, y: -54}
+        - {x: -65.5, y: -60}
+        - {x: -65.5, y: -66}
+        - {x: -64.5, y: -69}
+        - {x: -52.5, y: -69}
+        - {x: -48.5, y: -62}
+        - {x: -48.5, y: -56}
+        - {x: -52.5, y: -54}
+      - - {x: -70.5, y: -48}
+        - {x: -80.5, y: -48}
+        - {x: -85.49999, y: -57}
+        - {x: -85.49999, y: -62}
+        - {x: -78.5, y: -66.99999}
+        - {x: -67.5, y: -66.99999}
+        - {x: -61.5, y: -59}
+        - {x: -61.5, y: -51}
+        - {x: -65.5, y: -49}
+      - - {x: 64.5, y: 12}
+        - {x: 61.5, y: 34}
+        - {x: 55.5, y: 41}
+        - {x: 41.5, y: 39}
+        - {x: 34.5, y: 49}
+        - {x: 23.5, y: 55}
+        - {x: 7.5, y: 54}
+        - {x: -3.5, y: 66.99999}
+        - {x: -16.5, y: 65}
+        - {x: -30.5, y: 72.99999}
+        - {x: -41.5, y: 72.99999}
+        - {x: -54.5, y: 62}
+        - {x: -57.5, y: 53}
+        - {x: -57.5, y: 49}
+        - {x: -54.5, y: 43}
+        - {x: -56.5, y: 29}
+        - {x: -61.5, y: 40}
+        - {x: -66.5, y: 45}
+        - {x: -72.5, y: 48}
+        - {x: -84.5, y: 40}
+        - {x: -89.5, y: 31}
+        - {x: -89.5, y: 22}
+        - {x: -80.5, y: 14}
+        - {x: -75.5, y: 15}
+        - {x: -70.5, y: 19}
+        - {x: -75.5, y: 14}
+        - {x: -76.5, y: 11}
+        - {x: -76.5, y: -3}
+        - {x: -73.49999, y: -25}
+        - {x: -66.5, y: -45}
+        - {x: -55.5, y: -52}
+        - {x: -23.5, y: -61}
+        - {x: 6.5, y: -66}
+        - {x: 18.5, y: -66}
+        - {x: 45.5, y: -36}
+        - {x: 53.5, y: -22}
+        - {x: 64.5, y: -1}
+      - - {x: 75.5, y: 34}
+        - {x: 67.5, y: 32}
+        - {x: 63.5, y: 23}
+        - {x: 63.5, y: 15}
+        - {x: 73.49999, y: 15}
+        - {x: 88.5, y: 23}
+        - {x: 88.5, y: 33}
+        - {x: 86.5, y: 34}
+      - - {x: 29.5, y: 81}
+        - {x: 13.5, y: 81}
+        - {x: 7.5, y: 77}
+        - {x: 3.5, y: 66}
+        - {x: 3.5, y: 61}
+        - {x: 5.5, y: 58}
+        - {x: 26.5, y: 58}
+        - {x: 34.5, y: 70}
+        - {x: 34.5, y: 79}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3f9ec7e2d0c041ef9f341a1fa4719ce8
+      internalID: 21300076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_29
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 204
+        width: 124
+        height: 129
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -33, y: -64.5}
+        - {x: -62, y: -34.5}
+        - {x: -62, y: 43.5}
+        - {x: -29, y: 64.5}
+        - {x: 56, y: 64.5}
+        - {x: 62, y: 57.5}
+        - {x: 62, y: -38.5}
+        - {x: 44, y: -47.5}
+        - {x: -8, y: -64.5}
+      physicsShape:
+      - - {x: 25, y: 50.5}
+        - {x: 9.999999, y: 50.5}
+        - {x: -15, y: 49.5}
+        - {x: -22, y: 39.5}
+        - {x: -41, y: 0.5}
+        - {x: -41, y: -7.5}
+        - {x: -34, y: -20.5}
+        - {x: -11, y: -39.5}
+        - {x: -9, y: -39.5}
+        - {x: 25, y: -25.5}
+        - {x: 34, y: -13.5}
+        - {x: 45, y: 11.5}
+        - {x: 45, y: 29.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65256f32b9c1449f8232f8cf768be1b6
+      internalID: 21300078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_40
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 232
+        width: 21
+        height: 21
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -10.5, y: -10.5}
+        - {x: -10.5, y: 10.5}
+        - {x: 10.5, y: 10.5}
+        - {x: 10.5, y: -10.5}
+      physicsShape:
+      - - {x: -5.5, y: 10.5}
+        - {x: -10.5, y: -0.5}
+        - {x: -10.5, y: -9.5}
+        - {x: -9.5, y: -10.5}
+        - {x: 6.5, y: -10.5}
+        - {x: 10.5, y: -3.5}
+        - {x: 10.5, y: 7.5}
+        - {x: 8.5, y: 10.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: d08af0d7281b4e608d66e930dca265ba
+      internalID: 21300080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_41
+      rect:
+        serializedVersion: 2
+        x: 868
+        y: 231
+        width: 46
+        height: 37
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -19, y: -18.5}
+        - {x: -23, y: -15.5}
+        - {x: -23, y: 17.5}
+        - {x: -19, y: 18.5}
+        - {x: 18, y: 18.5}
+        - {x: 23, y: 14.5}
+        - {x: 23, y: -8.5}
+        - {x: 19, y: -18.5}
+      physicsShape:
+      - - {x: -20, y: 18.5}
+        - {x: -23, y: 14.5}
+        - {x: -23, y: -13.5}
+        - {x: -21, y: -17.5}
+        - {x: 19, y: -17.5}
+        - {x: 22, y: -9.5}
+        - {x: 22, y: 12.5}
+        - {x: 9.999999, y: 18.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ceef074e2ef4e04b26cb1750081fdce
+      internalID: 21300082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_43
+      rect:
+        serializedVersion: 2
+        x: 967
+        y: 232.0761
+        width: 55
+        height: 36.92388
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4989691}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -23.5, y: -18.53806}
+        - {x: -27.5, y: -13.53807}
+        - {x: -27.5, y: 12.46194}
+        - {x: -20.5, y: 18.46194}
+        - {x: 23.5, y: 18.46194}
+        - {x: 27.5, y: 17.46194}
+        - {x: 27.5, y: -16.53806}
+        - {x: 19.5, y: -18.53806}
+      physicsShape:
+      - - {x: -14.5, y: 18.46194}
+        - {x: -27.5, y: 6.461935}
+        - {x: -27.5, y: -9.538065}
+        - {x: -26.5, y: -14.53806}
+        - {x: -15.5, y: -17.53806}
+        - {x: 16.5, y: -17.53806}
+        - {x: 27.5, y: -6.538065}
+        - {x: 27.5, y: 10.46194}
+        - {x: 17.5, y: 18.46194}
+      tessellationDetail: 0
+      bones: []
+      spriteID: df94373ed24f4b8f9cdeb47d24f3efab
+      internalID: 21300084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_27
+      rect:
+        serializedVersion: 2
+        x: 932.0761
+        y: 347
+        width: 87.92388
+        height: 90
+      alignment: 9
+      pivot: {x: 0.4995672, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -38.03805, y: -41}
+        - {x: -44.03805, y: 1}
+        - {x: -44.03805, y: 41}
+        - {x: -38.03805, y: 45}
+        - {x: 35.96195, y: 45}
+        - {x: 43.96195, y: 33}
+        - {x: 43.96195, y: -38}
+        - {x: 36.96195, y: -45}
+        - {x: -36.03805, y: -45}
+      physicsShape:
+      - - {x: -19.03805, y: -34}
+        - {x: -20.03805, y: -35}
+        - {x: -20.03805, y: -41}
+        - {x: -16.03805, y: -42}
+        - {x: -8.038052, y: -42}
+        - {x: -8.038052, y: -35}
+        - {x: -9.038052, y: -34}
+      - - {x: 42.96194, y: 16}
+        - {x: 36.96195, y: 18}
+        - {x: 29.96195, y: 25}
+        - {x: 22.96195, y: 30}
+        - {x: 16.96195, y: 42}
+        - {x: 5.961948, y: 41}
+        - {x: 3.961948, y: 37}
+        - {x: -1.038052, y: 31}
+        - {x: -13.03805, y: 44}
+        - {x: -21.03805, y: 44}
+        - {x: -42.03805, y: 37}
+        - {x: -42.03805, y: 22}
+        - {x: -38.03805, y: 7}
+        - {x: -28.03805, y: 13}
+        - {x: -32.03805, y: 5}
+        - {x: -31.03805, y: -3}
+        - {x: -20.03805, y: -27}
+        - {x: -15.03805, y: -34}
+        - {x: 20.96195, y: -34}
+        - {x: 23.96195, y: -30}
+        - {x: 30.96195, y: -21}
+        - {x: 42.96194, y: 5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 696f9be33b94421eb34343c794598a78
+      internalID: 21300086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_35
+      rect:
+        serializedVersion: 2
+        x: 865
+        y: 280.0513
+        width: 66
+        height: 56.94868
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4995492}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -24, y: -28.52567}
+        - {x: -33, y: -26.52567}
+        - {x: -33, y: 1.474327}
+        - {x: -26, y: 27.47433}
+        - {x: -20, y: 28.47433}
+        - {x: 18, y: 28.47433}
+        - {x: 33, y: 18.47433}
+        - {x: 33, y: -12.52567}
+        - {x: 27, y: -28.52567}
+      physicsShape:
+      - - {x: 26, y: 15.47433}
+        - {x: 9.999999, y: 26.47433}
+        - {x: 3, y: 28.47433}
+        - {x: -12, y: 28.47433}
+        - {x: -21, y: 22.47433}
+        - {x: -22, y: 10.47433}
+        - {x: -33, y: -1.525673}
+        - {x: -33, y: -15.52567}
+        - {x: -17, y: -26.52567}
+        - {x: 7, y: -26.52567}
+        - {x: 12, y: -25.52567}
+        - {x: 29, y: -11.52567}
+        - {x: 33, y: -2.525673}
+        - {x: 33, y: 10.47433}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3169aecb06934b709595a9d60ff21eed
+      internalID: 21300088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_36
+      rect:
+        serializedVersion: 2
+        x: 940
+        y: 282
+        width: 81
+        height: 55
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -33.5, y: -27.5}
+        - {x: -40.5, y: -22.5}
+        - {x: -40.5, y: 3.5}
+        - {x: -27.5, y: 27.5}
+        - {x: 17.5, y: 27.5}
+        - {x: 40.5, y: 15.5}
+        - {x: 40.5, y: -22.5}
+        - {x: 19.5, y: -27.5}
+      physicsShape:
+      - - {x: 37.5, y: 5.5}
+        - {x: 14.5, y: 16.5}
+        - {x: 8.5, y: 17.5}
+        - {x: 1.5, y: 26.5}
+        - {x: -3.5, y: 27.5}
+        - {x: -15.5, y: 27.5}
+        - {x: -21.5, y: 19.5}
+        - {x: -39.5, y: -1.5}
+        - {x: -39.5, y: -9.5}
+        - {x: -15.5, y: -27.5}
+        - {x: 9.5, y: -27.5}
+        - {x: 30.5, y: -15.5}
+        - {x: 40.5, y: -5.5}
+        - {x: 40.5, y: 0.5}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c5d9ab0fc71462dbbbe07f0fb8c1501
+      internalID: 21300090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MountainDecals_DIF_38
+      rect:
+        serializedVersion: 2
+        x: 743
+        y: 238
+        width: 52.97325
+        height: 34
+      alignment: 9
+      pivot: {x: 0.5002525, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -24.48663, y: -17}
+        - {x: -26.48662, y: -14}
+        - {x: -26.48662, y: 11}
+        - {x: -20.48663, y: 17}
+        - {x: 20.51337, y: 17}
+        - {x: 26.51337, y: 13}
+        - {x: 26.51337, y: -14}
+        - {x: 16.51337, y: -17}
+      physicsShape:
+      - - {x: 14.51337, y: 17}
+        - {x: -16.48663, y: 17}
+        - {x: -26.48662, y: 8}
+        - {x: -26.48662, y: -12}
+        - {x: -16.48663, y: -16}
+        - {x: 18.51337, y: -16}
+        - {x: 20.51337, y: -15}
+        - {x: 25.51337, y: -5}
+        - {x: 25.51337, y: 8}
+        - {x: 22.51337, y: 16}
+      tessellationDetail: 0
+      bones: []
+      spriteID: fabbb1da827e4f9b87e0125b483eaa60
+      internalID: 21300092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      MountainDecals_DIF_25: 21300044
+      MountainDecals_DIF_32: 21300010
+      MountainDecals_DIF_36: 21300090
+      MountainDecals_DIF_21: 21300076
+      MountainDecals_DIF_30: 21300062
+      MountainDecals_DIF_10: 21300032
+      MountainDecals_DIF_44: 21300066
+      MountainDecals_DIF_37: 21300014
+      MountainDecals_DIF_24: 21300006
+      MountainDecals_DIF_34: 21300012
+      MountainDecals_DIF_16: 21300072
+      MountainDecals_DIF_7: 21300028
+      MountainDecals_DIF_19: 21300038
+      MountainDecals_DIF_11: 21300002
+      MountainDecals_DIF_22: 21300074
+      MountainDecals_DIF_29: 21300078
+      MountainDecals_DIF_17: 21300058
+      MountainDecals_DIF_45: 21300018
+      MountainDecals_DIF_47: 21300052
+      MountainDecals_DIF_9: 21300056
+      MountainDecals_DIF_38: 21300092
+      MountainDecals_DIF_2: 21300000
+      MountainDecals_DIF_28: 21300060
+      MountainDecals_DIF_5: 21300024
+      MountainDecals_DIF_43: 21300084
+      MountainDecals_DIF_12: 21300034
+      MountainDecals_DIF_31: 21300064
+      MountainDecals_DIF_35: 21300088
+      MountainDecals_DIF_4: 21300022
+      MountainDecals_DIF_42: 21300048
+      MountainDecals_DIF_20: 21300040
+      MountainDecals_DIF_14: 21300070
+      MountainDecals_DIF_15: 21300004
+      MountainDecals_DIF_6: 21300026
+      MountainDecals_DIF_23: 21300042
+      MountainDecals_DIF_1: 21300020
+      MountainDecals_DIF_0: 21300068
+      MountainDecals_DIF_18: 21300036
+      MountainDecals_DIF_33: 21300046
+      MountainDecals_DIF_8: 21300030
+      MountainDecals_DIF_39: 21300016
+      MountainDecals_DIF_46: 21300050
+      MountainDecals_DIF_41: 21300082
+      MountainDecals_DIF_40: 21300080
+      MountainDecals_DIF_3: 21300054
+      MountainDecals_DIF_26: 21300008
+      MountainDecals_DIF_27: 21300086
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

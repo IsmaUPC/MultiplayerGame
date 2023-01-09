@@ -63,6 +63,7 @@ public class Projectile : MonoBehaviour
                 var newDir = Vector3.zero;
                 var curDir = transform.TransformDirection(Vector3.forward);
                 newDir = Vector3.Reflect(curDir, contact.normal);
+                newDir.y = 0;
                 transform.rotation = Quaternion.FromToRotation(Vector3.forward, newDir);
             }
         }

@@ -68,6 +68,8 @@ public class PlayerController : MonoBehaviour
                 {
                     characterController.Move(new Vector3(movement.x * Time.deltaTime, 0, movement.y * Time.deltaTime));
                     transform.rotation = Quaternion.RotateTowards(transform.rotation, targetDirection, rotVelocity * Time.deltaTime);
+                    if (transform.position.y != initY)
+                        characterController.Move(new Vector3(0, initY - transform.position.y , 0));
                 }
                 //else if (stillTime < propHunt.timeToConvert)
                 //    stillTime += Time.deltaTime;
@@ -76,6 +78,8 @@ public class PlayerController : MonoBehaviour
 
             case State.DASH:
                 characterController.Move(transform.forward * dashSpeed * Time.deltaTime);
+                if (transform.position.y != initY)
+                    characterController.Move(new Vector3(0, initY - transform.position.y, 0));
                 break;
 
             case State.LOAD_ARM:

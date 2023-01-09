@@ -953,7 +953,9 @@ MonoBehaviour:
   projectile: {fileID: 6943407593300112634, guid: 21698ce583a92d3489a06069fc050db8, type: 3}
   projectileMesh: {fileID: 0}
   shader: {fileID: 0}
+  shoot: 0
   projectilePos: {fileID: 6513695632484412280}
+  state: 0
 --- !u!114 &5153129509673550620
 MonoBehaviour:
   m_ObjectHideFlags: 0
