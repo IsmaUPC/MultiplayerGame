@@ -63,7 +63,7 @@ public class OptionsMenu : MonoBehaviour
         else 
         {
             foreach (GameObject audio in FXSounds)
-                audio.GetComponent<AudioSource>().volume = slider.value;
+                 audio.GetComponent<AudioSource>().volume = slider.value;
         }
 
     }
@@ -74,5 +74,8 @@ public class OptionsMenu : MonoBehaviour
         volume = (clickVolume) ? 0.00f : volume = (slider.name == "SliderMusic") ? PlayerPrefs.GetFloat("musicGame") : PlayerPrefs.GetFloat("fxGame");
         slider.value = volume;
     }
-
+    public void OnOpenMenuOptions() 
+    {
+        OnOptionMenu();
+    }
 }

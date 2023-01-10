@@ -383,6 +383,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "OpenMenuOptions",
+                    "type": "Button",
+                    "id": "06d737da-03c8-4892-bdbb-616de8c47c0e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -913,6 +922,17 @@
                     "action": "Rotate",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "9ea54bf2-0faa-48d8-a033-b168b3ef6fe6",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "OpenMenuOptions",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
