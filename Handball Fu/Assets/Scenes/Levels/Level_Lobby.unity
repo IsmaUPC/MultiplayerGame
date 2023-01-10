@@ -593,7 +593,7 @@ GameObject:
   - component: {fileID: 775757942}
   m_Layer: 16
   m_Name: Ground
-  m_TagString: Untagged
+  m_TagString: Floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -2029,7 +2029,7 @@ GameObject:
   - component: {fileID: 1087269824541492742}
   m_Layer: 16
   m_Name: Terrain_Enclosed
-  m_TagString: Floor
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
