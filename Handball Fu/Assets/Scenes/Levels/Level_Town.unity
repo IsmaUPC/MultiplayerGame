@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657868, g: 0.4964127, b: 0.57481724, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -677,8 +677,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 6.336214, y: 2.0000005, z: 0.7317132}
-  m_Center: {x: -2.589715, y: 1.0000002, z: -0.057157766}
+  m_Size: {x: 6.5, y: 2.0000005, z: 2}
+  m_Center: {x: -2.589715, y: 1.0000002, z: 0.49}
 --- !u!23 &1323289708216239315
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1320,8 +1320,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 6.336214, y: 2.0000005, z: 0.7317132}
-  m_Center: {x: -2.589715, y: 1.0000002, z: -0.057157766}
+  m_Size: {x: 6.5, y: 2.0000005, z: 2}
+  m_Center: {x: -2.589715, y: 1.0000002, z: 0.46}
 --- !u!1 &1323289708817019283
 GameObject:
   m_ObjectHideFlags: 0
@@ -1748,8 +1748,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 6.336214, y: 2.0000005, z: 0.7317132}
-  m_Center: {x: -2.589715, y: 1.0000002, z: -0.057157766}
+  m_Size: {x: 6.5, y: 2.0000005, z: 2}
+  m_Center: {x: -2.589715, y: 1.0000002, z: -0.71}
 --- !u!1 &1323289709552812343
 GameObject:
   m_ObjectHideFlags: 0
@@ -1788,8 +1788,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 6.336214, y: 2.0000005, z: 0.7317132}
-  m_Center: {x: -2.589715, y: 1.0000002, z: -0.057157766}
+  m_Size: {x: 6.5, y: 2.0000005, z: 2}
+  m_Center: {x: -2.589715, y: 1.0000002, z: 0.46}
 --- !u!23 &1323289709641448603
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1942,8 +1942,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 6.336214, y: 2.0000005, z: 0.7317132}
-  m_Center: {x: -2.589715, y: 1.0000002, z: -0.057157766}
+  m_Size: {x: 6.5, y: 2.0000005, z: 2}
+  m_Center: {x: -2.589715, y: 1.0000002, z: -0.71}
 --- !u!1 &1323289709700385643
 GameObject:
   m_ObjectHideFlags: 0
@@ -32248,8 +32248,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 6.336214, y: 2.0000005, z: 0.7317132}
-  m_Center: {x: -2.589715, y: 1.0000002, z: -0.057157766}
+  m_Size: {x: 6.5, y: 2.0000005, z: 2}
+  m_Center: {x: -2.589715, y: 1.0000002, z: -0.71}
 --- !u!1 &1323289709770524189
 GameObject:
   m_ObjectHideFlags: 0
@@ -32288,8 +32288,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 6.336214, y: 2.0000005, z: 0.7317132}
-  m_Center: {x: -2.589715, y: 1.0000002, z: -0.057157766}
+  m_Size: {x: 6.5, y: 2.0000005, z: 2}
+  m_Center: {x: -2.589715, y: 1.0000002, z: 0.46}
 --- !u!23 &1323289709808773827
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -32437,8 +32437,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 6.336214, y: 2.0000005, z: 0.7317132}
-  m_Center: {x: -2.589715, y: 1.0000002, z: -0.057157766}
+  m_Size: {x: 6.5, y: 2.0000005, z: 2}
+  m_Center: {x: -2.589715, y: 1.0000002, z: -0.71}
 --- !u!23 &1323289709945813643
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -32695,8 +32695,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 6.336214, y: 2.0000005, z: 0.7317132}
-  m_Center: {x: -2.589715, y: 1.0000002, z: -0.057157766}
+  m_Size: {x: 6.5, y: 2.0000005, z: 2}
+  m_Center: {x: -2.589715, y: 1.0000002, z: 0.46}
 --- !u!1 &1323289710082407821
 GameObject:
   m_ObjectHideFlags: 0
@@ -32933,8 +32933,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 6.336214, y: 2.0000005, z: 0.7317132}
-  m_Center: {x: -2.589715, y: 1.0000002, z: -0.057157766}
+  m_Size: {x: 6.336214, y: 2.0000005, z: 2}
+  m_Center: {x: -2.589715, y: 1.0000002, z: -0.71}
 --- !u!33 &1541308146192256969
 MeshFilter:
   m_ObjectHideFlags: 0
