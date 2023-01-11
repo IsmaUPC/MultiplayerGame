@@ -13,9 +13,15 @@ public class CustomAvatar : MonoBehaviour
 
     public float rotateSpeed = 10;
     private float dir = 0;
+
+
+    Vector3 posAux;
+    public GameObject[] selectors;
+
     // Start is called before the first frame update
     void Start()
     {
+
         // Get data GO for get cosmetic meshes
         data = GameObject.FindGameObjectWithTag("Data").GetComponent<DataTransfer>();
         data.SetCustomAvatar(this);
@@ -28,6 +34,8 @@ public class CustomAvatar : MonoBehaviour
         // Fill body parts
         bodyParts = new GameObject[indexs.Length];
         bodyParts = GetComponent<PlayerData>().bodyParts;
+
+        selectors[bodyPartIndex].gameObject.SetActive(true);
     }
 
     // Update is called once per frame
@@ -36,6 +44,9 @@ public class CustomAvatar : MonoBehaviour
         // Rotate character
         if (dir != 0)
             transform.Rotate(Vector3.up, dir * rotateSpeed * Time.deltaTime);
+
+        if(!selectors[bodyPartIndex].gameObject.active) selectors[bodyPartIndex].gameObject.SetActive(true);
+        Debug.Log(bodyPartIndex);
     }
     public void UpdateAvatar()
     {
@@ -45,6 +56,7 @@ public class CustomAvatar : MonoBehaviour
 
     void OnSelector(InputValue value)
     {
+        selectors[bodyPartIndex].gameObject.SetActive(false);
         // UI control
         Vector2 key = value.Get<Vector2>();
         if(key.magnitude != 0)
@@ -69,7 +81,7 @@ public class CustomAvatar : MonoBehaviour
                     bodyPartIndex = 0;
             }
         }
-        
+
     }
     private void ChangeMesh(bool nextPart)
     {

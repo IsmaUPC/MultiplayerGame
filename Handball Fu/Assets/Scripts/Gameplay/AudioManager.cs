@@ -9,7 +9,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip[] fxHit;
     public AudioClip[] fxMockery;
     public AudioClip[] fxPunch;
-    public AudioSource audio;
+     AudioSource audio;
 
     public void Start()
     {

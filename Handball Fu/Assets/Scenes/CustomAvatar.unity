@@ -493,7 +493,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1389409180}
   m_Direction: 0
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.9999999
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1563,6 +1563,14 @@ PrefabInstance:
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ChangeSliderVolume
       objectReference: {fileID: 0}
+    - target: {fileID: 3202246451384210411, guid: 0b959706bf5ecfe41a4e031edbdb943d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1625363160}
+    - target: {fileID: 3202246451384210411, guid: 0b959706bf5ecfe41a4e031edbdb943d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnFullScreen
+      objectReference: {fileID: 0}
     - target: {fileID: 3202246451452623323, guid: 0b959706bf5ecfe41a4e031edbdb943d, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -1574,6 +1582,14 @@ PrefabInstance:
     - target: {fileID: 3202246451491953906, guid: 0b959706bf5ecfe41a4e031edbdb943d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3202246451724034465, guid: 0b959706bf5ecfe41a4e031edbdb943d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1625363160}
+    - target: {fileID: 3202246451724034465, guid: 0b959706bf5ecfe41a4e031edbdb943d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnFullScreen
       objectReference: {fileID: 0}
     - target: {fileID: 7504394958423761698, guid: 0b959706bf5ecfe41a4e031edbdb943d, type: 3}
       propertyPath: m_AnchorMax.x
@@ -2419,7 +2435,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: e5e19b9a-aafc-47d6-aa19-8d2b717f669e
+  m_DefaultActionMap: UI
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!1001 &1632016832
@@ -3233,6 +3249,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1621745917867745515, guid: 8ade770fe513e4645903f2311fa45766, type: 3}
+      propertyPath: headParts.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1621745917867745515, guid: 8ade770fe513e4645903f2311fa45766, type: 3}
+      propertyPath: headParts.Array.data[4]
+      value: 
+      objectReference: {fileID: -117213939141285666, guid: 764b674c68917944db636735b5817f55, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8ade770fe513e4645903f2311fa45766, type: 3}
 --- !u!1001 &1875539040278005351
