@@ -9,17 +9,37 @@ public class AudioManager : MonoBehaviour
     public AudioClip[] fxHit;
     public AudioClip[] fxMockery;
     public AudioClip[] fxPunch;
+    public AudioSource audio;
 
     public void Start()
     {
-
-
+        audio = GetComponent<AudioSource>();
     }
-    public static void PlaySound()
+    public void PlayFXBoingPunch()
     {
-        GameObject soundGameObject = new GameObject("Sound");
-        AudioSource audioSource = soundGameObject.AddComponent<AudioSource>();
-        //   audioSource.PlayOneShot();
+        audio.PlayOneShot(fxBoingPunch[RNG(fxBoingPunch.Length)]);
+    }
+    public void PlayFXDash()
+    {
+        audio.PlayOneShot(fxDash[RNG(fxDash.Length)]);
+    }
+    public void PlayFXHit()
+    {
+        audio.PlayOneShot(fxHit[RNG(fxHit.Length)]);
+    }
+    public void PlayFXMockery()
+    {
+        audio.PlayOneShot(fxMockery[RNG(fxMockery.Length)]);
+    }
+    public void PlayFXPunch()
+    {
+        audio.PlayOneShot(fxPunch[RNG(fxPunch.Length)]);
+    }
+
+    //Random Number Ganerator
+    public int RNG(int length)
+    {
+        return Random.Range(0, length);
     }
 
 }

@@ -12,14 +12,13 @@ public class OptionsMenu : MonoBehaviour
     int defaultFullScreen;
     bool clickVolume = false;
     float volume, volAux;
+    public GameObject fxSounds;
 
     public GameObject[] music;
-    public GameObject[] FXSounds;
 
     void Start()
     {
-        music = GameObject.FindGameObjectsWithTag("Music");
-        FXSounds = GameObject.FindGameObjectsWithTag("FX");
+      
         sliderMusic.value = PlayerPrefs.GetFloat("musicGame", 0.75f);
         sliderFx.value = PlayerPrefs.GetFloat("fxGame", 0.75f);
         defaultFullScreen = PlayerPrefs.GetInt("defaultFullScreen", 0);
@@ -55,15 +54,15 @@ public class OptionsMenu : MonoBehaviour
 
             volAux = slider.value;
         }
-        if (slider.tag == "Music")
+        if (slider.tag == "Music" && music.Length>0)
         {
             foreach (GameObject audio in music)
                 audio.GetComponent<AudioSource>().volume = slider.value;
         }
         else 
         {
-            foreach (GameObject audio in FXSounds)
-                 audio.GetComponent<AudioSource>().volume = slider.value;
+            fxSounds.GetComponent<AudioSource>().volume = slider.value;
+            //fxSounds.GetComponent<AudioManager>().PlayFXHit();
         }
 
     }
@@ -77,5 +76,6 @@ public class OptionsMenu : MonoBehaviour
     public void OnOpenMenuOptions() 
     {
         OnOptionMenu();
+
     }
 }
