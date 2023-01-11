@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Animator animator;
     private float initY;
     private byte netID;
+    private Color userColor = Color.white;
 
     // Movement
     private Vector2 movement = Vector2.zero;
@@ -56,6 +57,8 @@ public class PlayerController : MonoBehaviour
         client = FindObjectOfType<UDPClient>();
         if (client != null)
             netID = (byte)client.GetPortIdx();
+
+        userColor = FindObjectOfType<DataTransfer>().userColor;
     }
 
     // Update is called once per frame
@@ -229,6 +232,7 @@ public class PlayerController : MonoBehaviour
         proj.GetComponent<MeshFilter>().mesh = projectileMesh;
         proj.GetComponent<Projectile>().parent = this;
         proj.GetComponent<Projectile>().initY = projectilePos.position.y;
+        proj.GetComponent<Outline>().OutlineColor = userColor;
         shader.MakeTransparent();
         shoot = true;
 

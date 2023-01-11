@@ -18,6 +18,7 @@ public class DataTransfer : MonoBehaviour
     public List<Mesh[]> cosmetics = new List<Mesh[]>();
     public int[] indexs;
     private CustomAvatar ca;
+    [HideInInspector] public Color userColor = Color.white;
 
     public int portId = 0;
     // Start is called before the first frame update
@@ -45,6 +46,9 @@ public class DataTransfer : MonoBehaviour
         {
             portId = tmp.GetPortIdx();
         }
+
+        userColor = FindObjectOfType<ChatManager>().userColors[portId + 1];
+        userColor.a = 1;
     }
 
     void OnEnable()
