@@ -44,9 +44,15 @@ public class PlayerController : MonoBehaviour
     UDPClient client;
     WorldUpdateServer worldServer;
 
+    AudioManager audioMan;
+    GameObject FXSounds;
+
     // Start is called before the first frame update
     void Start()
     {
+        FXSounds = GameObject.FindGameObjectWithTag("FX");
+
+        audioMan = FXSounds.GetComponent<AudioManager>();
         trail = GetComponent<TrailRenderer>();
         state = State.MOVE;
         initY = transform.position.y;
@@ -168,6 +174,7 @@ public class PlayerController : MonoBehaviour
         state = State.DASH;
         trail.emitting = true;
         animator.SetBool("Dash", true);
+        audioMan.PlayFXDash();
 
         yield return new WaitForSeconds(dashTime);
 
@@ -180,6 +187,7 @@ public class PlayerController : MonoBehaviour
     {
         if (state != State.MOVE)
             return;
+        audioMan.PlayFXPunch();
 
         client.SendControllerToServer(netID, 0, 2, dir);
         //ResetPropHuntCount();
@@ -213,7 +221,7 @@ public class PlayerController : MonoBehaviour
         // Key UP
         animator.SetBool("Shoot", false);
         state = State.ATTACK;
-
+        audioMan.PlayFXPunch();
         //ResetPropHuntCount();
     }
 
@@ -260,6 +268,7 @@ public class PlayerController : MonoBehaviour
     public void Victory()
     {
         animator.SetBool("Victory", true);
+        audioMan.PlayFXMockery();
         state = State.VICTORY;
     }
 

@@ -857,6 +857,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4288530234978913791, guid: eb8bf2b642a941744a0cd44d3db52c73, type: 3}
   m_PrefabInstance: {fileID: 526418308}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &526418310 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2179092415872782406, guid: eb8bf2b642a941744a0cd44d3db52c73, type: 3}
+  m_PrefabInstance: {fileID: 526418308}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 526418309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2babcc3013be6d43b8d2ed11106c30d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &529923340
 GameObject:
   m_ObjectHideFlags: 0
@@ -2139,6 +2150,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2125428203}
     m_Modifications:
+    - target: {fileID: 958598752, guid: 0b959706bf5ecfe41a4e031edbdb943d, type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 526418310}
+    - target: {fileID: 958598752, guid: 0b959706bf5ecfe41a4e031edbdb943d, type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PlayFXBoingPunch
+      objectReference: {fileID: 0}
     - target: {fileID: 1849705589195757364, guid: 0b959706bf5ecfe41a4e031edbdb943d, type: 3}
       propertyPath: m_TagString
       value: FX

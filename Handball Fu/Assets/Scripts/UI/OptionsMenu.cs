@@ -62,7 +62,6 @@ public class OptionsMenu : MonoBehaviour
         else 
         {
             fxSounds.GetComponent<AudioSource>().volume = slider.value;
-            //fxSounds.GetComponent<AudioManager>().PlayFXHit();
         }
 
     }

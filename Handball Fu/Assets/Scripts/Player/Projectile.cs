@@ -12,9 +12,16 @@ public class Projectile : MonoBehaviour
     [HideInInspector] public PlayerController parent;
     private WorldUpdateServer worldServer;
 
+    AudioManager audioMan;
+    GameObject FXSounds;
+
     // Start is called before the first frame update
     void Start()
     {
+        FXSounds = GameObject.FindGameObjectWithTag("FX");
+
+        audioMan = FXSounds.GetComponent<AudioManager>();
+
         worldServer = FindObjectOfType<WorldUpdateServer>();
         Physics.IgnoreCollision(parent.GetComponent<Collider>(), GetComponent<Collider>());
     }
@@ -33,6 +40,7 @@ public class Projectile : MonoBehaviour
         // Check no collision with his owner
         if (collision.gameObject != parent.gameObject)
         {
+            audioMan.PlayFXBoingPunch();
             if (collision.gameObject.GetComponent<PlayerController>())
             {
                 currentBounce = maxBounce;
