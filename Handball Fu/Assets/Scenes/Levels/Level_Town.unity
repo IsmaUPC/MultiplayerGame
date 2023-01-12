@@ -189,6 +189,10 @@ PrefabInstance:
       value: FXSound
       objectReference: {fileID: 0}
     - target: {fileID: 4288530234978913791, guid: eb8bf2b642a941744a0cd44d3db52c73, type: 3}
+      propertyPath: m_TagString
+      value: FX
+      objectReference: {fileID: 0}
+    - target: {fileID: 4288530234978913791, guid: eb8bf2b642a941744a0cd44d3db52c73, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
