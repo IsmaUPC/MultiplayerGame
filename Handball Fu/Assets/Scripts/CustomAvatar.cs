@@ -46,7 +46,6 @@ public class CustomAvatar : MonoBehaviour
             transform.Rotate(Vector3.up, dir * rotateSpeed * Time.deltaTime);
 
         if(!selectors[bodyPartIndex].gameObject.active) selectors[bodyPartIndex].gameObject.SetActive(true);
-        Debug.Log(bodyPartIndex);
     }
     public void UpdateAvatar()
     {
