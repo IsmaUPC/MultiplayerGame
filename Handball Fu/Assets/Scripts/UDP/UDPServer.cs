@@ -81,9 +81,10 @@ public class UDPServer : MonoBehaviour
         public int victories;
     }
 
+    IPEndPoint ipepRTT;
+    bool rttBool = false;
     double[] rtt = new double[9];
     double maxRTT = 0;
-    double startTime;
     float lastRTTUpdate;
     double minTimeInterpolation = 0.02f;
 
@@ -136,7 +137,7 @@ public class UDPServer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        startTime = Time.realtimeSinceStartupAsDouble;
+        //startTime = Time.realtimeSinceStartupAsDouble;
         GetHostIP();
 
         // Ports available from 7400 to 9056
@@ -182,6 +183,9 @@ public class UDPServer : MonoBehaviour
 
     private void Update()
     {
+        if (rttBool)
+            RTTCalculate();
+
         lastRTTUpdate += Time.deltaTime;
         if (lastRTTUpdate > 0.150f)
         {
@@ -375,7 +379,8 @@ public class UDPServer : MonoBehaviour
                         e.type = EVENT_TYPE.EVENT_READY_TO_PLAY;
                         break;
                     case 'T': // Calculate RTT Time
-                        RTTCalculate(e);
+                        ipepRTT = e.ipep;
+                        rttBool = true;
                         break;
                     default:
                         break;
@@ -1080,8 +1085,9 @@ public class UDPServer : MonoBehaviour
             }
         }
     }
-    private void RTTCalculate(Event e)
+    private void RTTCalculate()
     {
+        rttBool = false;
         double realtime = Time.realtimeSinceStartupAsDouble;
         ClientData[] clients;
         maxRTT = 0;
@@ -1090,7 +1096,7 @@ public class UDPServer : MonoBehaviour
         for (int f = 0; f < clients.Length; ++f)
         {
             maxRTT = (maxRTT < clients[f].RTT) ? clients[f].RTT : maxRTT;
-            if (clients[f].ipep != null && clients[f].ipep.Equals(e.ipep))
+            if (clients[f].ipep != null && clients[f].ipep.Equals(ipepRTT))
             {
                 lock (RTTLock) rtt[f] = clients[f].RTT - realtime;
                 break;
